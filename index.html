@@ -179,7 +179,8 @@
     <div class="header-bar">
         <div>
             <label for="lang-picker" style="font-size: 11px; margin-bottom: 2px;" id="lbl-lang">Language / اللغة:</label>
-            <select id="lang-picker" class="lang-select">
+            <!-- ربط مباشر وآمن لضمان تغيير اللغة فوراً -->
+            <select id="lang-picker" class="lang-select" onchange="changeLanguage(this.value)">
                 <option value="ar">العربية</option>
                 <option value="en">English</option>
                 <option value="fr">Français</option>
@@ -199,15 +200,15 @@
     <!-- عنوان التطبيق -->
     <h1 id="main-title">النظام المحاسبي الذكي <span class="pi-icon">π</span></h1>
 
-    <!-- لوحة التحكم والتبويبات -->
+    <!-- لوحة التحكم والتبويبات الآمنة -->
     <div id="dashboard-section">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('entry')" id="t-entry">إضافة قيد</div>
-            <div class="tab" onclick="switchTab('ledger')" id="t-ledger">دفتر الأستاذ</div>
-            <div class="tab" onclick="switchTab('inventory')" id="t-inv">المخزون</div>
-            <div class="tab" onclick="switchTab('partners')" id="t-part">العملاء والموردين</div>
-            <div class="tab" onclick="switchTab('income')" id="t-income">قائمة الدخل</div>
-            <div class="tab" onclick="switchTab('pay')" id="t-pay">الدفع بـ Pi</div>
+            <div class="tab active" data-tab="entry" id="t-entry">إضافة قيد</div>
+            <div class="tab" data-tab="ledger" id="t-ledger">دفتر الأستاذ</div>
+            <div class="tab" data-tab="inventory" id="t-inv">المخزون</div>
+            <div class="tab" data-tab="partners" id="t-part">العملاء والموردين</div>
+            <div class="tab" data-tab="income" id="t-income">قائمة الدخل</div>
+            <div class="tab" data-tab="pay" id="t-pay">الدفع بـ Pi</div>
         </div>
 
         <!-- تبويب 1: إضافة قيد -->
@@ -402,5 +403,23 @@
         },
         es: {
             mainTitle: 'ERP Contable Inteligente', welcome: 'Bienvenido',
-            tEntry: 'Añadir',
-    
+            tEntry: 'Añadir', tLedger: 'Libro Mayor', tInv: 'Inventario', tPart: 'Socios', tIncome: 'Ingresos', tPay: 'Pago Pi',
+            hAddEntry: 'Nuevo Asiento', lblType: 'Tipo:', optInc: 'Ingreso (+)', optExp: 'Gasto (-)', optAst: 'Activo (+)',
+            lblAmt: 'Cantidad (π):', lblDesc: 'Descripción:', btnSaveEntry: 'Guardar',
+            hLedger: 'Libro Mayor General', btnCsv: 'Exportar CSV', btnPrint: 'Imprimir',
+            thDate: 'Fecha', thDesc: 'Descripción', thType: 'Tipo', thAmt: 'Cantidad (π)',
+            hInv: 'Gestión de Inventario', lblProdName: 'Producto:', lblProdQty: 'Cantidad:', lblProdPrice: 'Precio (π):', btnAddProd: 'Añadir',
+            thPName: 'Producto', thPQty: 'Cantidad', thPPrice: 'Precio (π)',
+            hPart: 'Clientes y Proveedores', lblPartName: 'Nombre:', lblPartType: 'Categoría:', optCust: 'Cliente', optSupp: 'Proveedor', lblPartPhone: 'Teléfono:', btnAddPart: 'Guardar',
+            thPartName: 'Nombre', thPartType: 'Tipo', thPartPhone: 'Teléfono',
+            hIncome: 'Estado de Resultados', lblTotInc: 'Ingresos Totales', lblTotExp: 'Gastos Totales', lblNetProf: 'Beneficio Neto',
+            hPay: 'Pago Pi', pPayDesc: 'Probar pagos Pi.', lblPayAmt: 'Monto (π):', btnPiPay: 'Pagar con'
+        },
+        tr: {
+            mainTitle: 'Akıllı Muhasebe ERP', welcome: 'Hoş geldiniz',
+            tEntry: 'Kayıt Ekle', tLedger: 'Defteri Kebir', tInv: 'Envanter', tPart: 'Ortaklar', tIncome: 'Gelir Tablosu', tPay: 'Pi Ödeme',
+            hAddEntry: 'Yeni Muhasebe Kaydı', lblType: 'İşlem Türü:', optInc: 'Gelir (+)', optExp: 'Gider (-)', optAst: 'Varlık (+)',
+            lblAmt: 'Tutar (π Pi):', lblDesc: 'Açıklama:', btnSaveEntry: 'Kaydı Kaydet',
+            hLedger: 'Defteri Kebir', btnCsv: 'Excel e Aktar (CSV)', btnPrint: 'Yazdır',
+            thDate: 'Tarih', thDesc: 'Açıklama', thType: 'Tür', thAmt: 'Tutar (π)',
+            hInv: 'Envanter Yönetimi', lblProdName: 'Ürün Adı:', lblProdQty: 'Miktar:', lblProdPrice: 'Fiyat (π):', btnAddProd: 'Ürün Ekle'
