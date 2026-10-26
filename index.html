@@ -1,71 +1,115 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-root">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Accounting ERP - Pi Network</title>
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root { --primary: #ffd700; --secondary: #6a1b9a; --bg: #2e004a; }
-        body { font-family: 'Segoe UI', Tahoma; background: var(--bg); color: #fff; margin: 0; padding: 15px; }
-        .container { max-width: 900px; margin: 0 auto; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; backdrop-filter: blur(10px); }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        h1,h2,h3 { text-align: center; color: var(--primary); }
-        .btn { padding: 10px 20px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin: 5px 0; }
-        .btn-pi { background: var(--primary); color: #2e004a; } .btn-sec { background: var(--secondary); color: #fff; }
-        .form-group { margin-bottom: 15px; } label { display: block; margin-bottom: 5px; color: var(--primary); }
-        input,select { width: 100%; padding: 10px; border: 2px solid var(--secondary); border-radius: 8px; background: rgba(255,255,255,0.9); color: #333; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.9); color: #333; border-radius: 8px; overflow: hidden; }
-        th,td { padding: 10px; border-bottom: 1px solid #ddd; } th { background: var(--secondary); color: #fff; }
-        .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
-        .tab { padding: 8px 12px; cursor: pointer; border-radius: 8px; background: rgba(255,255,255,0.1); font-size: 12px; font-weight: bold; }
-        .tab.active { background: var(--primary); color: #2e004a; }
-        .tab-content { display: none; } .tab-content.active { display: block; }
-        .lang-select { width: auto; padding: 5px 10px; background: var(--secondary); color: #fff; border-radius: 5px; border: none; }
-        .chart-container { height: 250px; background: #fff; border-radius: 8px; padding: 10px; margin-top: 20px; }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Accounting ERP - Pi</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--p:#ffd700;--s:#6a1b9a;--bg:#2e004a}body{font-family:Segoe UI;background:var(--bg);color:#fff;margin:0;padding:12px}.container{max-width:900px;margin:auto;background:rgba(255,255,255,.1);padding:15px;border-radius:15px}.header{display:flex;justify-content:space-between;align-items:center}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:15px 0;border-bottom:2px solid var(--s);padding-bottom:10px}.tab{padding:8px 12px;background:rgba(255,255,255,.15);border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}.tab.active{background:var(--p);color:#2e004a}.tab-content{display:none}.tab-content.active{display:block}.btn{padding:10px 18px;border:none;border-radius:20px;font-weight:700;cursor:pointer}.btn-pi{background:var(--p);color:#2e004a}input,select{width:100%;padding:10px;border-radius:8px;border:2px solid var(--s);box-sizing:border-box;margin:5px 0}table{width:100%;background:#fff;color:#333;border-collapse:collapse;border-radius:8px;overflow:hidden;margin-top:10px}th,td{padding:8px;border-bottom:1px solid #ddd}th{background:var(--s);color:#fff}
+</style>
 </head>
 <body>
 <div class="container">
-    <div class="header-bar">
-        <div>
-            <label style="font-size:11px;">Language / اللغة:</label>
-            <select id="lang-picker" class="lang-select">
-                <option value="ar">العربية</option><option value="en">English</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option>
-            </select>
-        </div>
-        <div style="color:#ffeb3b; font-size:13px;"><span id="txt-welcome">مرحباً</span>: <span id="pi_username">Pi Merchant</span></div>
-    </div>
-    <h1 id="main-title">النظام المحاسبي الذكي <span style="color:#ffd700">π</span></h1>
-    <div class="tabs">
-        <div class="tab active" data-tab="entry" id="t-entry">إضافة قيد</div>
-        <div class="tab" data-tab="ledger" id="t-ledger">دفتر الأستاذ</div>
-        <div class="tab" data-tab="inventory" id="t-inv">المخزون</div>
-        <div class="tab" data-tab="partners" id="t-part">العملاء والموردين</div>
-        <div class="tab" data-tab="income" id="t-income">قائمة الدخل</div>
-        <div class="tab" data-tab="pay" id="t-pay">الدفع بـ Pi</div>
-    </div>
+<div class="header">
+<div style="color:#ffeb3b;font-size:13px"><span id="txt-welcome">مرحباً</span>: Pi Merchant</div>
+<div><label style="font-size:11px">Language:</label><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option></select></div>
+</div>
+<h1 id="main-title" style="text-align:center;color:var(--p)">النظام المحاسبي الذكي π</h1>
+<div class="tabs">
+<div class="tab active" data-tab="entry" id="t-entry">إضافة قيد</div>
+<div class="tab" data-tab="ledger" id="t-ledger">دفتر الأستاذ</div>
+<div class="tab" data-tab="inventory" id="t-inv">المخزون</div>
+<div class="tab" data-tab="partners" id="t-part">العملاء والموردين</div>
+<div class="tab" data-tab="income" id="t-income">قائمة الدخل</div>
+<div class="tab" data-tab="pay" id="t-pay">الدفع بـ Pi</div>
+</div>
 
-    <div id="entry" class="tab-content active">
-        <h2>إضافة قيد محاسبي</h2>
-        <form id="accounting-form">
-            <div class="form-group"><label>نوع العملية:</label><select id="entry-type"><option value="income">إيراد (+)</option><option value="expense">مصروف (-)</option><option value="asset">أصل (+)</option></select></div>
-            <div class="form-group"><label>المبلغ (π):</label><input type="number" id="amount" step="0.0001" required></div>
-            <div class="form-group"><label>الوصف:</label><input type="text" id="description" required></div>
-            <button type="submit" class="btn btn-pi">حفظ القيد</button>
-        </form>
-    </div>
-    <div id="ledger" class="tab-content">
-        <h2>دفتر الأستاذ</h2><button class="btn btn-sec" id="btn-csv">تصدير CSV</button> <button class="btn btn-sec" onclick="window.print()">طباعة</button>
-        <table><thead><tr><th>التاريخ</th><th>الوصف</th><th>النوع</th><th>المبلغ</th></tr></thead><tbody id="ledger-body"></tbody></table>
-    </div>
-    <div id="inventory" class="tab-content">
-        <h2>المخزون</h2>
-        <form id="inv-form"><div class="form-group"><input type="text" id="prod-name" placeholder="اسم المنتج" required></div><div class="form-group"><input type="number" id="prod-qty" placeholder="الكمية" required></div><div class="form-group"><input type="number" id="prod-price" step="0.0001" placeholder="السعر π" required></div><button type="submit" class="btn btn-pi">إضافة</button></form>
-        <table><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody id="inv-body"></tbody></table>
-    </div>
-    <div id="partners" class="tab-content">
-        <h2>العملاء والموردين</h2>
-        <form id="partner-form"><input type="text" id="part-name" placeholder="الاسم" required><select id="part-type"><option value="customer">عميل</option><option value="supplier">مورد</option></select><input type="text" id="part-phone" placeholder="الهاتف"><button type="submit" class="btn btn-pi">حفظ</button></form>
-        <table><thead><tr><th>الاسم</th><th>النوع</th><th>الهاتف</th></tr></thead><tbody id="partner-body"></tbody></table>
+<div id="entry" class="tab-content active"><h2 id="h-entry" style="text-align:center;color:var(--p)">إضافة قيد محاسبي</h2><form id="accounting-form"><select id="entry-type"><option value="income">إيراد (+)</option><option value="expense">مصروف (-)</option><option value="asset">أصل</option></select><input id="amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="description" type="text" placeholder="الوصف" required><button class="btn btn-pi" type="submit" id="btn-save">حفظ القيد</button></form></div>
+<div id="ledger" class="tab-content"><h2>دفتر الأستاذ</h2><button class="btn" style="background:var(--s);color:#fff" id="btn-csv">CSV</button><table><thead><tr><th>التاريخ</th><th>الوصف</th><th>النوع</th><th>المبلغ</th></tr></thead><tbody id="ledger-body"></tbody></table></div>
+<div id="inventory" class="tab-content"><h2>المخزون</h2><form id="inv-form"><input id="prod-name" placeholder="اسم المنتج" required><input id="prod-qty" type="number" placeholder="الكمية" required><input id="prod-price" type="number" step="0.0001" placeholder="السعر" required><button class="btn btn-pi" type="submit">إضافة</button></form><table><tbody id="inv-body"></tbody></table></div>
+<div id="partners" class="tab-content"><h2>العملاء</h2><form id="partner-form"><input id="part-name" placeholder="الاسم" required><select id="part-type"><option value="customer">عميل</option><option value="supplier">مورد</option></select><input id="part-phone" placeholder="الهاتف"><button class="btn btn-pi" type="submit">حفظ</button></form><table><tbody id="partner-body"></tbody></table></div>
+<div id="income" class="tab-content"><h2>قائمة الدخل</h2><p>إيرادات: <span id="total-income">0</span> π</p><p>مصروفات: <span id="total-expenses">0</span> π</p><h3>صافي: <span id="net-profit">0</span> π</h3><div style="background:#fff;padding:10px;border-radius:8px"><canvas id="financeChart"></canvas></div></div>
+<div id="pay" class="tab-content"><h2>الدفع بـ Pi</h2><input id="pay_amount" type="number" value="0.1" step="0.01"><button class="btn btn-pi" id="btn-pi-pay">ادفع بـ π</button><div id="pi-status" style="margin-top:10px;color:#ffeb3b"></div></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+const T={
+ar:{main:'النظام المحاسبي الذكي',wel:'مرحباً',e:'إضافة قيد',l:'دفتر الأستاذ',i:'المخزون',p:'العملاء والموردين',inc:'قائمة الدخل',pay:'الدفع بـ Pi',add:'إضافة قيد محاسبي',save:'حفظ القيد'},
+en:{main:'Smart Accounting ERP',wel:'Welcome',e:'Add Entry',l:'Ledger',i:'Inventory',p:'Partners',inc:'Income',pay:'Pi Payment',add:'Add Accounting Entry',save:'Save Entry'},
+tr:{main:'Akıllı Muhasebe ERP',wel:'Hoşgeldiniz',e:'Kayıt Ekle',l:'Defteri Kebir',i:'Envanter',p:'Ortaklar',inc:'Gelir',pay:'Pi Ödeme',add:'Muhasebe Kaydı',save:'Kaydet'},
+zh:{main:'智能会计ERP',wel:'欢迎',e:'添加',l:'总账',i:'库存',p:'合作伙伴',inc:'收入',pay:'Pi支付',add:'添加分录',save:'保存'},
+ja:{main:'スマート会計ERP',wel:'ようこそ',e:'追加',l:'元帳',i:'在庫',p:'パートナー',inc:'収益',pay:'Pi決済',add:'仕訳追加',save:'保存'},
+vi:{main:'ERP Kế toán',wel:'Chào mừng',e:'Thêm',l:'Sổ cái',i:'Kho',p:'Đối tác',inc:'Thu nhập',pay:'Thanh toán Pi',add:'Thêm bút toán',save:'Lưu'},
+fr:{main:'ERP Comptable',wel:'Bienvenue',e:'Ajouter',l:'Grand Livre',i:'Inventaire',p:'Partenaires',inc:'Revenu',pay:'Paiement Pi',add:'Ajouter Écriture',save:'Enregistrer'},
+de:{main:'Buchhaltungs-ERP',wel:'Willkommen',e:'Eintrag',l:'Hauptbuch',i:'Inventar',p:'Partner',inc:'Ergebnis',pay:'Pi Zahlung',add:'Buchung',save:'Speichern'},
+es:{main:'ERP Contable',wel:'Bienvenido',e:'Añadir',l:'Libro Mayor',i:'Inventario',p:'Socios',inc:'Ingresos',pay:'Pago Pi',add:'Añadir Asiento',save:'Guardar'}
+};
+let lang=localStorage.getItem('erp_lang')||'ar';
+const picker=document.getElementById('lang-picker'); picker.value=lang;
+function applyLang(l){
+const t=T[l]||T.en;
+document.documentElement.lang=l; document.documentElement.dir=(l==='ar'?'rtl':'ltr');
+document.getElementById('main-title').textContent=t.main; document.getElementById('txt-welcome').textContent=t.wel;
+document.getElementById('t-entry').textContent=t.e; document.getElementById('t-ledger').textContent=t.l;
+document.getElementById('t-inv').textContent=t.i; document.getElementById('t-part').textContent=t.p;
+document.getElementById('t-income').textContent=t.inc; document.getElementById('t-pay').textContent=t.pay;
+let he=document.getElementById('h-entry'); if(he) he.textContent=t.add;
+let bs=document.getElementById('btn-save'); if(bs) bs.textContent=t.save;
+localStorage.setItem('erp_lang',l);
+}
+picker.addEventListener('change',function(){applyLang(this.value)});
+applyLang(lang);
+
+document.querySelectorAll('.tab').forEach(function(tab){
+tab.addEventListener('click',function(){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active');
+});
+});
+
+let ledger=JSON.parse(localStorage.getItem('ledger')||'[]');
+let inv=JSON.parse(localStorage.getItem('inventory')||'[]');
+let parts=JSON.parse(localStorage.getItem('partners')||'[]');
+function renderLedger(){document.getElementById('ledger-body').innerHTML=ledger.map(l=>`<tr><td>${l.date}</td><td>${l.desc}</td><td>${l.type}</td><td>${l.amount}</td></tr>`).join('')}
+function renderInv(){document.getElementById('inv-body').innerHTML=inv.map(i=>`<tr><td>${i.name}</td><td>${i.qty}</td><td>${i.price}</td></tr>`).join('')}
+function renderPart(){document.getElementById('partner-body').innerHTML=parts.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.phone}</td></tr>`).join('')}
+let chartObj=null;function updateIncome(){
+let inc=ledger.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
+let exp=ledger.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
+let ast=ledger.filter(e=>e.type==='asset').reduce((s,e)=>s+e.amount,0);
+document.getElementById('total-income').textContent=inc.toFixed(4);
+document.getElementById('total-expenses').textContent=exp.toFixed(4);
+document.getElementById('net-profit').textContent=(inc-exp).toFixed(4);
+let ctx=document.getElementById('financeChart'); if(!ctx) return;
+if(chartObj) chartObj.destroy();
+chartObj=new Chart(ctx,{type:'bar',data:{labels:['Income','Expenses','Assets'],datasets:[{label:'Pi',data:[inc,exp,ast],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true,maintainAspectRatio:false}});
+}
+document.getElementById('accounting-form').addEventListener('submit',function(e){e.preventDefault();ledger.push({date:new Date().toLocaleDateString(),type:document.getElementById('entry-type').value,amount:parseFloat(document.getElementById('amount').value),desc:document.getElementById('description').value});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateIncome();e.target.reset();});
+document.getElementById('inv-form').addEventListener('submit',function(e){e.preventDefault();inv.push({name:document.getElementById('prod-name').value,qty:document.getElementById('prod-qty').value,price:document.getElementById('prod-price').value});localStorage.setItem('inventory',JSON.stringify(inv));renderInv();e.target.reset();});
+document.getElementById('partner-form').addEventListener('submit',function(e){e.preventDefault();parts.push({name:document.getElementById('part-name').value,type:document.getElementById('part-type').value,phone:document.getElementById('part-phone').value});localStorage.setItem('partners',JSON.stringify(parts));renderPart();e.target.reset();});
+document.getElementById('btn-csv').addEventListener('click',function(){let csv='Date,Desc,Type,Amount\n'+ledger.map(l=>`${l.date},"${l.desc}",${l.type},${l.amount}`).join('\n');let blob=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ledger.csv';a.click();});
+renderLedger();renderInv();renderPart();updateIncome();
+
+// Pi - آمن حتى لو مو في Pi Browser
+try{
+if(typeof Pi!=='undefined'){Pi.init({version:"2.0",sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready (Sandbox)';}
+else{document.getElementById('pi-status').textContent='افتح في Pi Browser للدفع الحقيقي';}
+}catch(e){document.getElementById('pi-status').textContent='Pi SDK Error: '+e.message;}
+
+document.getElementById('btn-pi-pay').addEventListener('click',async function(){
+let amount=parseFloat(document.getElementById('pay_amount').value);let st=document.getElementById('pi-status');
+if(typeof Pi==='undefined'){alert('افتح هذا الرابط في Pi Browser');return;}
+try{
+st.textContent='Authenticating...';
+let auth=await Pi.authenticate(['username','payments'],function(p){console.log(p)});
+st.textContent='Hello '+auth.user.username;
+let payment=await Pi.createPayment({amount:amount,memo:"ERP Payment",metadata:{app:"erp"}},{onReadyForServerApproval:function(id){st.textContent='Approving '+id;},onReadyForServerCompletion:function(id,txid){st.textContent='Paid! '+txid;ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:amount,desc:'Pi Pay '+txid.slice(0,6)});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateIncome();},onCancel:function(){st.textContent='Cancelled';},onError:function(err){st.textContent='Error '+err.message;}});
+}catch(err){st.textContent='Failed: '+err.message;}
+});
+});
+</script>
+</body>
+                                                                                                                                                                                                            </html>
