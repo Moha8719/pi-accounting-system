@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Accounting ERP - Pi Network</title>
     
-    <!-- Pi Network SDK - هام جداً لتسجيل الدخول والدفع -->
+    <!-- Pi Network SDK -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <!-- Chart.js للرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- CSS - تصميم واجهة عصرية وسهلة للجوال -->
     <style>
         :root {
-            --primary-color: #ffd700; /* لون باي - ذهبي */
-            --secondary-color: #6a1b9a; /* لون باي - بنفسجي غامق */
+            --primary-color: #ffd700;
+            --secondary-color: #6a1b9a;
             --text-color: #ffffff;
-            --bg-color: #2e004a; /* خلفية عصرية غامقة */
+            --bg-color: #2e004a;
             --container-bg: rgba(255, 255, 255, 0.1);
         }
 
@@ -24,11 +25,10 @@
             color: var(--text-color);
             margin: 0;
             padding: 20px;
-            text-align: right;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: var(--container-bg);
             padding: 20px;
@@ -37,7 +37,14 @@
             backdrop-filter: blur(10px);
         }
 
-        h1, h2 {
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
             text-align: center;
             color: var(--primary-color);
         }
@@ -47,17 +54,17 @@
             font-weight: bold;
         }
 
-        /* تنسيق الأزرار */
         .btn {
             display: inline-block;
             padding: 10px 20px;
             border: none;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            margin: 5px 0;
         }
 
         .btn-pi {
@@ -69,7 +76,11 @@
             background-color: #fffb00;
         }
 
-        /* تنسيق المدخلات - Inputs */
+        .btn-sec {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
@@ -90,7 +101,6 @@
             box-sizing: border-box;
         }
 
-        /* تنسيق الجداول - Tables */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -102,8 +112,8 @@
         }
 
         th, td {
-            text-align: right;
-            padding: 12px;
+            text-align: inherit;
+            padding: 10px;
             border-bottom: 1px solid #ddd;
         }
 
@@ -112,21 +122,80 @@
             color: var(--text-color);
         }
 
-        /* تنسيق التبويبات - Tabs */
         .tabs {
             display: flex;
+            flex-wrap: wrap;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--secondary-color);
         }
 
         .tab {
-            padding: 10px 20px;
+            padding: 10px 15px;
             cursor: pointer;
             color: var(--text-color);
             border-radius: 10px 10px 0 0;
             background-color: rgba(255, 255, 255, 0.05);
-            margin-left: 5px;
+            margin: 2px;
+            font-size: 13px;
         }
 
         .tab.active {
-            background-color: var(--
+            background-color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .lang-select {
+            width: auto;
+            padding: 5px 10px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 250px;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-bar">
+        <div>
+            <label for="lang-picker" style="font-size: 12px; margin-bottom: 2px;" id="lbl-lang">Language / اللغة:</label>
+            <select id="lang-picker" class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="ar">العربية</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="es">Español</option>
+                <option value="tr">Türkçe</option>
+                <option value="zh">中文</option>
+                <option value="ja">日本語</option>
+                <option value="vi">Tiếng Việt</option>
+            </select>
+        </div>
+        <div id="user-display" style="display:none; color: #ffeb3b; font-size: 14px;">
+            <span id="txt-welcome">مرحباً</span>: <span id="pi_username">...</span>
+        </div>
+    </div>
+
+    <h1 id="main-title">النظام المحاسبي الذكي
+    
