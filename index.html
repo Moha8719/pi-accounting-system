@@ -4,422 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Accounting ERP - Pi Network</title>
-    
-    <!-- Pi Network SDK -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <!-- Chart.js للرسوم البيانية -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        :root {
-            --primary-color: #ffd700;
-            --secondary-color: #6a1b9a;
-            --text-color: #ffffff;
-            --bg-color: #2e004a;
-            --container-bg: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 15px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: var(--container-bg);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-        }
-
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        h1, h2, h3 {
-            text-align: center;
-            color: var(--primary-color);
-        }
-
-        .pi-icon {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            margin: 5px 0;
-        }
-
-        .btn-pi {
-            background-color: var(--primary-color);
-            color: #2e004a;
-        }
-
-        .btn-sec {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--primary-color);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid var(--secondary-color);
-            border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #333;
-            box-sizing: border-box;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #333;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th, td {
-            text-align: inherit;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-        }
-
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-        }
-
-        .tab {
-            padding: 8px 12px;
-            cursor: pointer;
-            color: var(--text-color);
-            border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.1);
-            font-size: 12px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .tab.active {
-            background-color: var(--primary-color);
-            color: #2e004a;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .lang-select {
-            width: auto;
-            padding: 5px 10px;
-            background: var(--secondary-color);
-            color: white;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .chart-container {
-            position: relative;
-            margin: auto;
-            height: 250px;
-            width: 100%;
-            background: white;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 20px;
-        }
+        :root { --primary: #ffd700; --secondary: #6a1b9a; --bg: #2e004a; }
+        body { font-family: 'Segoe UI', Tahoma; background: var(--bg); color: #fff; margin: 0; padding: 15px; }
+        .container { max-width: 900px; margin: 0 auto; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        h1,h2,h3 { text-align: center; color: var(--primary); }
+        .btn { padding: 10px 20px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin: 5px 0; }
+        .btn-pi { background: var(--primary); color: #2e004a; } .btn-sec { background: var(--secondary); color: #fff; }
+        .form-group { margin-bottom: 15px; } label { display: block; margin-bottom: 5px; color: var(--primary); }
+        input,select { width: 100%; padding: 10px; border: 2px solid var(--secondary); border-radius: 8px; background: rgba(255,255,255,0.9); color: #333; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.9); color: #333; border-radius: 8px; overflow: hidden; }
+        th,td { padding: 10px; border-bottom: 1px solid #ddd; } th { background: var(--secondary); color: #fff; }
+        .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
+        .tab { padding: 8px 12px; cursor: pointer; border-radius: 8px; background: rgba(255,255,255,0.1); font-size: 12px; font-weight: bold; }
+        .tab.active { background: var(--primary); color: #2e004a; }
+        .tab-content { display: none; } .tab-content.active { display: block; }
+        .lang-select { width: auto; padding: 5px 10px; background: var(--secondary); color: #fff; border-radius: 5px; border: none; }
+        .chart-container { height: 250px; background: #fff; border-radius: 8px; padding: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header-bar">
         <div>
-            <label for="lang-picker" style="font-size: 11px; margin-bottom: 2px;" id="lbl-lang">Language / اللغة:</label>
-            <!-- ربط مباشر وآمن لضمان تغيير اللغة فوراً -->
-            <select id="lang-picker" class="lang-select" onchange="changeLanguage(this.value)">
-                <option value="ar">العربية</option>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="es">Español</option>
-                <option value="tr">Türkçe</option>
-                <option value="zh">中文</option>
-                <option value="ja">日本語</option>
-                <option value="vi">Tiếng Việt</option>
+            <label style="font-size:11px;">Language / اللغة:</label>
+            <select id="lang-picker" class="lang-select">
+                <option value="ar">العربية</option><option value="en">English</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option>
             </select>
         </div>
-        <div style="color: #ffeb3b; font-size: 13px;">
-            <span id="txt-welcome">مرحباً</span>: <span id="pi_username">Pi Merchant</span>
-        </div>
+        <div style="color:#ffeb3b; font-size:13px;"><span id="txt-welcome">مرحباً</span>: <span id="pi_username">Pi Merchant</span></div>
+    </div>
+    <h1 id="main-title">النظام المحاسبي الذكي <span style="color:#ffd700">π</span></h1>
+    <div class="tabs">
+        <div class="tab active" data-tab="entry" id="t-entry">إضافة قيد</div>
+        <div class="tab" data-tab="ledger" id="t-ledger">دفتر الأستاذ</div>
+        <div class="tab" data-tab="inventory" id="t-inv">المخزون</div>
+        <div class="tab" data-tab="partners" id="t-part">العملاء والموردين</div>
+        <div class="tab" data-tab="income" id="t-income">قائمة الدخل</div>
+        <div class="tab" data-tab="pay" id="t-pay">الدفع بـ Pi</div>
     </div>
 
-    <!-- عنوان التطبيق -->
-    <h1 id="main-title">النظام المحاسبي الذكي <span class="pi-icon">π</span></h1>
-
-    <!-- لوحة التحكم والتبويبات الآمنة -->
-    <div id="dashboard-section">
-        <div class="tabs">
-            <div class="tab active" data-tab="entry" id="t-entry">إضافة قيد</div>
-            <div class="tab" data-tab="ledger" id="t-ledger">دفتر الأستاذ</div>
-            <div class="tab" data-tab="inventory" id="t-inv">المخزون</div>
-            <div class="tab" data-tab="partners" id="t-part">العملاء والموردين</div>
-            <div class="tab" data-tab="income" id="t-income">قائمة الدخل</div>
-            <div class="tab" data-tab="pay" id="t-pay">الدفع بـ Pi</div>
-        </div>
-
-        <!-- تبويب 1: إضافة قيد -->
-        <div id="entry" class="tab-content active">
-            <h2 id="h-add-entry">إضافة قيد محاسبي جديد</h2>
-            <form id="accounting-form">
-                <div class="form-group">
-                    <label id="lbl-type">نوع العملية:</label>
-                    <select id="entry-type" required>
-                        <option value="income" id="opt-inc">إيراد (+)</option>
-                        <option value="expense" id="opt-exp">مصروف (-)</option>
-                        <option value="asset" id="opt-ast">شراء أصل (+)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-amt">المبلغ (π Pi):</label>
-                    <input type="number" id="amount" placeholder="0.5" step="0.0001" required>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-desc">الوصف:</label>
-                    <input type="text" id="description" placeholder="بيع منتج" required>
-                </div>
-                <button type="submit" class="btn btn-pi" id="btn-save-entry">حفظ القيد المحاسبي</button>
-            </form>
-        </div>
-
-        <!-- تبويب 2: دفتر الأستاذ العام -->
-        <div id="ledger" class="tab-content">
-            <h2 id="h-ledger">دفتر الأستاذ العام</h2>
-            <div style="margin-bottom: 10px;">
-                <button class="btn btn-sec" onclick="exportToCSV()" id="btn-csv">تصدير إلى Excel (CSV)</button>
-                <button class="btn btn-sec" onclick="window.print()" id="btn-print">طباعة التقرير</button>
-            </div>
-            <table id="ledger-table">
-                <thead>
-                    <tr>
-                        <th id="th-date">التاريخ</th>
-                        <th id="th-desc">الوصف</th>
-                        <th id="th-type">النوع</th>
-                        <th id="th-amt">المبلغ (π)</th>
-                    </tr>
-                </thead>
-                <tbody id="ledger-body"></tbody>
-            </table>
-        </div>
-
-        <!-- تبويب 3: المخزون -->
-        <div id="inventory" class="tab-content">
-            <h2 id="h-inv">إدارة المخزون والمستودعات</h2>
-            <form id="inv-form" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <label id="lbl-prod-name">اسم المنتج:</label>
-                    <input type="text" id="prod-name" required>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-prod-qty">الكمية:</label>
-                    <input type="number" id="prod-qty" required>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-prod-price">السعر (π):</label>
-                    <input type="number" id="prod-price" step="0.0001" required>
-                </div>
-                <button type="submit" class="btn btn-pi" id="btn-add-prod">إضافة منتج للمخزن</button>
-            </form>
-            <table id="inv-table">
-                <thead>
-                    <tr>
-                        <th id="th-pname">المنتج</th>
-                        <th id="th-pqty">الكمية</th>
-                        <th id="th-pprice">السعر (π)</th>
-                    </tr>
-                </thead>
-                <tbody id="inv-body"></tbody>
-            </table>
-        </div>
-
-        <!-- تبويب 4: العملاء والموردين -->
-        <div id="partners" class="tab-content">
-            <h2 id="h-part">إدارة العملاء والموردين</h2>
-            <form id="partner-form" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <label id="lbl-part-name">اسم العميل / المورد:</label>
-                    <input type="text" id="part-name" required>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-part-type">التصنيف:</label>
-                    <select id="part-type">
-                        <option value="customer" id="opt-cust">عميل</option>
-                        <option value="supplier" id="opt-supp">مورد</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-part-phone">رقم الهاتف:</label>
-                    <input type="text" id="part-phone">
-                </div>
-                <button type="submit" class="btn btn-pi" id="btn-add-part">حفظ الشريك</button>
-            </form>
-            <table id="partner-table">
-                <thead>
-                    <tr>
-                        <th id="th-partname">الاسم</th>
-                        <th id="th-parttype">النوع</th>
-                        <th id="th-partphone">الهاتف</th>
-                    </tr>
-                </thead>
-                <tbody id="partner-body"></tbody>
-            </table>
-        </div>
-
-        <!-- تبويب 5: قائمة الدخل -->
-        <div id="income" class="tab-content">
-            <h2 id="h-income">قائمة الدخل والملخص المالي</h2>
-            <p><span id="lbl-tot-inc">مجموع الإيرادات</span>: <span id="total-income">0</span> π</p>
-            <p><span id="lbl-tot-exp">مجموع المصروفات</span>: <span id="total-expenses">0</span> π</p>
-            <h3 style="color: var(--primary-color);"><span id="lbl-net-prof">صافي الربح</span>: <span id="net-profit">0</span> π</h3>
-            
-            <div class="chart-container">
-                <canvas id="financeChart"></canvas>
-            </div>
-        </div>
-
-        <!-- تبويب 6: الدفع بـ Pi -->
-        <div id="pay" class="tab-content">
-            <h2 id="h-pay">تجربة قبول الدفع بـ Pi</h2>
-            <p id="p-pay-desc">هذا القسم مخصص لاختبار ربط نظامك المحاسبي بمحفظة Pi الحقيقية.</p>
-            <div class="form-group">
-                <label id="lbl-pay-amt">مبلغ الدفع المطلوب (π):</label>
-                <input type="number" id="pay_amount" value="0.1" step="0.01">
-            </div>
-            <button class="btn btn-pi" id="btn-pi-pay">ادفع بـ <span class="pi-icon">π</span> (تجربة)</button>
-        </div>
+    <div id="entry" class="tab-content active">
+        <h2>إضافة قيد محاسبي</h2>
+        <form id="accounting-form">
+            <div class="form-group"><label>نوع العملية:</label><select id="entry-type"><option value="income">إيراد (+)</option><option value="expense">مصروف (-)</option><option value="asset">أصل (+)</option></select></div>
+            <div class="form-group"><label>المبلغ (π):</label><input type="number" id="amount" step="0.0001" required></div>
+            <div class="form-group"><label>الوصف:</label><input type="text" id="description" required></div>
+            <button type="submit" class="btn btn-pi">حفظ القيد</button>
+        </form>
     </div>
-</div>
-
-<script>
-    const translations = {
-        ar: {
-            mainTitle: 'النظام المحاسبي الذكي', welcome: 'مرحباً',
-            tEntry: 'إضافة قيد', tLedger: 'دفتر الأستاذ', tInv: 'المخزون', tPart: 'العملاء والموردين', tIncome: 'قائمة الدخل', tPay: 'الدفع بـ Pi',
-            hAddEntry: 'إضافة قيد محاسبي جديد', lblType: 'نوع العملية:', optInc: 'إيراد (+)', optExp: 'مصروف (-)', optAst: 'شراء أصل (+)',
-            lblAmt: 'المبلغ (π Pi):', lblDesc: 'الوصف:', btnSaveEntry: 'حفظ القيد المحاسبي',
-            hLedger: 'دفتر الأستاذ العام', btnCsv: 'تصدير إلى Excel (CSV)', btnPrint: 'طباعة التقرير',
-            thDate: 'التاريخ', thDesc: 'الوصف', thType: 'النوع', thAmt: 'المبلغ (π)',
-            hInv: 'إدارة المخزون والمستودعات', lblProdName: 'اسم المنتج:', lblProdQty: 'الكمية:', lblProdPrice: 'السعر (π):', btnAddProd: 'إضافة منتج للمخزن',
-            thPName: 'المنتج', thPQty: 'الكمية', thPPrice: 'السعر (π)',
-            hPart: 'إدارة العملاء والموردين', lblPartName: 'اسم العميل / المورد:', lblPartType: 'التصنيف:', optCust: 'عميل', optSupp: 'مورد', lblPartPhone: 'رقم الهاتف:', btnAddPart: 'حفظ الشريك',
-            thPartName: 'الاسم', thPartType: 'النوع', thPartPhone: 'الهاتف',
-            hIncome: 'قائمة الدخل والملخص المالي', lblTotInc: 'مجموع الإيرادات', lblTotExp: 'مجموع المصروفات', lblNetProf: 'صافي الربح',
-            hPay: 'تجربة قبول الدفع بـ Pi', pPayDesc: 'هذا القسم مخصص لاختبار ربط نظامك المحاسبي بمحفظة Pi الحقيقية.', lblPayAmt: 'مبلغ الدفع المطلوب (π):', btnPiPay: 'ادفع بـ'
-        },
-        en: {
-            mainTitle: 'Smart Accounting ERP', welcome: 'Welcome',
-            tEntry: 'Add Entry', tLedger: 'General Ledger', tInv: 'Inventory', tPart: 'Partners', tIncome: 'Income Statement', tPay: 'Pi Payment',
-            hAddEntry: 'Add New Accounting Entry', lblType: 'Operation Type:', optInc: 'Income (+)', optExp: 'Expense (-)', optAst: 'Asset Purchase (+)',
-            lblAmt: 'Amount (π Pi):', lblDesc: 'Description:', btnSaveEntry: 'Save Entry',
-            hLedger: 'General Ledger', btnCsv: 'Export to Excel (CSV)', btnPrint: 'Print Report',
-            thDate: 'Date', thDesc: 'Description', thType: 'Type', thAmt: 'Amount (π)',
-            hInv: 'Inventory Management', lblProdName: 'Product Name:', lblProdQty: 'Quantity:', lblProdPrice: 'Price (π):', btnAddProd: 'Add Product',
-            thPName: 'Product', thPQty: 'Quantity', thPPrice: 'Price (π)',
-            hPart: 'Customers & Suppliers', lblPartName: 'Name:', lblPartType: 'Category:', optCust: 'Customer', optSupp: 'Supplier', lblPartPhone: 'Phone:', btnAddPart: 'Save Partner',
-            thPartName: 'Name', thPartType: 'Type', thPartPhone: 'Phone',
-            hIncome: 'Income Statement & Summary', lblTotInc: 'Total Income', lblTotExp: 'Total Expenses', lblNetProf: 'Net Profit',
-            hPay: 'Pi Payment Gateway', pPayDesc: 'Test Pi wallet payments.', lblPayAmt: 'Amount to Pay (π):', btnPiPay: 'Pay with'
-        },
-        fr: {
-            mainTitle: 'ERP Comptable Intelligent', welcome: 'Bienvenue',
-            tEntry: 'Ajouter', tLedger: 'Grand Livre', tInv: 'Inventaire', tPart: 'Partenaires', tIncome: 'Revenu', tPay: 'Paiement Pi',
-            hAddEntry: 'Nouvelle Écriture', lblType: 'Type:', optInc: 'Revenu (+)', optExp: 'Dépense (-)', optAst: 'Actif (+)',
-            lblAmt: 'Montant (π):', lblDesc: 'Description:', btnSaveEntry: 'Enregistrer',
-            hLedger: 'Grand Livre Général', btnCsv: 'Exporter CSV', btnPrint: 'Imprimer',
-            thDate: 'Date', thDesc: 'Description', thType: 'Type', thAmt: 'Montant (π)',
-            hInv: 'Gestion des Stocks', lblProdName: 'Produit:', lblProdQty: 'Quantité:', lblProdPrice: 'Prix (π):', btnAddProd: 'Ajouter',
-            thPName: 'Produit', thPQty: 'Quantité', thPPrice: 'Prix (π)',
-            hPart: 'Clients & Fournisseurs', lblPartName: 'Nom:', lblPartType: 'Catégorie:', optCust: 'Client', optSupp: 'Fournisseur', lblPartPhone: 'Téléphone:', btnAddPart: 'Enregistrer',
-            thPartName: 'Nom', thPartType: 'Type', thPartPhone: 'Téléphone',
-            hIncome: 'Compte de Résultat', lblTotInc: 'Total Revenus', lblTotExp: 'Total Dépenses', lblNetProf: 'Bénéfice Net',
-            hPay: 'Paiement Pi', pPayDesc: 'Tester les paiements Pi.', lblPayAmt: 'Montant (π):', btnPiPay: 'Payer avec'
-        },
-        de: {
-            mainTitle: 'Intelligentes Buchhaltungs-ERP', welcome: 'Willkommen',
-            tEntry: 'Eintrag', tLedger: 'Hauptbuch', tInv: 'Inventar', tPart: 'Partner', tIncome: 'Ergebnis', tPay: 'Pi Zahlung',
-            hAddEntry: 'Neuer Eintrag', lblType: 'Typ:', optInc: 'Einnahme (+)', optExp: 'Ausgabe (-)', optAst: 'Anlage (+)',
-            lblAmt: 'Betrag (π):', lblDesc: 'Beschreibung:', btnSaveEntry: 'Speichern',
-            hLedger: 'Hauptbuch', btnCsv: 'CSV Export', btnPrint: 'Drucken',
-            thDate: 'Datum', thDesc: 'Beschreibung', thType: 'Typ', thAmt: 'Betrag (π)',
-            hInv: 'Bestandsverwaltung', lblProdName: 'Produkt:', lblProdQty: 'Menge:', lblProdPrice: 'Preis (π):', btnAddProd: 'Hinzufügen',
-            thPName: 'Produkt', thPQty: 'Menge', thPPrice: 'Preis (π)',
-            hPart: 'Kunden & Lieferanten', lblPartName: 'Name:', lblPartType: 'Kategorie:', optCust: 'Kunde', optSupp: 'Lieferant', lblPartPhone: 'Telefon:', btnAddPart: 'Speichern',
-            thPartName: 'Name', thPartType: 'Typ', thPartPhone: 'Telefon',
-            hIncome: 'Gewinn- und Verlustrechnung', lblTotInc: 'Gesamteinnahmen', lblTotExp: 'Gesamtausgaben', lblNetProf: 'Nettogewinn',
-            hPay: 'Pi Zahlungstest', pPayDesc: 'Pi Zahlungen testen.', lblPayAmt: 'Betrag (π):', btnPiPay: 'Zahlen mit'
-        },
-        es: {
-            mainTitle: 'ERP Contable Inteligente', welcome: 'Bienvenido',
-            tEntry: 'Añadir', tLedger: 'Libro Mayor', tInv: 'Inventario', tPart: 'Socios', tIncome: 'Ingresos', tPay: 'Pago Pi',
-            hAddEntry: 'Nuevo Asiento', lblType: 'Tipo:', optInc: 'Ingreso (+)', optExp: 'Gasto (-)', optAst: 'Activo (+)',
-            lblAmt: 'Cantidad (π):', lblDesc: 'Descripción:', btnSaveEntry: 'Guardar',
-            hLedger: 'Libro Mayor General', btnCsv: 'Exportar CSV', btnPrint: 'Imprimir',
-            thDate: 'Fecha', thDesc: 'Descripción', thType: 'Tipo', thAmt: 'Cantidad (π)',
-            hInv: 'Gestión de Inventario', lblProdName: 'Producto:', lblProdQty: 'Cantidad:', lblProdPrice: 'Precio (π):', btnAddProd: 'Añadir',
-            thPName: 'Producto', thPQty: 'Cantidad', thPPrice: 'Precio (π)',
-            hPart: 'Clientes y Proveedores', lblPartName: 'Nombre:', lblPartType: 'Categoría:', optCust: 'Cliente', optSupp: 'Proveedor', lblPartPhone: 'Teléfono:', btnAddPart: 'Guardar',
-            thPartName: 'Nombre', thPartType: 'Tipo', thPartPhone: 'Teléfono',
-            hIncome: 'Estado de Resultados', lblTotInc: 'Ingresos Totales', lblTotExp: 'Gastos Totales', lblNetProf: 'Beneficio Neto',
-            hPay: 'Pago Pi', pPayDesc: 'Probar pagos Pi.', lblPayAmt: 'Monto (π):', btnPiPay: 'Pagar con'
-        },
-        tr: {
-            mainTitle: 'Akıllı Muhasebe ERP', welcome: 'Hoş geldiniz',
-            tEntry: 'Kayıt Ekle', tLedger: 'Defteri Kebir', tInv: 'Envanter', tPart: 'Ortaklar', tIncome: 'Gelir Tablosu', tPay: 'Pi Ödeme',
-            hAddEntry: 'Yeni Muhasebe Kaydı', lblType: 'İşlem Türü:', optInc: 'Gelir (+)', optExp: 'Gider (-)', optAst: 'Varlık (+)',
-            lblAmt: 'Tutar (π Pi):', lblDesc: 'Açıklama:', btnSaveEntry: 'Kaydı Kaydet',
-            hLedger: 'Defteri Kebir', btnCsv: 'Excel e Aktar (CSV)', btnPrint: 'Yazdır',
-            thDate: 'Tarih', thDesc: 'Açıklama', thType: 'Tür', thAmt: 'Tutar (π)',
-            hInv: 'Envanter Yönetimi', lblProdName: 'Ürün Adı:', lblProdQty: 'Miktar:', lblProdPrice: 'Fiyat (π):', btnAddProd: 'Ürün Ekle'
+    <div id="ledger" class="tab-content">
+        <h2>دفتر الأستاذ</h2><button class="btn btn-sec" id="btn-csv">تصدير CSV</button> <button class="btn btn-sec" onclick="window.print()">طباعة</button>
+        <table><thead><tr><th>التاريخ</th><th>الوصف</th><th>النوع</th><th>المبلغ</th></tr></thead><tbody id="ledger-body"></tbody></table>
+    </div>
+    <div id="inventory" class="tab-content">
+        <h2>المخزون</h2>
+        <form id="inv-form"><div class="form-group"><input type="text" id="prod-name" placeholder="اسم المنتج" required></div><div class="form-group"><input type="number" id="prod-qty" placeholder="الكمية" required></div><div class="form-group"><input type="number" id="prod-price" step="0.0001" placeholder="السعر π" required></div><button type="submit" class="btn btn-pi">إضافة</button></form>
+        <table><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody id="inv-body"></tbody></table>
+    </div>
+    <div id="partners" class="tab-content">
+        <h2>العملاء والموردين</h2>
+        <form id="partner-form"><input type="text" id="part-name" placeholder="الاسم" required><select id="part-type"><option value="customer">عميل</option><option value="supplier">مورد</option></select><input type="text" id="part-phone" placeholder="الهاتف"><button type="submit" class="btn btn-pi">حفظ</button></form>
+        <table><thead><tr><th>الاسم</th><th>النوع</th><th>الهاتف</th></tr></thead><tbody id="partner-body"></tbody></table>
