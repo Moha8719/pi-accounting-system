@@ -294,7 +294,139 @@ es:{tabTree:"🌳 Plan",tabEntry:"📒 Doble",tabLedger:"📘 Diario",tabAccount
 tr:{tabTree:"🌳 Hesap",tabEntry:"📒 Çift",tabLedger:"📘 Yevmiye",tabAccountLedger:"📘 Defter",tabCustomers:"👥 Müşteriler",tabVouchers:"🧾 Makbuz",tabInvoice:"🧾 Fatura",tabInventory:"📦 Stok",tabFinancials:"📊 Finansal",tabReports:"📈 Raporlar",btnReceipt:"📥 Tahsilat",btnPayment:"📤 Tediye",filter:"Filtre",print:"Yazdır",export:"Dışa aktar",balance:"Bakiye"},
 zh:{tabTree:"🌳 科目",tabEntry:"📒 复式",tabLedger:"📘 日记账",tabAccountLedger:"📘 明细账",tabCustomers:"👥 客户",tabVouchers:"🧾 凭证",tabInvoice:"🧾 发票",tabInventory:"📦 库存",tabFinancials:"📊 财务",tabReports:"📈 报表",btnReceipt:"📥 收款",btnPayment:"📤 付款",filter:"筛选",print:"打印",export:"导出",balance:"余额"},
 ja:{tabTree:"🌳 勘定",tabEntry:"📒 複式",tabLedger:"📘 仕訳帳",tabAccountLedger:"📘 元帳",tabCustomers:"👥 顧客",tabVouchers:"🧾 伝票",tabInvoice:"🧾 請求",tabInventory:"📦 在庫",tabFinancials:"📊 財務",tabReports:"📈 レポ",btnReceipt:"📥 入金",btnPayment:"📤 出金",filter:"表示",print:"印刷",export:"エクスポート",balance:"残高"},
-vi:{tabTree:"🌳 Tài khoản",tabEntry:"📒 Kép",tabLedger:"📘 Nhật ký",tabAccountLedger:"📘 Sổ cái",tabCustomers:"👥 KH",tabVouchers:"🧾 Chứng từ",tabInvoice:"🧾 Hóa đơn",tabInventory:"📦 Kho",tabFinancials:"📊 Tài chính
+vi:{tabTree:"🌳 Tài khoản",tabEntry:"📒 Kép",tabLedger:"📘 Nhật ký",tabAccountLedger:"📘 Sổ cái",tabCustomers:"👥 KH",tabVouchers:"🧾 Chứng từ",tabInvoice:"🧾 Hóa đơn",tabInventory:"📦 Kho",tabFinancials:"📊 Tài chính// ========== FIX: ترجمة فورية عربي/انجليزي - يضاف بدون حذف ==========
+const I18N_FIX = {
+ar: {
+  dir:"rtl", app:"Pi Business OS v3.6", langName:"العربية",
+  tree:"🌳 الشجرة", entry:"📒 قيد مزدوج", ledger:"📘 يومية", accLedger:"📘 أستاذ", customers:"👥 عملاء", vouchers:"🧾 سندات", invoice:"🧾 فاتورة", inventory:"📦 مخزون", financials:"📊 قوائم مالية", reports:"📈 تقارير",
+  treeTitle:"🌳 شجرة الحسابات", addAcc:"➕ إضافة حساب", code:"الكود", accName:"اسم الحساب", parent:"الحساب الأب", type:"النوع", asset:"أصول", liability:"خصوم", equity:"حقوق", income:"إيراد", expense:"مصروف", add:"إضافة",
+  entryTitle:"📒 قيد مزدوج", debit:"مدين", credit:"دائن", amount:"المبلغ", desc:"البيان", save:"حفظ القيد",
+  ledgerTitle:"📘 اليومية العامة", date:"التاريخ", total:"الإجمالي", balance:"الرصيد",
+  receipt:"📥 سند قبض", payment:"📤 سند صرف", customer:"العميل", product:"المنتج", qty:"الكمية", price:"السعر", stock:"المخزون",
+  incomeBtn:"قائمة الدخل", balanceBtn:"الميزانية", excel:"Excel", pdf:"PDF", print:"طباعة", filter:"عرض", export:"تصدير",
+  assets:"1000 الأصول", assetsCur:"1100 أصول متداولة", liab:"2000 الخصوم", sup:"2100 موردين", loans:"2200 قروض", equity:"3000 حقوق الملكية", capital:"3001 رأس المال", incomeAcc:"4000 الإيرادات", sales:"4100 مبيعات منتجات", services:"4200 خدمات", expenses:"5000 المصروفات", rent:"5100 إيجار", elec:"5200 كهرباء"
+},
+en: {
+  dir:"ltr", app:"Pi Business OS v3.6", langName:"English",
+  tree:"🌳 Tree", entry:"📒 Double Entry", ledger:"📘 Journal", accLedger:"📘 Ledger", customers:"👥 Customers", vouchers:"🧾 Vouchers", invoice:"🧾 Invoice", inventory:"📦 Inventory", financials:"📊 Financials", reports:"📈 Reports",
+  treeTitle:"🌳 Chart of Accounts", addAcc:"➕ Add Account", code:"Code", accName:"Account Name", parent:"Parent", type:"Type", asset:"Asset", liability:"Liability", equity:"Equity", income:"Income", expense:"Expense", add:"Add",
+  entryTitle:"📒 Double Entry", debit:"Debit", credit:"Credit", amount:"Amount", desc:"Description", save:"Save Entry",
+  ledgerTitle:"📘 General Journal", date:"Date", total:"Total", balance:"Balance",
+  receipt:"📥 Receipt", payment:"📤 Payment", customer:"Customer", product:"Product", qty:"Qty", price:"Price", stock:"Stock",
+  incomeBtn:"Income Statement", balanceBtn:"Balance Sheet", excel:"Excel", pdf:"PDF", print:"Print", filter:"Filter", export:"Export",
+  assets:"1000 Assets", assetsCur:"1100 Current Assets", liab:"2000 Liabilities", sup:"2100 Suppliers", loans:"2200 Loans", equity:"3000 Equity", capital:"3001 Capital", incomeAcc:"4000 Income", sales:"4100 Product Sales", services:"4200 Services", expenses:"5000 Expenses", rent:"5100 Rent", elec:"5200 Electricity"
+}
+};
+
+// دالة الترجمة الفورية - تترجم كل شي في نفس اللحظة
+window.applyInstantLang = function(lang){
+  const t = I18N_FIX[lang] || I18N_FIX.ar;
+  
+  // 1. الاتجاه واللغة
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+  document.body.dir = t.dir;
+  
+  // 2. كل التبويبات فوراً
+  const tabs = {
+    'tab-tree': t.tree, 'tab-entry': t.entry, 'tab-ledger': t.ledger,
+    'tab-account-ledger': t.accLedger, 'tab-customers': t.customers,
+    'tab-vouchers': t.vouchers, 'tab-invoice': t.invoice,
+    'tab-inventory': t.inventory, 'tab-financials': t.financials,
+    'tab-reports': t.reports
+  };
+  Object.keys(tabs).forEach(id=>{
+    let el = document.getElementById(id);
+    if(el) el.textContent = tabs[id];
+  });
+
+  // 3. العناوين الرئيسية
+  let h = document.querySelector('#tree .card h4');
+  if(h) h.textContent = t.treeTitle;
+  let h2 = document.querySelector('#entry .card h4');
+  if(h2) h2.textContent = t.entryTitle;
+  let h3 = document.querySelector('#ledger .card h4');
+  if(h3) h3.textContent = t.ledgerTitle;
+
+  // 4. شجرة الحسابات - ترجمة فورية للأسماء
+  if(typeof accounts !== 'undefined' && accounts.length>0){
+    // خريطة الترجمة للأكواد
+    const codeMap = {
+      '1000': lang==='en'?t.assets:t.assets, '1100': t.assetsCur,
+      '2000': t.liab, '2100': t.sup, '2200': t.loans,
+      '3000': t.equity, '3001': t.capital, '4000': t.incomeAcc,
+      '4100': t.sales, '4200': t.services, '5000': t.expenses,
+      '5100': t.rent, '5200': t.elec
+    };
+    // إعادة رسم الشجرة مع الترجمة
+    if(typeof renderTree === 'function'){
+      // نحفظ الأسماء الأصلية ونعرض المترجمة فقط
+      let container = document.getElementById('tree-container');
+      if(container){
+        let html='';
+        accounts.forEach(a=>{
+          let name = codeMap[a.code] || a.name;
+          if(lang==='en' && a.code==='1000') name=t.assets;
+          // إذا انجليزي اعرض الانجليزي
+          let displayName = (lang==='en' && codeMap[a.code]) ? codeMap[a.code] : (codeMap[a.code] || a.name);
+          // للشجرة نستخدم الترجمة
+          if(a.code in codeMap) displayName = codeMap[a.code];
+          let cls = a.parent ? 'tree-item' : 'tree-item l1';
+          html+=`<div class="${cls}"><span>${a.code} - ${displayName}</span><span>(0.0)</span></div>`;
+        });
+        // لا نعيد الرسم الكامل حتى لا نفقد الأحداث، فقط نحدث النصوص الموجودة
+        let items = container.querySelectorAll('.tree-item span:first-child');
+        items.forEach((sp, i)=>{
+          if(accounts[i] && codeMap[accounts[i].code]){
+            sp.textContent = accounts[i].code + ' - ' + codeMap[accounts[i].code];
+          }
+        });
+      }
+    }
+  }
+
+  // 5. الأزرار
+  let btnRec = document.getElementById('btn-show-receipt');
+  if(btnRec) btnRec.textContent = t.receipt;
+  let btnPay = document.getElementById('btn-show-payment');
+  if(btnPay) btnPay.textContent = t.payment;
+
+  // 6. حفظ اللغة
+  localStorage.setItem('pi_lang', lang);
+  
+  // 7. تحديث نص القائمة نفسها
+  let picker = document.getElementById('lang-picker');
+  if(picker) picker.value = lang;
+  
+  console.log('✅ Translated instantly to:', lang);
+};
+
+// ربط القائمة بالترجمة الفورية
+(function fixLangPicker(){
+  let picker = document.getElementById('lang-picker');
+  if(!picker){
+    // إذا القائمة داخل select native، نستمع للتغيير
+    document.addEventListener('change', function(e){
+      if(e.target.id==='lang-picker'){
+        applyInstantLang(e.target.value);
+      }
+    });
+  } else {
+    picker.addEventListener('change', function(e){
+      applyInstantLang(e.target.value);
+    });
+    // طبق اللغة المحفوظة فوراً عند التحميل
+    let saved = localStorage.getItem('pi_lang')||'ar';
+    picker.value = saved;
+    setTimeout(()=>applyInstantLang(saved), 300);
+  }
+})();
+
+// طبق عند التحميل
+document.addEventListener('DOMContentLoaded', ()=>{
+  let saved = localStorage.getItem('pi_lang')||'ar';
+  setTimeout(()=>applyInstantLang(saved), 500);
+});
 </script>
 </body>
 </html>
