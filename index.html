@@ -131,7 +131,122 @@ document.getElementById('btn-wa').addEventListener('click',function(){var text='
 document.getElementById('btn-pi-pay').addEventListener('click',function(){var amt=parseFloat(document.getElementById('pay_amount').value||1);if(typeof Pi==='undefined'){alert('Open in Pi Browser');return;}Pi.createPayment({amount:amt,memo:'Pi Merchant Pay',metadata:{type:'merchant'}},{onReadyForServerApproval:function(id){document.getElementById('pi-status').textContent='Approving '+id;},onReadyForServerCompletion:function(id,tx){document.getElementById('pi-status').textContent='Completed '+tx;ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:amt,desc:'Pi Payment '+tx});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateReports();},onCancel:function(){document.getElementById('pi-status').textContent='Cancelled';},onError:function(e){document.getElementById('pi-status').textContent='Error '+e;}});});
 try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready';}}catch(e){}
 renderLedger();renderInv();renderPartners();updateReports();
-});
+});<!-- ===== v3.0 Pi Business OS - Multi Tenant START ===== -->
+<div class="card" id="v3-auth" style="border:2px solid #6a1b9a;background:linear-gradient(135deg,#2e004a,#6a1b9a);color:#fff">
+<h3 id="v3-title">🔐 Pi Business OS v3.0 - تسجيل الرواد</h3>
+<div id="v3-not-logged">
+<button class="btn btn-pi" type="button" id="btn-pi-login" style="width:100%;font-size:16px">Login with Pi - دخول بالـ Pi</button>
+<p style="font-size:12px;text-align:center">كل تاجر له حساب منفصل ومتجر خاص</p>
+</div>
+<div id="v3-logged" style="display:none">
+<p>👋 مرحبا <b id="v3-user">@username</b> | متجرك: <b id="v3-store-link"></b> | الباقة: <span id="v3-plan">Free</span> (<span id="v3-usage">0/100</span>)</p>
+<div style="display:flex;gap:5px">
+<button class="btn btn-s" type="button" id="btn-my-store">🛒 متجري</button>
+<button class="btn btn-pi" type="button" id="btn-upgrade">⭐ ترقية بـ 1 Pi</button>
+<button class="btn" type="button" id="btn-logout" style="background:#fff;color:#2e004a">خروج</button>
+</div>
+<div id="v3-my-store-page" style="display:none;background:#fff;color:#222;padding:10px;border-radius:10px;margin-top:10px">
+<h4>🛍️ متجري العام: <span id="v3-public-url"></span></h4>
+<div id="v3-public-products"></div>
+<button class="btn btn-w" type="button" id="btn-share-store">مشاركة متجري WhatsApp</button>
+</div>
+</div>
+</div>
+<script>
+// v3.0 Core - Multi Tenant via localStorage prefix
+let piUser=null;
+let v3_prefix='guest_';
+function v3_getKey(k){return v3_prefix+k;}
+function v3_setUser(username){
+ piUser=username;
+ v3_prefix='user_'+username+'_';
+ localStorage.setItem('pi_current_user',username);
+ document.getElementById('v3-not-logged').style.display='none';
+ document.getElementById('v3-logged').style.display='block';
+ document.getElementById('v3-user').textContent='@'+username;
+ document.getElementById('v3-store-link').textContent='/store/@'+username;
+ document.getElementById('v3-public-url').textContent=location.origin+location.pathname+'?store=@'+username;
+ document.getElementById('v3-plan').textContent=localStorage.getItem(v3_getKey('plan'))||'Free';
+ // Migrate old data to new user if empty
+ let oldLedger=JSON.parse(localStorage.getItem('ledger')||'[]');
+ let newLedger=JSON.parse(localStorage.getItem(v3_getKey('ledger'))||'[]');
+ if(oldLedger.length && !newLedger.length){
+   localStorage.setItem(v3_getKey('ledger'),JSON.stringify(oldLedger));
+   localStorage.setItem(v3_getKey('inv2'),localStorage.getItem('inv2')||'[]');
+   localStorage.setItem(v3_getKey('partners2'),localStorage.getItem('partners2')||'[]');
+ }
+ v3_renderUsage();
+ v3_renderPublicStore();
+ // Override all storage functions to use prefix
+ window._origSetItem=localStorage.setItem.bind(localStorage);
+}function v3_renderUsage(){
+ let ledger=JSON.parse(localStorage.getItem(v3_getKey('ledger'))||'[]');
+ let plan=localStorage.getItem(v3_getKey('plan'))||'Free';
+ let limit=plan==='Pro'?99999:100;
+ document.getElementById('v3-usage').textContent=ledger.length+'/'+limit;
+ if(ledger.length>=limit && plan!=='Pro'){
+   alert('وصلت للحد المجاني 100 قيد - رقي للـ Pro بـ 1 Pi');
+   document.getElementById('btn-upgrade').style.background='#ffd700';
+   document.getElementById('btn-upgrade').style.color='#000';
+ }
+}
+function v3_renderPublicStore(){
+ let inv=JSON.parse(localStorage.getItem(v3_getKey('inv2'))||localStorage.getItem('inv2')||'[]');
+ document.getElementById('v3-public-products').innerHTML=inv.map(p=>'<div style="border-bottom:1px solid #ddd;padding:5px;display:flex;justify-content:space-between"><span>'+p.name+' x'+p.qty+'</span><b>'+p.price+' Pi</b></div>').join('')||'لا يوجد منتجات';
+}
+// Pi Login
+document.getElementById('btn-pi-login').onclick=function(){
+ if(typeof Pi==='undefined'){ // Dev mode without Pi Browser
+   let u=prompt('Pi Browser غير موجود - اكتب اسم مستخدم للتجربة:','ahmed_mukalla');
+   if(u){v3_setUser(u.replace('@',''));}
+   return;
+ }
+ Pi.authenticate(['username'],function(auth){
+   v3_setUser(auth.user.username);
+ }).catch(function(e){alert('Login failed '+e);});
+};
+document.getElementById('btn-logout').onclick=function(){localStorage.removeItem('pi_current_user');location.reload();};
+document.getElementById('btn-my-store').onclick=function(){let el=document.getElementById('v3-my-store-page');el.style.display=el.style.display==='none'?'block':'none';v3_renderPublicStore();};
+document.getElementById('btn-share-store').onclick=function(){let url=document.getElementById('v3-public-url').textContent;window.open('https://wa.me/?text=تفضل متجري على Pi Business OS: '+encodeURIComponent(url),'_blank');};
+document.getElementById('btn-upgrade').onclick=function(){
+ if(typeof Pi==='undefined'){localStorage.setItem(v3_getKey('plan'),'Pro');document.getElementById('v3-plan').textContent='Pro';alert('تم الترقية (وضع تجريبي)');return;}
+ Pi.createPayment({amount:1,memo:'Pi Business OS Pro Upgrade - 1 Pi/month',metadata:{type:'upgrade',user:piUser}},{onReadyForServerApproval:function(id){document.getElementById('v3-plan').textContent='Approving...';},onReadyForServerCompletion:function(id,tx){localStorage.setItem(v3_getKey('plan'),'Pro');localStorage.setItem(v3_getKey('pro_txid'),tx);document.getElementById('v3-plan').textContent='Pro';alert('تمت الترقية بنجاح! Tx:'+tx);v3_renderUsage();},onCancel:function(){},onError:function(e){alert('Error '+e);}});
+};
+// Auto login if exists
+let savedUser=localStorage.getItem('pi_current_user');
+if(savedUser){v3_setUser(savedUser);}
+// Hook into existing save functions to use prefix
+(function(){
+ let origLedgerPush=setInterval(function(){
+   if(typeof ledger!=='undefined' && piUser){
+     // Intercept future pushes via overwriting localStorage calls in original file is hard, so we sync every 2 sec
+     let curLedger=JSON.parse(localStorage.getItem('ledger')||'[]');
+     if(curLedger.length){
+       let userLedger=JSON.parse(localStorage.getItem(v3_getKey('ledger'))||'[]');
+       if(curLedger.length>userLedger.length){
+         localStorage.setItem(v3_getKey('ledger'),JSON.stringify(curLedger));
+         localStorage.setItem(v3_getKey('inv2'),localStorage.getItem('inv2')||'[]');
+         v3_renderUsage();
+       }
+     }
+   }
+ },2000);
+})();
+// Handle ?store=@username public view
+(function(){
+ let params=new URLSearchParams(location.search);
+ let store=params.get('store');
+ if(store){
+   let uname=store.replace('@','');
+   let pfx='user_'+uname+'_';
+   let inv=JSON.parse(localStorage.getItem(pfx+'inv2')||'[]');
+   if(inv.length){
+     document.body.innerHTML='<div class="container"><div class="card"><h2>🛍️ متجر @'+uname+'</h2><div>'+inv.map(p=>'<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #ddd"><span>'+p.name+'</span><b>'+p.price+' Pi</b><button class="btn btn-w" onclick="window.open(\'https://wa.me/?text=اريد '+p.name+'\')\'>طلب</button></div>').join('')+'</div><p style="text-align:center"><a href="'+location.pathname+'">إنشاء متجرك مجانا</a></p></div></div>';
+   }
+ }
+})();
+console.log('v3.0 Multi-Tenant Loaded - Prefix: '+v3_prefix);
 </script>
+<!-- ===== v3.0 END ===== -->
 </body>
 </html>
