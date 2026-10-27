@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pi Business OS v3.0 - Complete</title>
+<title>Pi Business OS v3.1 - Complete + Migration</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -19,7 +19,7 @@ body{font-family:system-ui;background:var(--bg);color:#fff;margin:0;padding:10px
 .tab-content{display:none}.tab-content.active{display:block}
 .card{background:#fff;color:#222;padding:12px;border-radius:12px;margin:8px 0}
 .btn{padding:9px 14px;border:none;border-radius:20px;font-weight:700;cursor:pointer;margin:3px}
-.btn-pi{background:var(--p);color:#1a0030}.btn-s{background:var(--s);color:#fff}.btn-w{background:#25D366;color:#fff}.btn-g{background:#eee;color:#333}
+.btn-pi{background:var(--p);color:#1a0030}.btn-s{background:var(--s);color:#fff}.btn-w{background:#25D366;color:#fff}.btn-g{background:#eee;color:#333}.btn-red{background:#e53935;color:#fff}
 input,select{width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--s);margin:4px 0;box-sizing:border-box}
 table{width:100%;border-collapse:collapse}th,td{padding:6px;border-bottom:1px solid #ddd;font-size:12px}th{background:var(--s);color:#fff}
 .badge{background:#e0ffe0;color:#0a0;padding:4px 8px;border-radius:10px;font-size:11px}
@@ -30,32 +30,46 @@ table{width:100%;border-collapse:collapse}th,td{padding:6px;border-bottom:1px so
 <body>
 <div class="container">
 <div class="header">
-<div><b>Pi Business OS v3.0 COMPLETE</b><br><small id="user-info">غير مسجل - وضع تجريبي</small></div>
+<div><b>Pi Business OS v3.1 - كل شيء</b><br><small id="user-info">غير مسجل</small></div>
 <div style="display:flex;gap:5px;align-items:center">
-<select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option></select>
+<button class="btn btn-red" id="btn-migrate" style="font-size:11px">🔄 استرجاع بياناتي القديمة</button>
 <button class="btn btn-pi" id="btn-login">Login with Pi</button>
 <button class="btn btn-g" id="btn-logout" style="display:none">خروج</button>
 </div>
 </div>
-<h2 style="text-align:center;color:var(--p)" id="main-title">نظام محاسبي للرواد</h2>
-<div style="text-align:center"><span class="badge" id="usage-badge">مجاني: 0/100</span> <button class="btn btn-pi" id="btn-upgrade" style="padding:5px 10px;font-size:12px">ترقية Pro بـ 1 Pi</button></div>
+<h2 style="text-align:center;color:var(--p)">نظام محاسبي للرواد - كل الميزات</h2>
+<div style="text-align:center"><span class="badge" id="usage-badge">مجاني</span> <button class="btn btn-pi" id="btn-upgrade" style="padding:5px 10px;font-size:12px">ترقية Pro بـ 1 Pi</button></div>
 <div class="tabs">
-<div class="tab active" data-tab="entry" id="lb-entry">قيد</div>
-<div class="tab" data-tab="invoice" id="lb-inv">فاتورة</div>
-<div class="tab" data-tab="inventory" id="lb-stock">مخزون</div>
-<div class="tab" data-tab="orders" id="lb-orders">طلبات</div>
-<div class="tab" data-tab="store" id="lb-store">متجري</div>
-<div class="tab" data-tab="reports" id="lb-rep">تقارير</div>
+<div class="tab active" data-tab="entry">قيد</div>
+<div class="tab" data-tab="invoice">فاتورة</div>
+<div class="tab" data-tab="inventory">مخزون</div>
+<div class="tab" data-tab="orders">طلبات</div>
+<div class="tab" data-tab="store">متجري</div>
+<div class="tab" data-tab="reports">تقارير</div>
 </div>
-<div id="entry" class="tab-content active"><div class="card"><h3 id="h-entry">إضافة قيد</h3><form id="form-entry"><select id="e-type"><option value="income" id="op-inc">إيراد</option><option value="expense" id="op-exp">مصروف</option><option value="asset" id="op-ast">أصل</option></select><input id="e-amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="e-desc" placeholder="الوصف" required><button class="btn btn-pi" type="submit" id="btn-save-entry">حفظ</button></form></div><div class="card"><table><tbody id="ledger-body"></tbody></table></div></div>
-<div id="invoice" class="tab-content"><div class="card"><h3 id="h-inv">إنشاء فاتورة</h3><input id="inv-customer" placeholder="اسم العميل"><select id="inv-product"></select><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv">إضافة للفاتورة</button><div id="inv-items" style="background:#f9f9f9;padding:8px;border-radius:8px;margin:8px 0"></div><h4><span id="lb-total">الإجمالي</span>: <span id="inv-total">0</span> π</h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%;font-size:16px">💾 حفظ الفاتورة (يخصم المخزون)</button><div id="invoice-actions" style="display:none;margin-top:10px;border-top:2px dashed #6a1b9a;padding-top:8px"><span class="badge">✓ تم الحفظ</span><button class="btn btn-s" type="button" id="btn-pdf-last">PDF</button><button class="btn btn-w" type="button" id="btn-wa-last">WhatsApp</button><button class="btn btn-g" type="button" id="btn-new-inv">+ فاتورة جديدة</button></div></div><div class="card"><h4 id="h-saved">الفواتير المحفوظة</h4><div id="saved-invoices"></div></div></div>
-<div id="inventory" class="tab-content"><div class="card"><form id="form-inv"><input id="p-name" placeholder="اسم المنتج" required><input id="p-qty" type="number" placeholder="الكمية" required><input id="p-price" type="number" step="0.0001" placeholder="سعر البيع π" required><input id="p-cost" type="number" step="0.0001" placeholder="التكلفة"><input id="p-img" placeholder="رابط صورة (اختياري)"><select id="p-cat"><option>عام</option><option>مواد غذائية</option><option>قرطاسية</option><option>إلكترونيات</option><option>ملابس</option></select><button class="btn btn-pi" type="submit" id="btn-add-prod">إضافة منتج</button></form></div><div class="card"><input id="search-prod" placeholder="بحث في المخزون..."><table><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Cat</th><th>Barcode</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
-<div id="orders" class="tab-content"><div class="card"><h3>الطلبات الواردة من متجرك</h3><div id="orders-list"><small>لا يوجد طلبات بعد - شارك رابط متجرك</small></div></div></div>
-<div id="store" class="tab-content"><div class="card"><h3 id="h-store">متجري العام - رابط مشاركة</h3><p>رابط متجرك: <b id="store-link">سجل دخول لتفعيل الرابط</b> <button class="btn btn-w" id="btn-copy-store">نسخ</button></p><input id="store-name" placeholder="اسم متجرك"><input id="store-desc" placeholder="وصف قصير لمتجرك"><button class="btn btn-s" type="button" id="btn-save-store">حفظ بيانات المتجر</button><div style="margin-top:12px"><h4>معاينة متجرك (ما يراه الزبون):</h4><div id="store-preview" class="store-grid"></div></div></div></div>
-<div id="reports" class="tab-content"><div class="card"><p><span id="lb-inc">إيراد</span>: <span id="r-inc">0</span> | <span id="lb-exp">مصروف</span>: <span id="r-exp">0</span> | <b id="lb-net">صافي</b>: <b id="r-net">0</b></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" type="button" id="btn-excel">Excel</button><button class="btn btn-s" type="button" id="btn-report-pdf">PDF</button></div></div>
+<div id="entry" class="tab-content active"><div class="card"><h3>إضافة قيد محاسبي</h3><form id="form-entry"><select id="e-type"><option value="income">إيراد</option><option value="expense">مصروف</option><option value="asset">أصل</option></select><input id="e-amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="e-desc" placeholder="الوصف" required><button class="btn btn-pi" type="submit">حفظ القيد</button></form></div><div class="card"><h4>القيود (آخر 30)</h4><table><tbody id="ledger-body"></tbody></table></div></div>
+<div id="invoice" class="tab-content"><div class="card"><h3>إنشاء فاتورة - حفظ ثم PDF/واتساب</h3><input id="inv-customer" placeholder="اسم العميل"><select id="inv-product"></select><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv">إضافة للفاتورة</button><div id="inv-items" style="background:#f9f9f9;padding:8px;border-radius:8px;margin:8px 0"></div><h4>الإجمالي: <span id="inv-total">0</span> π</h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%;font-size:16px">💾 حفظ الفاتورة (يخصم من المخزون)</button><div id="invoice-actions" style="display:none;margin-top:10px;border-top:2px dashed #6a1b9a;padding-top:8px"><span class="badge">✓ تم الحفظ - الآن يمكنك:</span><button class="btn btn-s" type="button" id="btn-pdf-last">📄 PDF</button><button class="btn btn-w" type="button" id="btn-wa-last">💬 WhatsApp</button><button class="btn btn-g" type="button" id="btn-new-inv">+ فاتورة جديدة</button></div></div><div class="card"><h4>الفواتير المحفوظة - كل فاتورة فيها PDF و WhatsApp</h4><div id="saved-invoices"></div></div></div>
+<div id="inventory" class="tab-content"><div class="card"><h3>إضافة منتج - مع صورة وتصنيف وباركود</h3><form id="form-inv"><input id="p-name" placeholder="اسم المنتج" required><input id="p-qty" type="number" placeholder="الكمية" required><input id="p-price" type="number" step="0.0001" placeholder="سعر البيع π" required><input id="p-cost" type="number" step="0.0001" placeholder="التكلفة"><input id="p-img" placeholder="رابط صورة (اختياري)"><select id="p-cat"><option>عام</option><option>مواد غذائية</option><option>قرطاسية</option><option>إلكترونيات</option><option>ملابس</option></select><button class="btn btn-pi" type="submit">إضافة منتج</button></form></div><div class="card"><input id="search-prod" placeholder="بحث في المخزون..."><table><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Cat</th><th>Barcode</th><th>حذف</th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+<div id="orders" class="tab-content"><div class="card"><h3>الطلبات الواردة من متجرك العام</h3><div id="orders-list"></div></div></div>
+<div id="store" class="tab-content"><div class="card"><h3>متجري العام - رابط مشاركة للرواد</h3><p>رابط متجرك: <b id="store-link">سجل دخول</b> <button class="btn btn-w" id="btn-copy-store">نسخ الرابط</button></p><input id="store-name" placeholder="اسم متجرك (مثال: متجر النور)"><input id="store-desc" placeholder="وصف قصير لمتجرك"><button class="btn btn-s" type="button" id="btn-save-store">حفظ بيانات المتجر</button><div style="margin-top:12px"><h4>معاينة متجرك (ما يراه الزبون):</h4><div id="store-preview" class="store-grid"></div></div></div></div>
+<div id="reports" class="tab-content"><div class="card"><h3>التقارير المالية</h3><p>إيراد: <span id="r-inc">0</span> | مصروف: <span id="r-exp">0</span> | صافي: <b id="r-net">0</b></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" type="button" id="btn-excel">تصدير Excel</button><button class="btn btn-s" type="button" id="btn-report-pdf">تصدير PDF</button></div></div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+if(!localStorage.getItem('migrated_v31')){
+ if(localStorage.getItem('ledger') && !localStorage.getItem('ledger_guest')){
+   localStorage.setItem('ledger_guest', localStorage.getItem('ledger'));
+ }
+ if(localStorage.getItem('inv2') && !localStorage.getItem('inv2_guest')){
+   localStorage.setItem('inv2_guest', localStorage.getItem('inv2'));
+ }
+ if(localStorage.getItem('invoices_v23') && !localStorage.getItem('invoices_v23_guest')){
+   localStorage.setItem('invoices_v23_guest', localStorage.getItem('invoices_v23'));
+ }
+ if(localStorage.getItem('storeInfo') && !localStorage.getItem('storeInfo_guest')){
+   localStorage.setItem('storeInfo_guest', localStorage.getItem('storeInfo'));
+ }
+}
 let currentUser = localStorage.getItem('pi_current_user') || 'guest';
 let userDataKey = function(k){ return k + '_' + currentUser; };
 function getData(k, def){ try{ return JSON.parse(localStorage.getItem(userDataKey(k)) || JSON.stringify(def)); }catch(e){ return def; } }
@@ -69,15 +83,14 @@ let isPro = getData('isPro', false);
 let curInv=[];let invTotal=0;let lastSavedInvoice=null;let chart=null;
 function updateUserUI(){
  let u=currentUser;
- document.getElementById('user-info').textContent = u==='guest' ? 'وضع تجريبي - غير مسجل' : '👤 @'+u + (isPro?' - Pro ⭐':' - مجاني');
+ document.getElementById('user-info').textContent = u==='guest' ? 'وضع تجريبي - guest' : '👤 @'+u + (isPro?' - Pro ⭐':' - مجاني');
  document.getElementById('btn-login').style.display = u==='guest' ? 'inline-block':'none';
  document.getElementById('btn-logout').style.display = u==='guest' ? 'none':'inline-block';
- let link = u==='guest' ? 'سجل دخول لتفعيل الرابط' : location.origin + location.pathname.replace('index.html','') + 'store.html?user='+u;
+ let link = location.origin + location.pathname.replace('index.html','') + 'store.html?user='+u;
  document.getElementById('store-link').textContent=link;
  document.getElementById('store-name').value=storeInfo.name||'';
  document.getElementById('store-desc').value=storeInfo.desc||'';
- let badge=document.getElementById('usage-badge');
- badge.textContent = (isPro?'Pro غير محدود':'مجاني: ')+ledger.length+'/100 قيد - '+inv.length+'/50 منتج';
+ document.getElementById('usage-badge').textContent = (isPro?'Pro غير محدود':'مجاني: ')+ledger.length+'/100 قيد - '+inv.length+'/50 منتج | الفواتير: '+invoices.length;
 }
 updateUserUI();
 document.querySelectorAll('.tab').forEach(function(tab){
@@ -97,9 +110,9 @@ function renderInv(filter){
  setTimeout(function(){ list.forEach(function(p,i){ try{ JsBarcode('#bc'+i, p.name.substring(0,10)+i, {width:1,height:20,displayValue:false}); }catch(e){} }); },200);
  renderStorePreview();
 }
-function renderOrders(){ let box=document.getElementById('orders-list'); if(orders.length===0){ box.innerHTML='<small>لا يوجد طلبات بعد - شارك رابط متجرك</small>'; return; } box.innerHTML=orders.slice(-20).reverse().map(function(o){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0"><b>'+o.customer+'</b> - '+o.date+' - '+o.total.toFixed(3)+' Pi<br>'+o.items.map(function(it){return it.name+' x'+it.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.acceptOrder('+o.id+')">قبول</button></div>'; }).join(''); }
-function renderStorePreview(){ let preview=document.getElementById('store-preview'); if(inv.length===0){ preview.innerHTML='<small>أضف منتجات ليظهر متجرك</small>'; return; } preview.innerHTML=inv.slice(0,12).map(function(p){ return '<div class="store-item"><div style="height:80px;background:#eee;border-radius:8px;display:flex;align-items:center;justify-content:center">'+(p.img?'<img src="'+p.img+'" style="max-height:80px;max-width:100%">':'📦')+'</div><b>'+p.name+'</b><br><small>'+(p.cat||'')+'</small><br><b style="color:#6a1b9a">'+p.price+' Pi</b></div>'; }).join(''); }
-function renderInvoicesList(){ let box=document.getElementById('saved-invoices'); if(invoices.length===0){ box.innerHTML='<small>لا يوجد فواتير بعد</small>'; return; } box.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> - '+it.customer+' - <b>'+it.total.toFixed(3)+' Pi</b><br><small>'+it.date+'</small><br>'+it.items.map(function(j){return j.name+' x'+j.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.pdfInvoice('+it.id+')">PDF</button><button class="btn btn-w" type="button" onclick="window.waInvoice('+it.id+')">WhatsApp</button></div>'; }).join(''); }
+function renderOrders(){ let box=document.getElementById('orders-list'); if(orders.length===0){ box.innerHTML='<small>لا يوجد طلبات بعد - شارك رابط متجرك: <b>'+document.getElementById('store-link').textContent+'</b></small>'; return; } box.innerHTML=orders.slice(-20).reverse().map(function(o){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0"><b>'+o.customer+'</b> - '+o.date+' - '+o.total.toFixed(3)+' Pi<br>'+o.items.map(function(it){return it.name+' x'+it.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.acceptOrder('+o.id+')">قبول وتحويل لإيراد</button></div>'; }).join(''); }
+function renderStorePreview(){ let preview=document.getElementById('store-preview'); if(inv.length===0){ preview.innerHTML='<small>أضف منتجات ليظهر متجرك هنا - مثال: قلم، دفتر</small>'; return; } preview.innerHTML=inv.slice(0,12).map(function(p){ return '<div class="store-item"><div style="height:80px;background:#eee;border-radius:8px;display:flex;align-items:center;justify-content:center">'+(p.img?'<img src="'+p.img+'" style="max-height:80px;max-width:100%">':'📦')+'</div><b>'+p.name+'</b><br><small>'+(p.cat||'')+'</small><br><b style="color:#6a1b9a">'+p.price+' Pi</b></div>'; }).join(''); }
+function renderInvoicesList(){ let box=document.getElementById('saved-invoices'); if(invoices.length===0){ box.innerHTML='<small>لا يوجد فواتير بعد - أنشئ فاتورة وستظهر هنا مع PDF و WhatsApp</small>'; return; } box.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> - '+it.customer+' - <b>'+it.total.toFixed(3)+' Pi</b><br><small>'+it.date+'</small><br>'+it.items.map(function(j){return j.name+' x'+j.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.pdfInvoice('+it.id+')">PDF</button><button class="btn btn-w" type="button" onclick="window.waInvoice('+it.id+')">WhatsApp</button></div>'; }).join(''); }
 function updateReports(){
  let inc=ledger.filter(function(x){return x.type==='income'}).reduce(function(s,x){return s+x.amount},0);
  let exp=ledger.filter(function(x){return x.type==='expense'}).reduce(function(s,x){return s+x.amount},0);
@@ -119,30 +132,27 @@ function updateReports(){
     backgroundColor:['#4caf50','#f44336','#ffd700']
    }]
   },
-  options:{
-   responsive:true,
-   plugins:{legend:{display:false}}
-  }
+  options:{ responsive:true, plugins:{legend:{display:false}} }
  });
 }
 window.delInv=function(i){ inv.splice(i,1); setData('inv2', inv); renderInv(); updateUserUI(); };
-window.acceptOrder=function(id){ let o=orders.find(function(x){return x.id===id}); if(!o) return; ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:o.total, desc:'طلب متجر '+o.customer}); setData('ledger', ledger); alert('تم قبول الطلب'); renderLedger(); updateReports(); };
+window.acceptOrder=function(id){ let o=orders.find(function(x){return x.id===id}); if(!o) return; ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:o.total, desc:'طلب متجر '+o.customer}); setData('ledger', ledger); alert('تم قبول الطلب وتحويله لإيراد'); renderLedger(); updateReports(); };
 document.getElementById('form-entry').addEventListener('submit',function(e){
  e.preventDefault();
- if(!isPro && ledger.length>=100){ alert('وصلت الحد المجاني 100 قيد - ترقي لـ Pro'); return; }
+ if(!isPro && ledger.length>=100){ alert('وصلت الحد المجاني 100 قيد'); return; }
  ledger.push({date:new Date().toLocaleDateString(), type:document.getElementById('e-type').value, amount:parseFloat(document.getElementById('e-amount').value), desc:document.getElementById('e-desc').value});
  setData('ledger', ledger); renderLedger(); updateReports(); updateUserUI(); e.target.reset();
 });
 document.getElementById('form-inv').addEventListener('submit',function(e){
  e.preventDefault();
- if(!isPro && inv.length>=50){ alert('وصلت الحد المجاني 50 منتج - ترقي لـ Pro'); return; }
+ if(!isPro && inv.length>=50){ alert('وصلت الحد المجاني 50 منتج'); return; }
  inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0), img:document.getElementById('p-img').value, cat:document.getElementById('p-cat').value});
  setData('inv2', inv); renderInv(); updateUserUI(); e.target.reset();
 });
 document.getElementById('search-prod').addEventListener('input',function(){ renderInv(this.value); });
 function refreshCur(){
  let el=document.getElementById('inv-items');
- if(curInv.length===0){ el.innerHTML='<small>فارغة</small>'; }
+ if(curInv.length===0){ el.innerHTML='<small>فارغة - اختر منتج من القائمة</small>'; }
  else { el.innerHTML=curInv.map(function(it, idx){ return '<div>'+it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi <button type="button" onclick="window.removeCur('+idx+')" style="color:red;border:none;background:none">x</button></div>'; }).join(''); }
  document.getElementById('inv-total').textContent=invTotal.toFixed(3);
 }
@@ -169,7 +179,7 @@ document.getElementById('btn-save-inv').addEventListener('click',function(){
  renderInv(); renderLedger(); updateReports(); renderInvoicesList(); updateUserUI();
  document.getElementById('invoice-actions').style.display='block';
  document.getElementById('btn-save-inv').disabled=true;
- document.getElementById('btn-save-inv').textContent='✓ تم الحفظ';
+ document.getElementById('btn-save-inv').textContent='✓ تم الحفظ - اختر PDF أو WhatsApp';
 });
 document.getElementById('btn-new-inv').addEventListener('click',function(){
  curInv=[]; invTotal=0; lastSavedInvoice=null; refreshCur();
@@ -197,16 +207,9 @@ document.getElementById('btn-wa-last').addEventListener('click',function(){ if(!
 window.pdfInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(!d) return; makePdf(d).save('invoice-'+id+'.pdf'); };
 window.waInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(!d) return; let text='*فاتورة #'+d.id+'*%0Aالعميل: '+d.customer+'%0Aالتاريخ: '+d.date+'%0A%0A'+d.items.map(function(i){return i.name+' x'+i.qty+' = '+(i.price*i.qty).toFixed(3)+' Pi'}).join('%0A')+'%0A%0A*الإجمالي: '+d.total.toFixed(3)+' Pi*'; window.open('https://wa.me/?text='+text, '_blank'); };
 document.getElementById('btn-excel').addEventListener('click',function(){ let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Ledger'); XLSX.writeFile(wb, 'ledger.xlsx'); });
-document.getElementById('btn-report-pdf').addEventListener('click',function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Report',10,10); doc.text('Income '+document.getElementById('r-inc').textContent,10,20); doc.text('Expense '+document.getElementById('r-exp').textContent,10,30); doc.save('report.pdf'); });
+document.getElementById('btn-report-pdf').addEventListener('click',function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Report Income '+document.getElementById('r-inc').textContent,10,10); doc.save('report.pdf'); });
 document.getElementById('btn-save-store').addEventListener('click',function(){ storeInfo.name=document.getElementById('store-name').value; storeInfo.desc=document.getElementById('store-desc').value; setData('storeInfo', storeInfo); alert('تم حفظ متجرك'); });
 document.getElementById('btn-copy-store').addEventListener('click',function(){ let link=document.getElementById('store-link').textContent; navigator.clipboard.writeText(link).then(function(){alert('تم نسخ الرابط');}); });
-try{ if(typeof Pi!=='undefined'){ Pi.init({version:'2.0', sandbox:true}); } }catch(e){}
-document.getElementById('btn-login').addEventListener('click', async function(){
- try{
-  if(typeof Pi==='undefined'){ alert('افتح التطبيق من Pi Browser لتسجيل الدخول'); return; }
-  const scopes=['username','payments'];
-  function onIncomplete(payment){ console.log('incomplete', payment); }
-  let auth = await Pi.authenticate(scopes, onIncomplete);
-  currentUser = auth.user.username;
-  localStorage.setItem('pi_current_user', currentUser);
-  ledger = getData('ledger', []);
+document.getElementById('btn-migrate').addEventListener('click',function(){
+ if(localStorage.getItem('ledger')){ localStorage.setItem('ledger_guest', localStorage.getItem('ledger')); }
+ if(loca
