@@ -100,8 +100,7 @@ document.querySelectorAll('.tab').forEach(function(tab){
   tab.classList.add('active');
   document.getElementById(tab.dataset.tab).classList.add('active');
  });
-});
-function renderLedger(){ document.getElementById('ledger-body').innerHTML=ledger.slice(-30).reverse().map(function(l){return '<tr><td>'+l.date+'</td><td>'+l.desc+'</td><td>'+l.type+'</td><td>'+l.amount+'</td></tr>';}).join(''); }
+});function renderLedger(){ document.getElementById('ledger-body').innerHTML=ledger.slice(-30).reverse().map(function(l){return '<tr><td>'+l.date+'</td><td>'+l.desc+'</td><td>'+l.type+'</td><td>'+l.amount+'</td></tr>';}).join(''); }
 function renderInv(filter){
  filter = filter || '';
  let list = inv.filter(function(p){ return p.name.toLowerCase().includes(filter.toLowerCase()); });
@@ -212,4 +211,38 @@ document.getElementById('btn-save-store').addEventListener('click',function(){ s
 document.getElementById('btn-copy-store').addEventListener('click',function(){ let link=document.getElementById('store-link').textContent; navigator.clipboard.writeText(link).then(function(){alert('تم نسخ الرابط');}); });
 document.getElementById('btn-migrate').addEventListener('click',function(){
  if(localStorage.getItem('ledger')){ localStorage.setItem('ledger_guest', localStorage.getItem('ledger')); }
- if(loca
+ if(localStorage.getItem('inv2')){ localStorage.setItem('inv2_guest', localStorage.getItem('inv2')); }
+ if(localStorage.getItem('invoices_v23')){ localStorage.setItem('invoices_v23_guest', localStorage.getItem('invoices_v23')); }
+ if(localStorage.getItem('storeInfo')){ localStorage.setItem('storeInfo_guest', localStorage.getItem('storeInfo')); }
+ ledger = getData('ledger', []); inv = getData('inv2', []); invoices = getData('invoices_v23', []); storeInfo = getData('storeInfo', {name:'',desc:''});
+ localStorage.setItem('migrated_v31','1');
+ updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
+ alert('✅ تم استرجاع كل بياناتك القديمة - الآن '+ledger.length+' قيد و '+inv.length+' منتج و '+invoices.length+' فاتورة');
+});
+try{ if(typeof Pi!=='undefined'){ Pi.init({version:'2.0', sandbox:true}); } }catch(e){}
+document.getElementById('btn-login').addEventListener('click', async function(){
+ try{
+  if(typeof Pi==='undefined'){ alert('افتح من Pi Browser'); return; }
+  let auth = await Pi.authenticate(['username','payments'], function(p){});
+  currentUser = auth.user.username;
+  localStorage.setItem('pi_current_user', currentUser);
+  ledger = getData('ledger', []); inv = getData('inv2', []); invoices = getData('invoices_v23', []); orders = getData('orders_v3', []); storeInfo = getData('storeInfo', {name:'',desc:''}); isPro = getData('isPro', false);
+  updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
+  alert('أهلا @'+currentUser);
+ }catch(e){ alert(e.message); }
+});
+document.getElementById('btn-logout').addEventListener('click',function(){
+ localStorage.removeItem('pi_current_user');
+ currentUser='guest';
+ ledger = getData('ledger', []); inv = getData('inv2', []); invoices = getData('invoices_v23', []); orders=[]; storeInfo={name:'',desc:''}; isPro=false;
+ updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
+});
+document.getElementById('btn-upgrade').addEventListener('click', async function(){
+ if(currentUser==='guest'){ alert('سجل دخول بـ Pi أولا'); return; }
+ if(typeof Pi==='undefined'){ isPro=true; setData('isPro', true); updateUserUI(); alert('تمت الترقية تجريبي'); return; }
+ try{ await Pi.createPayment({amount:1, memo:'Pro', metadata:{type:'pro'}},{ onReadyForServerApproval:()=>{}, onReadyForServerCompletion:()=>{ isPro=true; setData('isPro', true); updateUserUI(); alert('تمت الترقية Pro'); }, onCancel:()=>{}, onError:(e)=>alert(e.message)}); }catch(e){alert(e.message);} });
+renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
+});
+</script>
+</body>
+</html>
