@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pi Business OS v3.2 - Fixed Tabs + Lang + Migration</title>
+<title>Pi Business OS v3.3 Full i18n</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -30,73 +30,110 @@ table{width:100%;border-collapse:collapse}th,td{padding:6px;border-bottom:1px so
 <body>
 <div class="container">
 <div class="header">
-<div><b id="app-title">Pi Business OS v3.2</b><br><small id="user-info">غير مسجل</small></div>
+<div><b>Pi Business OS v3.3</b><br><small id="user-info"></small></div>
 <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
 <select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option><option value="ru">Русский</option></select>
-<button class="btn btn-red" id="btn-migrate" style="font-size:11px">🔄 استرجاع</button>
-<button class="btn btn-pi" id="btn-login">Login with Pi</button>
-<button class="btn btn-g" id="btn-logout" style="display:none">خروج</button>
+<button class="btn btn-red" id="btn-migrate" style="font-size:11px"></button>
+<button class="btn btn-pi" id="btn-login"></button>
+<button class="btn btn-g" id="btn-logout" style="display:none"></button>
 </div>
 </div>
-<h2 style="text-align:center;color:var(--p)" id="main-title">نظام محاسبي للرواد</h2>
-<div style="text-align:center"><span class="badge" id="usage-badge">مجاني</span> <button class="btn btn-pi" id="btn-upgrade" style="padding:5px 10px;font-size:12px">Pro بـ 1 Pi</button></div>
+<h2 style="text-align:center;color:var(--p)" id="main-title"></h2>
+<div style="text-align:center"><span class="badge" id="usage-badge"></span> <button class="btn btn-pi" id="btn-upgrade" style="padding:5px 10px;font-size:12px"></button></div>
 <div class="tabs">
-<div class="tab active" data-tab="entry" id="lb-entry">قيد</div>
-<div class="tab" data-tab="invoice" id="lb-inv">فاتورة</div>
-<div class="tab" data-tab="inventory" id="lb-stock">مخزون</div>
-<div class="tab" data-tab="orders" id="lb-orders">طلبات</div>
-<div class="tab" data-tab="store" id="lb-store">متجري</div>
-<div class="tab" data-tab="reports" id="lb-rep">تقارير</div>
+<div class="tab active" data-tab="entry" id="lb-entry"></div>
+<div class="tab" data-tab="invoice" id="lb-inv"></div>
+<div class="tab" data-tab="inventory" id="lb-stock"></div>
+<div class="tab" data-tab="orders" id="lb-orders"></div>
+<div class="tab" data-tab="store" id="lb-store"></div>
+<div class="tab" data-tab="reports" id="lb-rep"></div>
 </div>
-<div id="entry" class="tab-content active"><div class="card"><h3 id="h-entry">إضافة قيد</h3><form id="form-entry"><select id="e-type"><option value="income">إيراد</option><option value="expense">مصروف</option><option value="asset">أصل</option></select><input id="e-amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="e-desc" placeholder="الوصف" required><button class="btn btn-pi" type="submit" id="btn-save-entry">حفظ</button></form></div><div class="card"><table><tbody id="ledger-body"></tbody></table></div></div>
-<div id="invoice" class="tab-content"><div class="card"><h3 id="h-inv">إنشاء فاتورة</h3><input id="inv-customer" placeholder="اسم العميل"><select id="inv-product"></select><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv">إضافة للفاتورة</button><div id="inv-items" style="background:#f9f9f9;padding:8px;border-radius:8px;margin:8px 0"></div><h4><span id="lb-total">الإجمالي</span>: <span id="inv-total">0</span> π</h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%">💾 حفظ الفاتورة</button><div id="invoice-actions" style="display:none;margin-top:10px;border-top:2px dashed #6a1b9a;padding-top:8px"><span class="badge">✓ تم الحفظ</span><button class="btn btn-s" type="button" id="btn-pdf-last">PDF</button><button class="btn btn-w" type="button" id="btn-wa-last">WhatsApp</button><button class="btn btn-g" type="button" id="btn-new-inv">+ جديد</button></div></div><div class="card"><h4 id="h-saved">الفواتير المحفوظة</h4><div id="saved-invoices"></div></div></div>
-<div id="inventory" class="tab-content"><div class="card"><form id="form-inv"><input id="p-name" placeholder="اسم المنتج" required><input id="p-qty" type="number" placeholder="الكمية" required><input id="p-price" type="number" step="0.0001" placeholder="سعر البيع π" required><input id="p-cost" type="number" step="0.0001" placeholder="التكلفة"><input id="p-img" placeholder="رابط صورة"><select id="p-cat"><option>عام</option><option>مواد غذائية</option><option>قرطاسية</option><option>إلكترونيات</option><option>ملابس</option></select><button class="btn btn-pi" type="submit">إضافة منتج</button></form></div><div class="card"><input id="search-prod" placeholder="بحث..."><table><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Barcode</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
-<div id="orders" class="tab-content"><div class="card"><h3>الطلبات</h3><div id="orders-list"></div></div></div>
-<div id="store" class="tab-content"><div class="card"><h3>متجري العام</h3><p>رابطك: <b id="store-link">سجل دخول</b> <button class="btn btn-w" id="btn-copy-store">نسخ</button></p><input id="store-name" placeholder="اسم متجرك"><input id="store-desc" placeholder="وصف"><button class="btn btn-s" type="button" id="btn-save-store">حفظ</button><div style="margin-top:12px"><div id="store-preview" class="store-grid"></div></div></div></div>
-<div id="reports" class="tab-content"><div class="card"><p>إيراد: <span id="r-inc">0</span> | مصروف: <span id="r-exp">0</span> | صافي: <b id="r-net">0</b></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" type="button" id="btn-excel">Excel</button><button class="btn btn-s" type="button" id="btn-report-pdf">PDF</button></div></div>
+<div id="entry" class="tab-content active"><div class="card"><h3 id="h-entry"></h3><form id="form-entry"><select id="e-type"><option value="income" id="opt-income"></option><option value="expense" id="opt-expense"></option><option value="asset" id="opt-asset"></option></select><input id="e-amount" type="number" step="0.0001" required><input id="e-desc" required><button class="btn btn-pi" type="submit" id="btn-save-entry"></button></form></div><div class="card"><h4 id="h-ledger"></h4><table><tbody id="ledger-body"></tbody></table></div></div>
+<div id="invoice" class="tab-content"><div class="card"><h3 id="h-inv"></h3><input id="inv-customer"><select id="inv-product"></select><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv"></button><div id="inv-items" style="background:#f9f9f9;padding:8px;border-radius:8px;margin:8px 0"></div><h4><span id="lb-total"></span>: <span id="inv-total">0</span> π</h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%"></button><div id="invoice-actions" style="display:none;margin-top:10px;border-top:2px dashed #6a1b9a;padding-top:8px"><span class="badge" id="badge-saved"></span><button class="btn btn-s" type="button" id="btn-pdf-last">PDF</button><button class="btn btn-w" type="button" id="btn-wa-last">WhatsApp</button><button class="btn btn-g" type="button" id="btn-new-inv"></button></div></div><div class="card"><h4 id="h-saved"></h4><div id="saved-invoices"></div></div></div>
+<div id="inventory" class="tab-content"><div class="card"><h3 id="h-add-prod"></h3><form id="form-inv"><input id="p-name" required><input id="p-qty" type="number" required><input id="p-price" type="number" step="0.0001" required><input id="p-cost" type="number" step="0.0001"><input id="p-img"><select id="p-cat"><option value="general" id="cat-general"></option><option value="food" id="cat-food"></option><option value="stationery" id="cat-stationery"></option><option value="electronics" id="cat-electronics"></option><option value="clothes" id="cat-clothes"></option></select><button class="btn btn-pi" type="submit" id="btn-add-prod"></button></form></div><div class="card"><input id="search-prod"><table><thead><tr><th id="th-prod"></th><th id="th-qty"></th><th id="th-price"></th><th id="th-barcode"></th><th id="th-action"></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+<div id="orders" class="tab-content"><div class="card"><h3 id="h-orders"></h3><div id="orders-list"></div></div></div>
+<div id="store" class="tab-content"><div class="card"><h3 id="h-store"></h3><p><span id="lb-link"></span>: <b id="store-link"></b> <button class="btn btn-w" id="btn-copy-store"></button></p><input id="store-name"><input id="store-desc"><button class="btn btn-s" type="button" id="btn-save-store"></button><div style="margin-top:12px"><h4 id="h-preview"></h4><div id="store-preview" class="store-grid"></div></div></div></div>
+<div id="reports" class="tab-content"><div class="card"><h3 id="h-reports"></h3><p><span id="lb-inc"></span>: <span id="r-inc">0</span> | <span id="lb-exp"></span>: <span id="r-exp">0</span> | <b id="lb-net"></b>: <b id="r-net">0</b></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" type="button" id="btn-excel">Excel</button><button class="btn btn-s" type="button" id="btn-report-pdf">PDF</button></div></div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-const T={
-ar:{entry:"قيد",invoice:"فاتورة",stock:"مخزون",orders:"طلبات",store:"متجري",rep:"تقارير",title:"نظام محاسبي للرواد",addEntry:"إضافة قيد",addInv:"إنشاء فاتورة",total:"الإجمالي",saveInv:"💾 حفظ الفاتورة",saved:"الفواتير المحفوظة"},
-en:{entry:"Entry",invoice:"Invoice",stock:"Stock",orders:"Orders",store:"Store",rep:"Reports",title:"Pioneer Accounting",addEntry:"Add Entry",addInv:"Create Invoice",total:"Total",saveInv:"💾 Save Invoice",saved:"Saved Invoices"},
-tr:{entry:"Kayıt",invoice:"Fatura",stock:"Stok",orders:"Siparişler",store:"Mağaza",rep:"Raporlar",title:"Öncü Muhasebe",addEntry:"Kayıt Ekle",addInv:"Fatura Oluştur",total:"Toplam",saveInv:"💾 Kaydet",saved:"Kaydedilen"},
-zh:{entry:"记账",invoice:"发票",stock:"库存",orders:"订单",store:"商店",rep:"报告",title:"先锋会计",addEntry:"添加",addInv:"创建发票",total:"总计",saveInv:"💾 保存",saved:"已保存"},
-ja:{entry:"仕訳",invoice:"請求書",stock:"在庫",orders:"注文",store:"ストア",rep:"レポート",title:"パイオニア会計",addEntry:"追加",addInv:"請求書作成",total:"合計",saveInv:"💾 保存",saved:"保存済み"},
-vi:{entry:"Ghi chép",invoice:"Hóa đơn",stock:"Kho",orders:"Đơn",store:"Cửa hàng",rep:"Báo cáo",title:"Kế toán Pioneer",addEntry:"Thêm",addInv:"Tạo hóa đơn",total:"Tổng",saveInv:"💾 Lưu",saved:"Đã lưu"},
-fr:{entry:"Écriture",invoice:"Facture",stock:"Stock",orders:"Commandes",store:"Boutique",rep:"Rapports",title:"Compta Pioneer",addEntry:"Ajouter",addInv:"Créer Facture",total:"Total",saveInv:"💾 Enregistrer",saved:"Sauvegardées"},
-de:{entry:"Buchung",invoice:"Rechnung",stock:"Lager",orders:"Bestellungen",store:"Shop",rep:"Berichte",title:"Pioneer Buchhaltung",addEntry:"Hinzufügen",addInv:"Rechnung erstellen",total:"Gesamt",saveInv:"💾 Speichern",saved:"Gespeichert"},
-es:{entry:"Asiento",invoice:"Factura",stock:"Inventario",orders:"Pedidos",store:"Tienda",rep:"Informes",title:"Contabilidad Pioneer",addEntry:"Agregar",addInv:"Crear Factura",total:"Total",saveInv:"💾 Guardar",saved:"Guardadas"},
-ru:{entry:"Запись",invoice:"Счет",stock:"Склад",orders:"Заказы",store:"Магазин",rep:"Отчеты",title:"Бухгалтерия Пионеров",addEntry:"Добавить",addInv:"Создать счет",total:"Итого",saveInv:"💾 Сохранить",saved:"Сохраненные"}
-};
+const I18N={
+ ar:{dir:"rtl",guest:"guest - تجريبي",restore:"🔄 استرجاع",login:"Login with Pi",logout:"خروج",upgrade:"Pro بـ 1 Pi",title:"نظام محاسبي للرواد",entry:"قيد",invoice:"فاتورة",stock:"مخزون",orders:"طلبات",store:"متجري",rep:"تقارير",addEntry:"إضافة قيد",income:"إيراد",expense:"مصروف",asset:"أصل",amount:"المبلغ π",desc:"الوصف",save:"حفظ",ledgerTitle:"القيود (آخر 30)",addInvTitle:"إنشاء فاتورة",customer:"اسم العميل",addToInv:"إضافة للفاتورة",total:"الإجمالي",saveInv:"💾 حفظ الفاتورة",savedBadge:"✓ تم الحفظ",newInv:"+ فاتورة جديدة",savedInvs:"الفواتير المحفوظة",addProdTitle:"إضافة منتج - مع صورة وتصنيف وباركود",prodName:"اسم المنتج",qty:"الكمية",price:"سعر البيع π",cost:"التكلفة",img:"رابط صورة (اختياري)",general:"عام",food:"مواد غذائية",stationery:"قرطاسية",electronics:"إلكترونيات",clothes:"ملابس",addProd:"إضافة منتج",search:"بحث في المخزون...",thProd:"Product",thQty:"Qty",thPrice:"Price",thBarcode:"Barcode",thAction:"حذف",ordersTitle:"الطلبات الواردة من متجرك العام",noOrders:"لا يوجد طلبات بعد - شارك رابط متجرك",accept:"قبول وتحويل لإيراد",storeTitle:"متجري العام - رابط مشاركة للرواد",link:"رابط متجرك",copy:"نسخ الرابط",storeName:"اسم متجرك (مثال: متجر النور)",storeDesc:"وصف قصير لمتجرك",saveStore:"حفظ بيانات المتجر",preview:"معاينة متجرك (ما يراه الزبون)",reportsTitle:"التقارير المالية",inc:"إيراد",exp:"مصروف",net:"صافي",free:"مجاني",pro:"Pro غير محدود",noInv:"لا يوجد منتجات - أضف منتجات ليظهر متجرك",noInvList:"لا يوجد فواتير بعد",emptyCart:"فارغة - اختر منتج من القائمة",copied:"تم نسخ الرابط",migrated:"تم الاسترجاع",loginFirst:"سجل دخول بـ Pi أولا",proActive:"Pro مفعل",needAdd:"أضف منتجات أولاً",qtyNotAvail:"الكمية غير متوفرة، المتوفر: ",welcome:"أهلا @"},
+ en:{dir:"ltr",guest:"guest - demo",restore:"🔄 Restore",login:"Login with Pi",logout:"Logout",upgrade:"Pro for 1 Pi",title:"Pioneer Accounting System",entry:"Entry",invoice:"Invoice",stock:"Stock",orders:"Orders",store:"My Store",rep:"Reports",addEntry:"Add Accounting Entry",income:"Income",expense:"Expense",asset:"Asset",amount:"Amount π",desc:"Description",save:"Save",ledgerTitle:"Ledger (last 30)",addInvTitle:"Create Invoice - Save then PDF/WhatsApp",customer:"Customer name",addToInv:"Add to invoice",total:"Total",saveInv:"💾 Save Invoice (deduct stock)",savedBadge:"✓ Saved - Now you can:",newInv:"+ New Invoice",savedInvs:"Saved Invoices - Each with PDF & WhatsApp",addProdTitle:"Add Product - with image, category & barcode",prodName:"Product name",qty:"Quantity",price:"Selling price π",cost:"Cost",img:"Image URL (optional)",general:"General",food:"Groceries",stationery:"Stationery",electronics:"Electronics",clothes:"Clothes",addProd:"Add Product",search:"Search inventory...",thProd:"Product",thQty:"Qty",thPrice:"Price",thBarcode:"Barcode",thAction:"Delete",ordersTitle:"Incoming Orders from Your Store",noOrders:"No orders yet - share your store link",accept:"Accept & Convert to Income",storeTitle:"My Public Store - Share Link for Pioneers",link:"Your store link",copy:"Copy Link",storeName:"Your store name (e.g. Noor Store)",storeDesc:"Short description of your store",saveStore:"Save Store Data",preview:"Your store preview (customer view)",reportsTitle:"Financial Reports",inc:"Income",exp:"Expense",net:"Net",free:"Free",pro:"Pro Unlimited",noInv:"No products - add products to show your store",noInvList:"No invoices yet - create one",emptyCart:"Empty - choose product",copied:"Link copied",migrated:"Restored",loginFirst:"Login with Pi first",proActive:"Pro activated",needAdd:"Add products first",qtyNotAvail:"Not enough stock, available: ",welcome:"Welcome @"}
+};const T=I18N;
 function applyLang(l){
  let t=T[l]||T.ar;
+ if(!t) return;
+ document.documentElement.lang=l;
+ document.documentElement.dir=t.dir;
+ document.getElementById('user-info').textContent = (localStorage.getItem('pi_current_user')||'guest')==='guest' ? t.guest : '👤 @'+(localStorage.getItem('pi_current_user')||'guest');
+ document.getElementById('btn-migrate').textContent=t.restore;
+ document.getElementById('btn-login').textContent=t.login;
+ document.getElementById('btn-logout').textContent=t.logout;
+ document.getElementById('btn-upgrade').textContent=t.upgrade;
+ document.getElementById('main-title').textContent=t.title;
  document.getElementById('lb-entry').textContent=t.entry;
  document.getElementById('lb-inv').textContent=t.invoice;
  document.getElementById('lb-stock').textContent=t.stock;
  document.getElementById('lb-orders').textContent=t.orders;
  document.getElementById('lb-store').textContent=t.store;
  document.getElementById('lb-rep').textContent=t.rep;
- document.getElementById('main-title').textContent=t.title;
  document.getElementById('h-entry').textContent=t.addEntry;
- document.getElementById('h-inv').textContent=t.addInv;
+ document.getElementById('opt-income').textContent=t.income;
+ document.getElementById('opt-expense').textContent=t.expense;
+ document.getElementById('opt-asset').textContent=t.asset;
+ document.getElementById('e-amount').placeholder=t.amount;
+ document.getElementById('e-desc').placeholder=t.desc;
+ document.getElementById('btn-save-entry').textContent=t.save;
+ document.getElementById('h-ledger').textContent=t.ledgerTitle;
+ document.getElementById('h-inv').textContent=t.addInvTitle;
+ document.getElementById('inv-customer').placeholder=t.customer;
+ document.getElementById('btn-add-inv').textContent=t.addToInv;
  document.getElementById('lb-total').textContent=t.total;
  document.getElementById('btn-save-inv').textContent=t.saveInv;
- document.getElementById('h-saved').textContent=t.saved;
- document.documentElement.dir = (l==='ar')?'rtl':'ltr';
+ document.getElementById('badge-saved').textContent=t.savedBadge;
+ document.getElementById('btn-new-inv').textContent=t.newInv;
+ document.getElementById('h-saved').textContent=t.savedInvs;
+ document.getElementById('h-add-prod').textContent=t.addProdTitle;
+ document.getElementById('p-name').placeholder=t.prodName;
+ document.getElementById('p-qty').placeholder=t.qty;
+ document.getElementById('p-price').placeholder=t.price;
+ document.getElementById('p-cost').placeholder=t.cost;
+ document.getElementById('p-img').placeholder=t.img;
+ document.getElementById('cat-general').textContent=t.general;
+ document.getElementById('cat-food').textContent=t.food;
+ document.getElementById('cat-stationery').textContent=t.stationery;
+ document.getElementById('cat-electronics').textContent=t.electronics;
+ document.getElementById('cat-clothes').textContent=t.clothes;
+ document.getElementById('btn-add-prod').textContent=t.addProd;
+ document.getElementById('search-prod').placeholder=t.search;
+ document.getElementById('th-prod').textContent=t.thProd;
+ document.getElementById('th-qty').textContent=t.thQty;
+ document.getElementById('th-price').textContent=t.thPrice;
+ document.getElementById('th-barcode').textContent=t.thBarcode;
+ document.getElementById('th-action').textContent=t.thAction;
+ document.getElementById('h-orders').textContent=t.ordersTitle;
+ document.getElementById('h-store').textContent=t.storeTitle;
+ document.getElementById('lb-link').textContent=t.link;
+ document.getElementById('btn-copy-store').textContent=t.copy;
+ document.getElementById('store-name').placeholder=t.storeName;
+ document.getElementById('store-desc').placeholder=t.storeDesc;
+ document.getElementById('btn-save-store').textContent=t.saveStore;
+ document.getElementById('h-preview').textContent=t.preview;
+ document.getElementById('h-reports').textContent=t.reportsTitle;
+ document.getElementById('lb-inc').textContent=t.inc;
+ document.getElementById('lb-exp').textContent=t.exp;
+ document.getElementById('lb-net').textContent=t.net;
  localStorage.setItem('pi_lang', l);
+ updateUserUI();
+ renderLedger();
+ renderInv(document.getElementById('search-prod').value||'');
+ renderInvoicesList();
+ renderOrders();
+ renderStorePreview();
+ refreshCur();
 }
-let savedLang=localStorage.getItem('pi_lang')||'ar';
-document.getElementById('lang-picker').value=savedLang;
-applyLang(savedLang);
-document.getElementById('lang-picker').addEventListener('change', function(){ applyLang(this.value); });// Migration auto
-if(!localStorage.getItem('migrated_v32')){
- ['ledger','inv2','invoices_v23','storeInfo'].forEach(function(k){
-   let old=localStorage.getItem(k);
-   if(old && !localStorage.getItem(k+'_guest')) localStorage.setItem(k+'_guest', old);
- });
- localStorage.setItem('migrated_v32','1');
-}
+window._t = function(k){ let l=localStorage.getItem('pi_lang')||'ar'; let t=T[l]||T.ar; return t[k]||k; };
 
 let currentUser=localStorage.getItem('pi_current_user')||'guest';
 let userDataKey=function(k){ return k+'_'+currentUser; };
@@ -106,19 +143,17 @@ let ledger=getData('ledger',[]); let inv=getData('inv2',[]); let invoices=getDat
 let curInv=[]; let invTotal=0; let lastSavedInvoice=null; let chart=null;
 
 function updateUserUI(){
- let u=currentUser;
- document.getElementById('user-info').textContent = u==='guest' ? 'guest - تجريبي' : '👤 @'+u + (isPro?' - Pro ⭐':'');
+ let u=currentUser; let l=localStorage.getItem('pi_lang')||'ar'; let t=T[l]||T.ar;
+ document.getElementById('user-info').textContent = u==='guest' ? t.guest : '👤 @'+u + (isPro?' - Pro ⭐':' - '+t.free);
  document.getElementById('btn-login').style.display = u==='guest' ? 'inline-block':'none';
  document.getElementById('btn-logout').style.display = u==='guest' ? 'none':'inline-block';
  let link = location.origin + location.pathname.replace('index.html','') + 'store.html?user='+u;
  document.getElementById('store-link').textContent=link;
  document.getElementById('store-name').value=storeInfo.name||'';
  document.getElementById('store-desc').value=storeInfo.desc||'';
- document.getElementById('usage-badge').textContent = (isPro?'Pro':'مجاني')+': '+ledger.length+'/100 - '+inv.length+'/50';
+ let badgeFree = isPro? t.pro : t.free;
+ document.getElementById('usage-badge').textContent = badgeFree+': '+inv.length+'/50 - '+ledger.length+'/100 | '+invoices.length+' inv';
 }
-updateUserUI();
-
-// Tabs - FIXED
 document.querySelectorAll('.tab').forEach(function(tab){
  tab.addEventListener('click', function(){
   document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
@@ -128,63 +163,51 @@ document.querySelectorAll('.tab').forEach(function(tab){
   if(target) target.classList.add('active');
  });
 });
-
-function renderLedger(){ document.getElementById('ledger-body').innerHTML=ledger.slice(-30).reverse().map(function(l){return '<tr><td>'+l.date+'</td><td>'+l.desc+'</td><td>'+l.type+'</td><td>'+l.amount+'</td></tr>';}).join(''); }
+function renderLedger(){ let l=localStorage.getItem('pi_lang')||'ar'; let t=T[l]||T.ar; document.getElementById('ledger-body').innerHTML=ledger.slice(-30).reverse().map(function(x){return '<tr><td>'+x.date+'</td><td>'+x.desc+'</td><td>'+(t[x.type]||x.type)+'</td><td>'+x.amount+'</td></tr>';}).join(''); }
 function renderInv(filter){
  filter=filter||'';
  let list=inv.filter(function(p){ return p.name.toLowerCase().includes(filter.toLowerCase()); });
- document.getElementById('inv-body').innerHTML=list.map(function(p,i){ return '<tr><td>'+p.name+'</td><td style="'+(p.qty<5?'color:red':'')+'">'+p.qty+'</td><td>'+p.price+'</td><td><svg id="bc'+i+'"></svg></td><td><button type="button" onclick="window.delInv('+inv.indexOf(p)+')">x</button></td></tr>'; }).join('');
- document.getElementById('inv-product').innerHTML=inv.map(function(p,i){ return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi (Qty:'+p.qty+')</option>'; }).join('');
+ let t=window._t;
+ document.getElementById('inv-body').innerHTML=list.map(function(p,i){ return '<tr><td>'+p.name+'</td><td style="'+(p.qty<5?'color:red;font-weight:700':'')+'">'+p.qty+'</td><td>'+p.price+'</td><td><svg id="bc'+i+'"></svg></td><td><button type="button" onclick="window.delInv('+inv.indexOf(p)+')">'+t('thAction')+'</button></td></tr>'; }).join('');
+ document.getElementById('inv-product').innerHTML=inv.length===0?'<option>'+t('noInv')+'</option>':inv.map(function(p,i){ return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi (Qty:'+p.qty+')</option>'; }).join('');
  setTimeout(function(){ list.forEach(function(p,i){ try{ JsBarcode('#bc'+i, p.name.substring(0,10)+i, {width:1,height:20,displayValue:false}); }catch(e){} }); },200);
  renderStorePreview();
 }
-function renderOrders(){ let box=document.getElementById('orders-list'); if(orders.length===0){ box.innerHTML='<small>لا يوجد طلبات</small>'; return; } box.innerHTML=orders.slice(-20).reverse().map(function(o){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0"><b>'+o.customer+'</b> - '+o.total.toFixed(3)+' Pi<br>'+o.items.map(function(it){return it.name+' x'+it.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.acceptOrder('+o.id+')">قبول</button></div>'; }).join(''); }
-function renderStorePreview(){ let preview=document.getElementById('store-preview'); if(inv.length===0){ preview.innerHTML='<small>أضف منتجات</small>'; return; } preview.innerHTML=inv.slice(0,12).map(function(p){ return '<div class="store-item"><b>'+p.name+'</b><br><b style="color:#6a1b9a">'+p.price+' Pi</b></div>'; }).join(''); }
-function renderInvoicesList(){ let box=document.getElementById('saved-invoices'); if(invoices.length===0){ box.innerHTML='<small>لا يوجد فواتير</small>'; return; } box.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> - '+it.customer+' - <b>'+it.total.toFixed(3)+' Pi</b><br>'+it.items.map(function(j){return j.name+' x'+j.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.pdfInvoice('+it.id+')">PDF</button><button class="btn btn-w" type="button" onclick="window.waInvoice('+it.id+')">WhatsApp</button></div>'; }).join(''); }
+function renderOrders(){ let box=document.getElementById('orders-list'); let t=window._t; if(orders.length===0){ box.innerHTML='<small>'+t('noOrders')+'</small>'; return; } box.innerHTML=orders.slice(-20).reverse().map(function(o){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0"><b>'+o.customer+'</b> - '+o.date+' - '+o.total.toFixed(3)+' Pi<br>'+o.items.map(function(it){return it.name+' x'+it.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.acceptOrder('+o.id+')">'+t('accept')+'</button></div>'; }).join(''); }
+function renderStorePreview(){ let preview=document.getElementById('store-preview'); let t=window._t; if(inv.length===0){ preview.innerHTML='<small>'+t('noInv')+'</small>'; return; } preview.innerHTML=inv.slice(0,12).map(function(p){ return '<div class="store-item"><div style="height:80px;background:#eee;border-radius:8px;display:flex;align-items:center;justify-content:center">'+(p.img?'<img src="'+p.img+'" style="max-height:80px;max-width:100%">':'📦')+'</div><b>'+p.name+'</b><br><small>'+(p.cat||'')+'</small><br><b style="color:#6a1b9a">'+p.price+' Pi</b></div>'; }).join(''); }
+function renderInvoicesList(){ let box=document.getElementById('saved-invoices'); let t=window._t; if(invoices.length===0){ box.innerHTML='<small>'+t('noInvList')+'</small>'; return; } box.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> - '+it.customer+' - <b>'+it.total.toFixed(3)+' Pi</b><br><small>'+it.date+'</small><br>'+it.items.map(function(j){return j.name+' x'+j.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.pdfInvoice('+it.id+')">PDF</button><button class="btn btn-w" type="button" onclick="window.waInvoice('+it.id+')">WhatsApp</button></div>'; }).join(''); }
 function updateReports(){
  let inc=ledger.filter(function(x){return x.type==='income'}).reduce(function(s,x){return s+x.amount},0);
  let exp=ledger.filter(function(x){return x.type==='expense'}).reduce(function(s,x){return s+x.amount},0);
  document.getElementById('r-inc').textContent=inc.toFixed(2);
  document.getElementById('r-exp').textContent=exp.toFixed(2);
  document.getElementById('r-net').textContent=(inc-exp).toFixed(2);
- let ctx=document.getElementById('financeChart');
- if(!ctx) return;
- if(chart) chart.destroy();
+ let ctx=document.getElementById('financeChart'); if(!ctx) return; if(chart) chart.destroy();
  chart=new Chart(ctx,{type:'bar',data:{labels:['Income','Expense','Net'],datasets:[{label:'Pi',data:[inc,exp,inc-exp],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true,plugins:{legend:{display:false}}}});
 }
 window.delInv=function(i){ inv.splice(i,1); setData('inv2', inv); renderInv(); updateUserUI(); };
-window.acceptOrder=function(id){ let o=orders.find(function(x){return x.id===id}); if(!o) return; ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:o.total, desc:'طلب '+o.customer}); setData('ledger', ledger); renderLedger(); updateReports(); alert('تم القبول'); };
+window.acceptOrder=function(id){ let o=orders.find(function(x){return x.id===id}); if(!o) return; ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:o.total, desc:'طلب متجر '+o.customer}); setData('ledger', ledger); alert(window._t('migrated')); renderLedger(); updateReports(); };
+function refreshCur(){ let el=document.getElementById('inv-items'); el.innerHTML = curInv.length===0 ? '<small>'+window._t('emptyCart')+'</small>' : curInv.map(function(it,idx){ return '<div>'+it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi <button type="button" onclick="window.removeCur('+idx+')" style="color:red;border:none;background:none">x</button></div>'; }).join(''); document.getElementById('inv-total').textContent=invTotal.toFixed(3); }
+window.removeCur=function(idx){ curInv.splice(idx,1); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0); refreshCur(); };
 
 document.getElementById('form-entry').addEventListener('submit',function(e){
- e.preventDefault();
- ledger.push({date:new Date().toLocaleDateString(), type:document.getElementById('e-type').value, amount:parseFloat(document.getElementById('e-amount').value), desc:document.getElementById('e-desc').value});
- setData('ledger', ledger); renderLedger(); updateReports(); updateUserUI(); e.target.reset();
+ e.preventDefault(); ledger.push({date:new Date().toLocaleDateString(), type:document.getElementById('e-type').value, amount:parseFloat(document.getElementById('e-amount').value), desc:document.getElementById('e-desc').value}); setData('ledger', ledger); renderLedger(); updateReports(); updateUserUI(); e.target.reset();
 });
 document.getElementById('form-inv').addEventListener('submit',function(e){
- e.preventDefault();
- inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0), img:document.getElementById('p-img').value, cat:document.getElementById('p-cat').value});
- setData('inv2', inv); renderInv(); updateUserUI(); e.target.reset();
+ e.preventDefault(); inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0), img:document.getElementById('p-img').value, cat:document.getElementById('p-cat').value}); setData('inv2', inv); renderInv(); updateUserUI(); e.target.reset();
 });
 document.getElementById('search-prod').addEventListener('input',function(){ renderInv(this.value); });
-function refreshCur(){
- let el=document.getElementById('inv-items');
- el.innerHTML = curInv.length===0 ? '<small>فارغة</small>' : curInv.map(function(it,idx){ return '<div>'+it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi <button type="button" onclick="window.removeCur('+idx+')" style="color:red;border:none;background:none">x</button></div>'; }).join('');
- document.getElementById('inv-total').textContent=invTotal.toFixed(3);
-}
-window.removeCur=function(idx){ curInv.splice(idx,1); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0); refreshCur(); };
 document.getElementById('btn-add-inv').addEventListener('click',function(){
  let idx=document.getElementById('inv-product').value; let q=parseInt(document.getElementById('inv-qty').value||1);
- if(idx==='') return;
- let prod=inv[idx];
- curInv.push({name:prod.name, price:prod.price, qty:q});
- invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0); refreshCur();
+ if(idx===''||inv.length===0) return;
+ let prod=inv[idx]; if(prod.qty<q){ alert(window._t('qtyNotAvail')+prod.qty); return; }
+ curInv.push({name:prod.name, price:prod.price, qty:q}); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0); refreshCur();
 });
 document.getElementById('btn-save-inv').addEventListener('click',function(){
- if(curInv.length===0){ alert('أضف منتجات'); return; }
+ if(curInv.length===0){ alert(window._t('needAdd')); return; }
  let customer=document.getElementById('inv-customer').value||'عميل';
  let data={id:Date.now(), customer:customer, items:JSON.parse(JSON.stringify(curInv)), total:invTotal, date:new Date().toLocaleString()};
- invoices.push(data); lastSavedInvoice=data;
- setData('invoices_v23', invoices);
+ invoices.push(data); lastSavedInvoice=data; setData('invoices_v23', invoices);
  ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:invTotal, desc:'فاتورة '+customer});
  curInv.forEach(function(ci){ let p=inv.find(function(x){return x.name===ci.name}); if(p) p.qty-=ci.qty; });
  setData('ledger', ledger); setData('inv2', inv);
@@ -192,32 +215,34 @@ document.getElementById('btn-save-inv').addEventListener('click',function(){
  document.getElementById('invoice-actions').style.display='block';
 });
 document.getElementById('btn-new-inv').addEventListener('click',function(){ curInv=[]; invTotal=0; refreshCur(); document.getElementById('invoice-actions').style.display='none'; });
-function makePdf(d){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Invoice #'+d.id,10,10); doc.text('Customer: '+d.customer,10,18); doc.text('Total: '+d.total.toFixed(3)+' Pi',10,26); let y=36; d.items.forEach(function(it){ doc.text(it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi',10,y); y+=8; }); return doc; }
-document.getElementById('btn-pdf-last').addEventListener('click',function(){ if(lastSavedInvoice) makePdf(lastSavedInvoice).save('inv.pdf'); });
+function makePdf(d){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Pi Business OS - Invoice #'+d.id,10,10); doc.text('Customer: '+d.customer,10,18); doc.text('Date: '+d.date,10,26); let y=36; d.items.forEach(function(it){ doc.text(it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi',10,y); y+=8; }); doc.text('Total: '+d.total.toFixed(3)+' Pi',10,y+10); return doc; }
+document.getElementById('btn-pdf-last').addEventListener('click',function(){ if(lastSavedInvoice) makePdf(lastSavedInvoice).save('invoice-'+lastSavedInvoice.id+'.pdf'); });
 document.getElementById('btn-wa-last').addEventListener('click',function(){ if(lastSavedInvoice) window.waInvoice(lastSavedInvoice.id); });
-window.pdfInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(d) makePdf(d).save('inv-'+id+'.pdf'); };
-window.waInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(!d) return; let text='*فاتورة #'+d.id+'*%0A'+d.customer+'%0A'+d.items.map(function(i){return i.name+' x'+i.qty}).join('%0A')+'%0A*Total '+d.total.toFixed(3)+' Pi*'; window.open('https://wa.me/?text='+text,'_blank'); };
+window.pdfInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(d) makePdf(d).save('invoice-'+id+'.pdf'); };
+window.waInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(!d) return; let text='*فاتورة #'+d.id+'*%0Aالعميل: '+d.customer+'%0A'+d.items.map(function(i){return i.name+' x'+i.qty}).join('%0A')+'%0A*Total '+d.total.toFixed(3)+' Pi*'; window.open('https://wa.me/?text='+text,'_blank'); };
 document.getElementById('btn-excel').addEventListener('click',function(){ let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ledger'); XLSX.writeFile(wb,'ledger.xlsx'); });
-document.getElementById('btn-report-pdf').addEventListener('click',function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Report',10,10); doc.save('report.pdf'); });
-document.getElementById('btn-save-store').addEventListener('click',function(){ storeInfo.name=document.getElementById('store-name').value; storeInfo.desc=document.getElementById('store-desc').value; setData('storeInfo', storeInfo); alert('تم الحفظ'); });
-document.getElementById('btn-copy-store').addEventListener('click',function(){ let link=document.getElementById('store-link').textContent; navigator.clipboard.writeText(link).then(function(){alert('تم النسخ');}); });
-document.getElementById('btn-migrate').addEventListener('click',function(){
+document.getElementById('btn-report-pdf').addEventListener('click',function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Report Income '+document.getElementById('r-inc').textContent,10,10); doc.save('report.pdf'); });
+document.getElementById('btn-save-store').addEventListener('click',function(){ storeInfo.name=document.getElementById('store-name').value; storeInfo.desc=document.getElementById('store-desc').value; setData('storeInfo', storeInfo); alert(window._t('migrated')); });
+document.getElementById('btn-copy-store').addEventListener('click',function(){ let link=document.getElementById('store-link').textContent; navigator.clipboard.writeText(link).then(function(){alert(window._t('copied'));}); });
+document.getElementById('btn-migrate').addEventListener('click',function(){ ['ledger','inv2','invoices_v23','storeInfo'].forEach(function(k){ let old=localStorage.getItem(k); if(old) localStorage.setItem(k+'_guest', old); }); ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); storeInfo=getData('storeInfo',{name:'',desc:''}); updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); alert(window._t('migrated')+': '+ledger.length+' - '+inv.length); });
+try{ if(typeof Pi!=='undefined'){ Pi.init({version:'2.0', sandbox:true}); } }catch(e){}
+document.getElementById('btn-login').addEventListener('click', async function(){ try{ if(typeof Pi==='undefined'){ alert('Open in Pi Browser'); return; } let auth=await Pi.authenticate(['username','payments'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); orders=getData('orders_v3',[]); storeInfo=getData('storeInfo',{name:'',desc:''}); isPro=getData('isPro',false); updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); alert(window._t('welcome')+currentUser); }catch(e){ alert(e.message); } });
+document.getElementById('btn-logout').addEventListener('click',function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); storeInfo={name:'',desc:''}; updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); });
+document.getElementById('btn-upgrade').addEventListener('click', async function(){ if(currentUser==='guest'){ alert(window._t('loginFirst')); return; } isPro=true; setData('isPro',true); updateUserUI(); alert(window._t('proActive')); });
+
+let savedLang=localStorage.getItem('pi_lang')||'ar';
+document.getElementById('lang-picker').value=savedLang;
+applyLang(savedLang);
+document.getElementById('lang-picker').addEventListener('change', function(){ applyLang(this.value); });
+
+if(!localStorage.getItem('migrated_v32')){
  ['ledger','inv2','invoices_v23','storeInfo'].forEach(function(k){
    let old=localStorage.getItem(k);
-   if(old) localStorage.setItem(k+'_guest', old);
+   if(old && !localStorage.getItem(k+'_guest')) localStorage.setItem(k+'_guest', old);
  });
- ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); storeInfo=getData('storeInfo',{name:'',desc:''});
- updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
- alert('✅ تم الاسترجاع: '+ledger.length+' قيد - '+inv.length+' منتج');
-});
-try{ if(typeof Pi!=='undefined'){ Pi.init({version:'2.0', sandbox:true}); } }catch(e){}
-document.getElementById('btn-login').addEventListener('click', async function(){
- try{ if(typeof Pi==='undefined'){ alert('افتح من Pi Browser'); return; } let auth=await Pi.authenticate(['username','payments'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); orders=getData('orders_v3',[]); storeInfo=getData('storeInfo',{name:'',desc:''}); isPro=getData('isPro',false); updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); alert('أهلا @'+currentUser); }catch(e){ alert(e.message); }
-});
-document.getElementById('btn-logout').addEventListener('click',function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); storeInfo={name:'',desc:''}; updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); });
-document.getElementById('btn-upgrade').addEventListener('click', async function(){ if(currentUser==='guest'){ alert('سجل دخول أولا'); return; } isPro=true; setData('isPro',true); updateUserUI(); alert('Pro مفعل'); });
-
-renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
+ localStorage.setItem('migrated_v32','1');
+}
+updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
 });
 </script>
 </body>
