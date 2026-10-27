@@ -284,7 +284,17 @@ document.getElementById('btn-migrate').addEventListener('click', function(){ ren
 document.getElementById('btn-login').addEventListener('click', async function(){ try{ if(typeof Pi==='undefined'){ alert('Pi Browser only'); return;} let auth=await Pi.authenticate(['username'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); accounts=getData('accounts_v4', null); ledger=getData('ledger_double', []); vouchers=getData('vouchers_v1', []); renderAll(); }catch(e){ alert(e.message);} });
 document.getElementById('btn-logout').addEventListener('click', function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; renderAll(); });
 renderAll();
-});
+});// ========== ADDON: 10 لغات - يضاف بدون حذف القديم ==========
+const LANG_ADDON_FULL = {
+ar:{tabTree:"🌳 الشجرة",tabEntry:"📒 قيد",tabLedger:"📘 يومية",tabAccountLedger:"📘 أستاذ",tabCustomers:"👥 عملاء",tabVouchers:"🧾 سندات",tabInvoice:"🧾 فاتورة",tabInventory:"📦 مخزون",tabFinancials:"📊 مالي",tabReports:"📈 تقارير",btnReceipt:"📥 قبض",btnPayment:"📤 صرف",filter:"عرض",print:"طباعة",export:"تصدير",balance:"الرصيد"},
+en:{tabTree:"🌳 Tree",tabEntry:"📒 Entry",tabLedger:"📘 Journal",tabAccountLedger:"📘 Ledger",tabCustomers:"👥 Customers",tabVouchers:"🧾 Vouchers",tabInvoice:"🧾 Invoice",tabInventory:"📦 Stock",tabFinancials:"📊 Financials",tabReports:"📈 Reports",btnReceipt:"📥 Receipt",btnPayment:"📤 Payment",filter:"Filter",print:"Print",export:"Export",balance:"Balance"},
+fr:{tabTree:"🌳 Plan",tabEntry:"📒 Double",tabLedger:"📘 Journal",tabAccountLedger:"📘 Grand Livre",tabCustomers:"👥 Clients",tabVouchers:"🧾 Bons",tabInvoice:"🧾 Facture",tabInventory:"📦 Stock",tabFinancials:"📊 Financier",tabReports:"📈 Rapports",btnReceipt:"📥 Recette",btnPayment:"📤 Dépense",filter:"Filtrer",print:"Imprimer",export:"Exporter",balance:"Solde"},
+de:{tabTree:"🌳 Konten",tabEntry:"📒 Doppel",tabLedger:"📘 Journal",tabAccountLedger:"📘 Hauptbuch",tabCustomers:"👥 Kunden",tabVouchers:"🧾 Belege",tabInvoice:"🧾 Rechnung",tabInventory:"📦 Lager",tabFinancials:"📊 Finanzen",tabReports:"📈 Berichte",btnReceipt:"📥 Quittung",btnPayment:"📤 Zahlung",filter:"Filtern",print:"Drucken",export:"Export",balance:"Saldo"},
+es:{tabTree:"🌳 Plan",tabEntry:"📒 Doble",tabLedger:"📘 Diario",tabAccountLedger:"📘 Mayor",tabCustomers:"👥 Clientes",tabVouchers:"🧾 Comprobantes",tabInvoice:"🧾 Factura",tabInventory:"📦 Inventario",tabFinancials:"📊 Financiero",tabReports:"📈 Informes",btnReceipt:"📥 Recibo",btnPayment:"📤 Pago",filter:"Filtrar",print:"Imprimir",export:"Exportar",balance:"Saldo"},
+tr:{tabTree:"🌳 Hesap",tabEntry:"📒 Çift",tabLedger:"📘 Yevmiye",tabAccountLedger:"📘 Defter",tabCustomers:"👥 Müşteriler",tabVouchers:"🧾 Makbuz",tabInvoice:"🧾 Fatura",tabInventory:"📦 Stok",tabFinancials:"📊 Finansal",tabReports:"📈 Raporlar",btnReceipt:"📥 Tahsilat",btnPayment:"📤 Tediye",filter:"Filtre",print:"Yazdır",export:"Dışa aktar",balance:"Bakiye"},
+zh:{tabTree:"🌳 科目",tabEntry:"📒 复式",tabLedger:"📘 日记账",tabAccountLedger:"📘 明细账",tabCustomers:"👥 客户",tabVouchers:"🧾 凭证",tabInvoice:"🧾 发票",tabInventory:"📦 库存",tabFinancials:"📊 财务",tabReports:"📈 报表",btnReceipt:"📥 收款",btnPayment:"📤 付款",filter:"筛选",print:"打印",export:"导出",balance:"余额"},
+ja:{tabTree:"🌳 勘定",tabEntry:"📒 複式",tabLedger:"📘 仕訳帳",tabAccountLedger:"📘 元帳",tabCustomers:"👥 顧客",tabVouchers:"🧾 伝票",tabInvoice:"🧾 請求",tabInventory:"📦 在庫",tabFinancials:"📊 財務",tabReports:"📈 レポ",btnReceipt:"📥 入金",btnPayment:"📤 出金",filter:"表示",print:"印刷",export:"エクスポート",balance:"残高"},
+vi:{tabTree:"🌳 Tài khoản",tabEntry:"📒 Kép",tabLedger:"📘 Nhật ký",tabAccountLedger:"📘 Sổ cái",tabCustomers:"👥 KH",tabVouchers:"🧾 Chứng từ",tabInvoice:"🧾 Hóa đơn",tabInventory:"📦 Kho",tabFinancials:"📊 Tài chính
 </script>
 </body>
 </html>
