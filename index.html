@@ -2,156 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pi Business OS v3.5 - Double Entry</title>
+<title>Pi Business OS v3.6 - Financial Statements & Vouchers</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--p:#ffd700;--s:#6a1b9a;--bg:#1a0030}
-body{font-family:system-ui;background:var(--bg);color:#fff;margin:0;padding:8px}
-.container{max-width:1150px;margin:auto;background:rgba(255,255,255,.07);padding:12px;border-radius:16px}
-.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;background:#fff;color:#222;padding:10px;border-radius:12px}
-.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
-.tab{padding:7px 9px;background:rgba(255,255,255,.15);border-radius:9px;cursor:pointer;font-size:11px;font-weight:700}
+:root{--p:#ffd700;--s:#6a1b9a;--bg:#1a0030;--green:#2e7d32;--red:#c62828}
+body{font-family:system-ui;background:var(--bg);color:#fff;margin:0;padding:6px;font-size:13px}
+.container{max-width:1180px;margin:auto;background:rgba(255,255,255,.07);padding:10px;border-radius:14px}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px;background:#fff;color:#222;padding:9px;border-radius:10px}
+.tabs{display:flex;flex-wrap:wrap;gap:3px;margin:8px 0}
+.tab{padding:6px 8px;background:rgba(255,255,255,.15);border-radius:8px;cursor:pointer;font-size:10px;font-weight:700}
 .tab.active{background:var(--p);color:#1a0030}
 .tab-content{display:none}.tab-content.active{display:block}
-.card{background:#fff;color:#222;padding:10px;border-radius:10px;margin:6px 0}
-.btn{padding:7px 11px;border:none;border-radius:18px;font-weight:700;cursor:pointer;margin:2px;font-size:11px}
-.btn-pi{background:var(--p);color:#1a0030}.btn-s{background:var(--s);color:#fff}.btn-w{background:#25D366;color:#fff}.btn-g{background:#eee;color:#333}.btn-red{background:#e53935;color:#fff}
-input,select{width:100%;padding:7px;border-radius:7px;border:1.5px solid var(--s);margin:3px 0;box-sizing:border-box;font-size:13px}
-table{width:100%;border-collapse:collapse}th,td{padding:5px;border-bottom:1px solid #ddd;font-size:10px}th{background:var(--s);color:#fff}
-.badge{background:#e0ffe0;color:#060;padding:3px 7px;border-radius:8px;font-size:10px}
-.badge-warn{background:#fff3cd;color:#856404}
-.tree-item{padding:5px 9px;border-right:3px solid var(--s);margin:3px 0;background:#f9f9ff;border-radius:0 7px 7px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px}
-.tree-item.l1{border-color:#ffd700;background:#fffde7;font-weight:700}.tree-item.l2{margin-right:15px}.tree-item.l3{margin-right:30px}
+.card{background:#fff;color:#222;padding:9px;border-radius:9px;margin:5px 0}
+.btn{padding:6px 10px;border:none;border-radius:16px;font-weight:700;cursor:pointer;margin:2px;font-size:10px}
+.btn-pi{background:var(--p);color:#1a0030}.btn-s{background:var(--s);color:#fff}.btn-w{background:#25D366;color:#fff}.btn-g{background:#eee;color:#333}.btn-red{background:#e53935;color:#fff}.btn-green{background:var(--green);color:#fff}
+input,select{width:100%;padding:6px;border-radius:6px;border:1.5px solid var(--s);margin:3px 0;box-sizing:border-box;font-size:12px}
+table{width:100%;border-collapse:collapse}th,td{padding:4px;border-bottom:1px solid #ddd;font-size:10px}th{background:var(--s);color:#fff}
+.badge{padding:2px 6px;border-radius:6px;font-size:9px}.badge-green{background:#e8f5e9;color:var(--green)}.badge-red{background:#ffebee;color:var(--red)}.badge-warn{background:#fff3e0;color:#ef6c00}
+.tree-item{padding:4px 8px;border-right:3px solid var(--s);margin:2px 0;background:#f9f9ff;border-radius:0 6px 6px 0;display:flex;justify-content:space-between;font-size:11px}
+.tree-item.l1{border-color:#ffd700;background:#fffde7;font-weight:700}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:9999}
-.modal-box{background:#fff;color:#222;padding:18px;border-radius:14px;max-width:520px;width:92%;max-height:92vh;overflow:auto}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.debit{border-right:4px solid #4caf50}.credit{border-right:4px solid #f44336}
+.modal-box{background:#fff;color:#222;padding:16px;border-radius:12px;max-width:540px;width:93%;max-height:92vh;overflow:auto}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.voucher{border:2px dashed #333;padding:12px;border-radius:10px;background:#fff;color:#222;margin:8px 0}
+.voucher h3{text-align:center;border-bottom:2px solid #333;padding-bottom:6px;margin:0 0 8px 0}
+.voucher-row{display:flex;justify-content:space-between;margin:4px 0;font-size:12px}
+.statement{background:#fafafa;border:1px solid #ddd;border-radius:8px;padding:10px;margin:6px 0;color:#222}
 </style>
 </head>
 <body>
 <div id="setup-modal" class="modal" style="display:none"><div class="modal-box">
-<h2 id="setup-title">🎉 تهيئة النظام</h2>
-<p id="setup-desc">اختر نوع نشاطك والعملة لإنشاء شجرة الحسابات تلقائياً</p>
-<label id="lb-setup-activity">النشاط</label><select id="setup-activity"><option value="store">متجر عام</option><option value="grocery">مواد غذائية</option><option value="stationery">قرطاسية</option><option value="electronics">إلكترونيات</option><option value="service">خدمات</option></select>
-<label id="lb-setup-currency">العملة</label><select id="setup-currency"><option value="Pi">Pi π</option><option value="SAR">SAR</option><option value="USD">USD</option></select>
-<label id="lb-setup-capital">رأس المال الافتتاحي</label><input id="setup-capital" type="number" value="1000">
-<button class="btn btn-pi" id="btn-do-setup" style="width:100%;margin-top:10px"></button>
-</div></div>
+<h3 id="setup-title">🎉 تهيئة النظام</h3><p id="setup-desc">اختر نشاطك والعملة</p>
+<select id="setup-activity"><option value="store">متجر عام</option><option value="grocery">مواد غذائية</option><option value="stationery">قرطاسية</option><option value="electronics">إلكترونيات</option><option value="service">خدمات</option></select>
+<select id="setup-currency"><option value="Pi">Pi π</option><option value="SAR">SAR</option><option value="USD">USD</option></select>
+<input id="setup-capital" type="number" value="1000" placeholder="رأس المال"><button class="btn btn-pi" id="btn-do-setup" style="width:100%">✨ بدء</button></div></div>
+
 <div class="container">
-<div class="header"><div><b>Pi Business OS v3.5</b> <span style="background:#4caf50;color:#fff;padding:2px 6px;border-radius:6px;font-size:9px">DOUBLE ENTRY</span><br><small id="user-info"></small><br><small id="currency-badge"></small></div><div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap"><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option></select><button class="btn btn-red" id="btn-migrate" style="font-size:9px"></button><button class="btn btn-pi" id="btn-login"></button><button class="btn btn-g" id="btn-logout" style="display:none"></button></div></div>
-<h3 style="text-align:center;color:var(--p)" id="main-title"></h3>
-<div style="text-align:center"><span class="badge" id="usage-badge"></span> <span class="badge badge-warn" id="balance-badge"></span> <button class="btn btn-g" id="btn-reset-setup" style="font-size:9px">⚙️ Reset</button></div>
-<div class="tabs"><div class="tab active" data-tab="tree" id="lb-tree">🌳 الشجرة</div><div class="tab" data-tab="entry" id="lb-entry"></div><div class="tab" data-tab="invoice" id="lb-inv"></div><div class="tab" data-tab="inventory" id="lb-stock"></div><div class="tab" data-tab="store" id="lb-store"></div><div class="tab" data-tab="reports" id="lb-rep"></div></div>
+<div class="header"><div><b>Pi Business OS v3.6</b> <span style="background:#4caf50;color:#fff;padding:2px 5px;border-radius:5px;font-size:8px">FULL FINANCE</span><br><small id="user-info"></small><br><small id="currency-badge"></small></div><div style="display:flex;gap:3px"><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option></select><button class="btn btn-red" id="btn-migrate" style="font-size:8px">🔄</button><button class="btn btn-pi" id="btn-login"></button><button class="btn btn-g" id="btn-logout" style="display:none"></button></div></div>
 
-<div id="tree" class="tab-content active"><div class="card"><div style="display:flex;justify-content:space-between"><h4 id="h-tree"></h4><span><span id="lb-total-accounts"></span>: <b id="total-acc">0</b></span></div><div id="tree-container"></div><div class="card" style="background:#f5f5ff"><h5 id="h-add-acc-form"></h5><form id="form-account"><div class="row"><input id="acc-code" placeholder="1001" required><input id="acc-name" required></div><div class="row"><select id="acc-parent"></select><select id="acc-type"><option value="asset">Asset أصول</option><option value="liability">Liability خصوم</option><option value="equity">Equity حقوق ملكية</option><option value="income">Income إيرادات</option><option value="expense">Expense مصروفات</option></select></div><button class="btn btn-pi" type="submit" id="btn-save-acc" style="width:100%"></button></form></div></div></div>
+<div class="tabs">
+<div class="tab active" data-tab="tree">🌳 الشجرة</div><div class="tab" data-tab="entry">📒 قيد مزدوج</div><div class="tab" data-tab="vouchers">🧾 سندات</div><div class="tab" data-tab="invoice">🧾 فاتورة</div><div class="tab" data-tab="inventory">📦 مخزون</div><div class="tab" data-tab="financials">📊 قوائم مالية</div><div class="tab" data-tab="reports">📈 تقارير</div>
+</div>
 
-<div id="entry" class="tab-content"><div class="card">
-<h4 id="h-entry"></h4>
-<p style="font-size:11px;background:#e3f2fd;padding:6px;border-radius:6px" id="entry-help">كل قيد = مدين + دائن - مثال: عند شراء بضاعة: المدين=المخزون، الدائن=الصندوق</p>
-<form id="form-entry">
-<div class="row"><div><label id="lb-debit" style="color:#4caf50;font-weight:700">● مدين (منه)</label><select id="e-debit" required></select></div><div><label id="lb-credit" style="color:#f44336;font-weight:700">● دائن (له)</label><select id="e-credit" required></select></div></div>
-<input id="e-amount" type="number" step="0.0001" required><input id="e-desc" required>
-<button class="btn btn-pi" type="submit" id="btn-save-entry" style="width:100%"></button>
-</form>
-                                                                                                                                                                                                                                                                                                                       </div><div class="card"><h5 id="h-ledger"></h5><div style="overflow:auto"><table><thead><tr><th id="th-date"></th><th id="th-debit"></th><th id="th-credit"></th><th id="th-desc"></th><th id="th-amount"></th></tr></thead><tbody id="ledger-body"></tbody></table></div></div></div>
+<div id="tree" class="tab-content active"><div class="card"><h4>🌳 شجرة الحسابات</h4><div id="tree-container"></div><div class="card" style="background:#f5f5ff"><form id="form-account"><div class="row"><input id="acc-code" placeholder="Code" required><input id="acc-name" placeholder="Name" required></div><div class="row"><select id="acc-parent"></select><select id="acc-type"><option value="asset">Asset</option><option value="liability">Liability</option><option value="equity">Equity</option><option value="income">Income</option><option value="expense">Expense</option></select></div><button class="btn btn-pi" type="submit" style="width:100%">+ حساب</button></form></div></div></div>
 
-<div id="invoice" class="tab-content"><div class="card"><h4 id="h-inv"></h4><input id="inv-customer"><select id="inv-product"></select><div class="row"><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv"></button></div><div id="inv-items" style="background:#f9f9f9;padding:6px;border-radius:6px;margin:6px 0"></div><h4><span id="lb-total"></span>: <span id="inv-total">0</span></h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%"></button><div id="invoice-actions" style="display:none;margin-top:8px"><span class="badge" id="badge-saved"></span> <button class="btn btn-s" id="btn-pdf-last">PDF</button><button class="btn btn-w" id="btn-wa-last">WA</button><button class="btn btn-g" id="btn-new-inv"></button></div></div><div class="card"><h5 id="h-saved"></h5><div id="saved-invoices"></div></div></div>
+<div id="entry" class="tab-content"><div class="card"><h4>📒 قيد مزدوج - مدين/دائن</h4><p style="font-size:10px;background:#e3f2fd;padding:5px;border-radius:5px">كل قيد = مدين (منه) + دائن (له)</p><form id="form-entry"><div class="row"><div><label style="color:var(--green);font-weight:700">● مدين</label><select id="e-debit"></select></div><div><label style="color:var(--red);font-weight:700">● دائن</label><select id="e-credit"></select></div></div><div class="row"><input id="e-amount" type="number" step="0.0001" placeholder="Amount" required><input id="e-desc" placeholder="Description" required></div><button class="btn btn-pi" type="submit" style="width:100%">💾 حفظ القيد المزدوج</button></form></div><div class="card"><h5>دفتر اليومية</h5><table><thead><tr><th>Date</th><th>Debit</th><th>Credit</th><th>Desc</th><th>Amount</th></tr></thead><tbody id="ledger-body"></tbody></table></div></div>
 
-<div id="inventory" class="tab-content"><div class="card"><h4 id="h-add-prod"></h4><form id="form-inv"><div class="row"><input id="p-name" required><input id="p-qty" type="number" required></div><div class="row"><input id="p-price" type="number" step="0.0001" required><input id="p-cost" type="number" step="0.0001"></div><div class="row"><input id="p-img"><select id="p-cat"><option value="general">عام</option><option value="food">غذائية</option><option value="stationery">قرطاسية</option></select></div><button class="btn btn-pi" type="submit" id="btn-add-prod" style="width:100%"></button></form></div><div class="card"><input id="search-prod"><table><thead><tr><th id="th-prod"></th><th id="th-qty"></th><th id="th-price"></th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+<div id="vouchers" class="tab-content">
+<div class="card"><h4>🧾 سندات القبض والصرف</h4><div class="row"><button class="btn btn-green" id="btn-show-receipt" style="width:100%">+ سند قبض</button><button class="btn btn-red" id="btn-show-payment" style="width:100%">+ سند صرف</button></div></div>
 
-<div id="store" class="tab-content"><div class="card"><h4 id="h-store"></h4><p><span id="lb-link"></span>: <b id="store-link" style="font-size:10px"></b> <button class="btn btn-w" id="btn-copy-store"></button></p><div class="row"><input id="store-name"><input id="store-desc"></div><button class="btn btn-s" type="button" id="btn-save-store"></button><div id="store-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin-top:8px"></div></div></div>
+<div class="card" id="voucher-form-card" style="display:none"><h5 id="voucher-form-title">سند</h5><form id="form-voucher">
+<select id="v-type"><option value="receipt">سند قبض Receipt</option><option value="payment">سند صرف Payment</option></select>
+<div class="row"><input id="v-number" placeholder="رقم السند"><input id="v-date" type="date"></div>
+<input id="v-fromto" placeholder="استلمنا من / صرفنا إلى"><input id="v-amount" type="number" step="0.0001" placeholder="المبلغ"><select id="v-account"></select><input id="v-desc" placeholder="البيان"><select id="v-payment-method"><option value="cash">نقداً Cash</option><option value="bank">بنك Bank</option><option value="pi">Pi</option></select>
+<button class="btn btn-pi" type="submit" style="width:100%">💾 حفظ السند + إنشاء قيد مزدوج تلقائي</button>
+</form></div><div class="card"><h5>السندات المحفوظة</h5><div id="vouchers-list"></div></div>
+<div class="card" id="voucher-print-area"></div>
+</div>
 
-<div id="reports" class="tab-content"><div class="card"><h4 id="h-reports"></h4><div id="trial-report"></div><p><span id="lb-inc"></span>: <b id="r-inc">0</b> | <span id="lb-exp"></span>: <b id="r-exp">0</b> | <b id="lb-net"></b>: <b id="r-net">0</b></p><canvas id="financeChart" style="max-height:200px"></canvas><div class="row"><button class="btn btn-s" id="btn-excel">Excel</button><button class="btn btn-s" id="btn-report-pdf">Trial PDF</button></div></div></div>
+<div id="invoice" class="tab-content"><div class="card"><h4>فاتورة</h4><input id="inv-customer" placeholder="Customer"><select id="inv-product"></select><div class="row"><input id="inv-qty" type="number" value="1"><button class="btn btn-pi" type="button" id="btn-add-inv">Add</button></div><div id="inv-items"></div><h4>Total: <span id="inv-total">0</span></h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%">Save Invoice</button></div><div class="card"><div id="saved-invoices"></div></div></div>
+
+<div id="inventory" class="tab-content"><div class="card"><form id="form-inv"><div class="row"><input id="p-name" placeholder="Name" required><input id="p-qty" type="number" placeholder="Qty" required></div><div class="row"><input id="p-price" type="number" step="0.0001" placeholder="Price" required><input id="p-cost" type="number" step="0.0001" placeholder="Cost"></div><button class="btn btn-pi" type="submit" style="width:100%">Add Product</button></form></div><div class="card"><input id="search-prod" placeholder="Search"><table><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+
+<div id="financials" class="tab-content">
+<div class="card"><h4>📊 القوائم المالية - Financial Statements</h4><div class="row"><button class="btn btn-s" id="btn-gen-income">قائمة الدخل</button><button class="btn btn-s" id="btn-gen-balance">الميزانية العمومية</button><button class="btn btn-s" id="btn-export-financials">Export PDF</button></div></div>
+<div class="card"><div id="income-statement" class="statement"></div></div>
+<div class="card"><div id="balance-sheet" class="statement"></div></div>
+</div>
+
+<div id="reports" class="tab-content"><div class="card"><h4>تقارير + ميزان المراجعة</h4><div id="trial-report"></div><p>Inc: <b id="r-inc">0</b> Exp: <b id="r-exp">0</b> Net: <b id="r-net">0</b> <span id="balance-badge" class="badge"></span></p><canvas id="financeChart" style="max-height:180px"></canvas><div class="row"><button class="btn btn-s" id="btn-excel">Excel</button><button class="btn btn-s" id="btn-report-pdf">Trial PDF</button></div></div></div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-const I18N={
- ar:{dir:"rtl",guest:"guest تجريبي",restore:"🔄 استرجاع",login:"Login Pi",logout:"خروج",title:"نظام محاسبي - قيد مزدوج",entry:"قيد مزدوج",invoice:"فاتورة",stock:"مخزون",store:"متجري",rep:"تقارير",tree:"🌳 الشجرة",hTree:"شجرة الحسابات - 5 مجموعات رئيسية",totalAcc:"الحسابات",addAccForm:"إضافة حساب للشجرة",code:"كود",accName:"اسم الحساب",save:"حفظ",entryTitle:"إضافة قيد مزدوج - مدين ودائن",help:"كل قيد = مدين (منه) + دائن (له) - مثال: شراء بضاعة نقدا: مدين=المخزون، دائن=الصندوق",debit:"● مدين (منه) Debit",credit:"● دائن (له) Credit",amount:"المبلغ",desc:"البيان / الوصف",ledgerTitle:"دفتر اليومية - قيود مزدوجة",thDate:"التاريخ",thDebit:"مدين",thCredit:"دائن",thDesc:"البيان",thAmount:"المبلغ",customer:"اسم العميل",addToInv:"إضافة",total:"الإجمالي",saveInv:"💾 حفظ فاتورة (قيد مزدوج تلقائي)",savedBadge:"✓ تم",newInv:"+ جديد",savedInvs:"فواتير",addProdTitle:"إضافة منتج",prodName:"اسم المنتج",qty:"الكمية",price:"سعر البيع",cost:"التكلفة",img:"صورة",addProd:"إضافة",search:"بحث...",thProd:"Product",thQty:"Qty",thPrice:"Price",storeTitle:"متجري",link:"رابط",copy:"نسخ",storeName:"اسم المتجر",storeDesc:"وصف",saveStore:"حفظ",reportsTitle:"تقارير + ميزان المراجعة - مدين=دائن",inc:"إيراد",exp:"مصروف",net:"صافي",free:"مجاني",pro:"Pro",noInv:"لا يوجد منتجات",noInvList:"لا يوجد فواتير",emptyCart:"فارغة",copied:"تم النسخ",migrated:"تم",setupTitle:"🎉 تهيئة النظام",setupDesc:"اختر نشاطك والعملة",activity:"النشاط",currency:"العملة",capital:"رأس المال الافتتاحي",doSetup:"✨ إنشاء الشجرة والبدء",balanced:"✅ متوازن",unbalanced:"⚠️ غير متوازن"},
- en:{dir:"ltr",guest:"guest demo",restore:"🔄 Restore",login:"Login Pi",logout:"Logout",title:"Double-Entry Accounting System",entry:"Double Entry",invoice:"Invoice",stock:"Stock",store:"Store",rep:"Reports",tree:"🌳 Chart",hTree:"Chart of Accounts - 5 Main Groups",totalAcc:"Accounts",addAccForm:"Add Account to Tree",code:"Code",accName:"Account Name",save:"Save",entryTitle:"Add Double-Entry Journal - Debit & Credit",help:"Every entry = Debit + Credit - Example: Buy goods cash: Debit=Inventory, Credit=Cash",debit:"● Debit (From)",credit:"● Credit (To)",amount:"Amount",desc:"Description",ledgerTitle:"Journal - Double Entries",thDate:"Date",thDebit:"Debit",thCredit:"Credit",thDesc:"Desc",thAmount:"Amount",customer:"Customer",addToInv:"Add",total:"Total",saveInv:"💾 Save Invoice (Auto Double Entry)",savedBadge:"✓ Saved",newInv:"+ New",savedInvs:"Invoices",addProdTitle:"Add Product",prodName:"Product Name",qty:"Qty",price:"Price",cost:"Cost",img:"Image",addProd:"Add",search:"Search...",thProd:"Product",thQty:"Qty",thPrice:"Price",storeTitle:"My Store",link:"Link",copy:"Copy",storeName:"Store Name",storeDesc:"Desc",saveStore:"Save",reportsTitle:"Reports + Trial Balance - Debit=Credit",inc:"Income",exp:"Expense",net:"Net",free:"Free",pro:"Pro",noInv:"No products",noInvList:"No invoices",emptyCart:"Empty",copied:"Copied",migrated:"Restored",setupTitle:"🎉 System Setup",setupDesc:"Choose activity & currency",activity:"Activity",currency:"Currency",capital:"Opening Capital",doSetup:"✨ Create Chart & Start",balanced:"✅ Balanced",unbalanced:"⚠️ Unbalanced"}
-};
-function applyLang(l){
- let t=I18N[l]||I18N.ar;
- document.documentElement.lang=l; document.documentElement.dir=t.dir;
- document.getElementById('btn-migrate').textContent=t.restore;
- document.getElementById('btn-login').textContent=t.login;
- document.getElementById('btn-logout').textContent=t.logout;
- document.getElementById('main-title').textContent=t.title;
- document.getElementById('lb-tree').textContent=t.tree;
- document.getElementById('lb-entry').textContent=t.entry;
- document.getElementById('lb-inv').textContent=t.invoice;
- document.getElementById('lb-stock').textContent=t.stock;
- document.getElementById('lb-store').textContent=t.store;
- document.getElementById('lb-rep').textContent=t.rep;
- document.getElementById('h-tree').textContent=t.hTree;
- document.getElementById('lb-total-accounts').textContent=t.totalAcc;
- document.getElementById('h-add-acc-form').textContent=t.addAccForm;
- document.getElementById('acc-code').placeholder=t.code;
- document.getElementById('acc-name').placeholder=t.accName;
- document.getElementById('btn-save-acc').textContent=t.save;
- document.getElementById('h-entry').textContent=t.entryTitle;
- document.getElementById('entry-help').textContent=t.help;
- document.getElementById('lb-debit').textContent=t.debit;
- document.getElementById('lb-credit').textContent=t.credit;
- document.getElementById('e-amount').placeholder=t.amount;
- document.getElementById('e-desc').placeholder=t.desc;
- document.getElementById('btn-save-entry').textContent=t.save;
- document.getElementById('h-ledger').textContent=t.ledgerTitle;
- document.getElementById('th-date').textContent=t.thDate;
- document.getElementById('th-debit').textContent=t.thDebit;
- document.getElementById('th-credit').textContent=t.thCredit;
- document.getElementById('th-desc').textContent=t.thDesc;
- document.getElementById('th-amount').textContent=t.thAmount;
- document.getElementById('h-inv').textContent=t.total;
- document.getElementById('inv-customer').placeholder=t.customer;
- document.getElementById('btn-add-inv').textContent=t.addToInv;
- document.getElementById('lb-total').textContent=t.total;
- document.getElementById('btn-save-inv').textContent=t.saveInv;
- document.getElementById('badge-saved').textContent=t.savedBadge;
- document.getElementById('btn-new-inv').textContent=t.newInv;
- document.getElementById('h-saved').textContent=t.savedInvs;
- document.getElementById('h-add-prod').textContent=t.addProdTitle;
- document.getElementById('p-name').placeholder=t.prodName;
- document.getElementById('p-qty').placeholder=t.qty;
- document.getElementById('p-price').placeholder=t.price;
- document.getElementById('p-cost').placeholder=t.cost;
- document.getElementById('p-img').placeholder=t.img;
- document.getElementById('btn-add-prod').textContent=t.addProd;
- document.getElementById('search-prod').placeholder=t.search;
- document.getElementById('th-prod').textContent=t.thProd;
- document.getElementById('th-qty').textContent=t.thQty;
- document.getElementById('th-price').textContent=t.thPrice;
- document.getElementById('h-store').textContent=t.storeTitle;
- document.getElementById('lb-link').textContent=t.link;
- document.getElementById('btn-copy-store').textContent=t.copy;
- document.getElementById('store-name').placeholder=t.storeName;
- document.getElementById('store-desc').placeholder=t.storeDesc;
- document.getElementById('btn-save-store').textContent=t.saveStore;
- document.getElementById('h-reports').textContent=t.reportsTitle;
- document.getElementById('lb-inc').textContent=t.inc;
- document.getElementById('lb-exp').textContent=t.exp;
- document.getElementById('lb-net').textContent=t.net;
- document.getElementById('setup-title').textContent=t.setupTitle;
- document.getElementById('setup-desc').textContent=t.setupDesc;
- document.getElementById('lb-setup-activity').textContent=t.activity;
- document.getElementById('lb-setup-currency').textContent=t.currency;
- document.getElementById('lb-setup-capital').textContent=t.capital;
- document.getElementById('btn-do-setup').textContent=t.doSetup;
- localStorage.setItem('pi_lang', l);
- renderAll();
-}
-window._t=function(k){ let l=localStorage.getItem('pi_lang')||'ar'; return (I18N[l]||I18N.ar)[k]||k; };
-
 let currentUser=localStorage.getItem('pi_current_user')||'guest';
 let k=function(n){ return n+'_'+currentUser; };
 function getData(n,d){ try{ return JSON.parse(localStorage.getItem(k(n))||JSON.stringify(d)); }catch(e){ return d; } }
 function setData(n,v){ localStorage.setItem(k(n), JSON.stringify(v)); }
 let accounts=getData('accounts_v4', null);
 let ledger=getData('ledger_double', []);
+let vouchers=getData('vouchers_v1', []);
 let inv=getData('inv2',[]); let invoices=getData('invoices_v23',[]); let storeInfo=getData('storeInfo',{name:'',desc:''}); let sysConfig=getData('sysConfig', null); let isPro=getData('isPro',false);
 let curInv=[]; let invTotal=0; let chart=null;
+let voucherCounter=getData('voucherCounter', 1001);
 
 function defaultTree(activity){
  let base=[
@@ -161,148 +96,193 @@ function defaultTree(activity){
   {id:'112',code:'1102',name:'البنك',name_en:'Bank',parent:'11',type:'asset',level:3},
   {id:'113',code:'1103',name:'المخزون',name_en:'Inventory',parent:'11',type:'asset',level:3},
   {id:'12',code:'1200',name:'أصول ثابتة',name_en:'Fixed Assets',parent:'1',type:'asset',level:2},
-  {id:'121',code:'1201',name:'مباني ومعدات',name_en:'Buildings',parent:'12',type:'asset',level:3},
+  {id:'121',code:'1201',name:'مباني',name_en:'Buildings',parent:'12',type:'asset',level:3},
   {id:'2',code:'2000',name:'الخصوم',name_en:'Liabilities',parent:null,type:'liability',level:1},
   {id:'21',code:'2100',name:'موردين',name_en:'Suppliers',parent:'2',type:'liability',level:2},
   {id:'22',code:'2200',name:'قروض',name_en:'Loans',parent:'2',type:'liability',level:2},
   {id:'3',code:'3000',name:'حقوق الملكية',name_en:'Equity',parent:null,type:'equity',level:1},
   {id:'31',code:'3001',name:'رأس المال',name_en:'Capital',parent:'3',type:'equity',level:2},
   {id:'4',code:'4000',name:'الإيرادات',name_en:'Income',parent:null,type:'income',level:1},
-  {id:'41',code:'4100',name:'مبيعات منتجات',name_en:'Product Sales',parent:'4',type:'income',level:2},
-  {id:'42',code:'4200',name:'خدمات',name_en:'Services',parent:'4',type:'income',level:2},
+  {id:'41',code:'4100',name:'مبيعات',name_en:'Sales',parent:'4',type:'income',level:2},
   {id:'5',code:'5000',name:'المصروفات',name_en:'Expenses',parent:null,type:'expense',level:1},
   {id:'51',code:'5100',name:'إيجار',name_en:'Rent',parent:'5',type:'expense',level:2},
   {id:'52',code:'5200',name:'كهرباء',name_en:'Utilities',parent:'5',type:'expense',level:2},
   {id:'53',code:'5300',name:'مشتريات',name_en:'Purchases',parent:'5',type:'expense',level:2},
   {id:'54',code:'5400',name:'رواتب',name_en:'Salaries',parent:'5',type:'expense',level:2}
  ];
- if(activity==='grocery') base.push({id:'411',code:'4101',name:'مبيعات مواد غذائية',name_en:'Grocery Sales',parent:'41',type:'income',level:3});
- if(activity==='stationery') base.push({id:'412',code:'4102',name:'مبيعات قرطاسية',name_en:'Stationery Sales',parent:'41',type:'income',level:3});
- if(activity==='electronics') base.push({id:'413',code:'4103',name:'مبيعات إلكترونيات',name_en:'Electronics Sales',parent:'41',type:'income',level:3});
  return base;
 }
-function checkSetup(){ if(!accounts||!sysConfig){ document.getElementById('setup-modal').style.display='flex'; }else{ document.getElementById('setup-modal').style.display='none'; document.getElementById('currency-badge').textContent='💰 '+(sysConfig.currency||'Pi')+' | 🏢 '+(sysConfig.activity||''); } }
+function checkSetup(){ if(!accounts||!sysConfig){ document.getElementById('setup-modal').style.display='flex'; }else{ document.getElementById('setup-modal').style.display='none'; document.getElementById('currency-badge').textContent='💰 '+(sysConfig.currency||'Pi'); } }
+
 function renderTree(){
  if(!accounts) return;
- let l=localStorage.getItem('pi_lang')||'ar';
- document.getElementById('total-acc').textContent=accounts.length;
  let html=''; function node(pid,d){ accounts.filter(function(a){return a.parent===pid;}).forEach(function(acc){
-  let name=l==='ar'?acc.name:acc.name_en;
-  let debitSum=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
-  let creditSum=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
-  let bal=debitSum-creditSum;
-  html+='<div class="tree-item l'+(d>3?3:d)+'"><div><b>'+acc.code+'</b> '+name+' <small>('+acc.type+' | '+bal.toFixed(2)+')</small></div><div><button onclick="window.delAcc(\''+acc.id+'\')" style="background:none;border:none;color:red">x</button></div></div>';
+  let debit=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let credit=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let bal=debit-credit;
+  html+='<div class="tree-item l'+(d>3?3:d)+'"><div><b>'+acc.code+'</b> '+acc.name+' ('+bal.toFixed(1)+')</div><div><button onclick="window.delAcc(\''+acc.id+'\')" style="background:none;border:none;color:red">x</button></div></div>';
   node(acc.id,d+1);
- }); }
- node(null,1); document.getElementById('tree-container').innerHTML=html;
- let opts=accounts.map(function(a){ let n=l==='ar'?a.name:a.name_en; return '<option value="'+a.id+'">'+a.code+' - '+n+'</option>'; }).join('');
+ }); } node(null,1); document.getElementById('tree-container').innerHTML=html;
+ let opts=accounts.map(function(a){ return '<option value="'+a.id+'">'+a.code+' - '+a.name+'</option>'; }).join('');
  document.getElementById('acc-parent').innerHTML='<option value="">Root</option>'+opts;
  document.getElementById('e-debit').innerHTML=opts;
  document.getElementById('e-credit').innerHTML=opts;
+ document.getElementById('v-account').innerHTML=opts;
 }
-window.delAcc=function(id){ if(accounts.some(function(a){return a.parent===id;})){ alert('Has children'); return; } if(ledger.some(function(x){return x.debitId===id||x.creditId===id;})){ alert('Account has entries - cannot delete'); return; } accounts=accounts.filter(function(a){return a.id!==id;}); setData('accounts_v4', accounts); renderTree(); renderTrial(); };
+window.delAcc=function(id){ if(accounts.some(function(a){return a.parent===id;})){ alert('Has children'); return; } if(ledger.some(function(x){return x.debitId===id||x.creditId===id;})){ alert('Has entries'); return; } accounts=accounts.filter(function(a){return a.id!==id;}); setData('accounts_v4', accounts); renderAll(); };
 
-function renderLedger(){
- document.getElementById('ledger-body').innerHTML=ledger.slice(-50).reverse().map(function(x){
-  let l=localStorage.getItem('pi_lang')||'ar';
-  let dAcc=accounts?accounts.find(function(a){return a.id===x.debitId;}):null;
-  let cAcc=accounts?accounts.find(function(a){return a.id===x.creditId;}):null;
-  let dName=dAcc? (l==='ar'?dAcc.name:dAcc.name_en) : x.debitId;
-  let cName=cAcc? (l==='ar'?cAcc.name:cAcc.name_en) : x.creditId;
-  return '<tr><td>'+x.date+'</td><td class="debit" style="color:#2e7d32"><b>'+dName+'</b><br><small>'+(x.debitCode||'')+'</small></td><td class="credit" style="color:#c62828"><b>'+cName+'</b><br><small>'+(x.creditCode||'')+'</small></td><td>'+x.desc+'</td><td><b>'+x.amount+'</b></td></tr>';
+function renderLedger(){ document.getElementById('ledger-body').innerHTML=ledger.slice(-50).reverse().map(function(x){
+  let dAcc=accounts?accounts.find(function(a){return a.id===x.debitId;}):null; let cAcc=accounts?accounts.find(function(a){return a.id===x.creditId;}):null;
+  return '<tr><td>'+x.date+'</td><td style="color:var(--green)"><b>'+(dAcc?dAcc.name:x.debitCode)+'</b></td><td style="color:var(--red)"><b>'+(cAcc?cAcc.name:x.creditCode)+'</b></td><td>'+x.desc+'</td><td>'+x.amount+'</td></tr>';
+ }).join(''); }
+
+function renderVouchers(){
+ let box=document.getElementById('vouchers-list');
+ if(vouchers.length===0){ box.innerHTML='<small>لا يوجد سندات</small>'; return; }
+ box.innerHTML=vouchers.slice(-30).reverse().map(function(v){
+  let color=v.type==='receipt'?'#e8f5e9':'#ffebee';
+  return '<div style="background:'+color+';border:1px solid #ccc;padding:6px;border-radius:6px;margin:4px 0"><b>'+(v.type==='receipt'?'📥 قبض #':'📤 صرف #')+v.number+'</b> '+v.fromto+' - '+v.amount.toFixed(2)+' Pi<br><small>'+v.desc+' | '+v.date+'</small> <button onclick="window.printVoucher(\''+v.id+'\')" style="float:left" class="btn btn-s">طباعة</button></div>';
  }).join('');
-}function renderTrial(){
+}
+window.printVoucher=function(id){
+ let v=vouchers.find(function(x){return x.id===id;}); if(!v) return;
+ let acc=accounts?accounts.find(function(a){return a.id===v.accountId;}):null;
+ let html='<div class="voucher"><h3>'+(v.type==='receipt'?'سند قبض - Receipt Voucher':'سند صرف - Payment Voucher')+'</h3><div class="voucher-row"><span>رقم السند:</span><b>#'+v.number+'</b></div><div class="voucher-row"><span>التاريخ:</span><b>'+v.date+'</b></div><div class="voucher-row"><span>'+(v.type==='receipt'?'استلمنا من:':'صرفنا إلى:')+'</span><b>'+v.fromto+'</b></div><div class="voucher-row"><span>المبلغ:</span><b style="font-size:16px">'+v.amount.toFixed(3)+' '+(sysConfig?sysConfig.currency:'Pi')+'</b></div><div class="voucher-row"><span>الحساب:</span><b>'+(acc?acc.name:v.accountId)+'</b></div><div class="voucher-row"><span>طريقة الدفع:</span><b>'+v.paymentMethod+'</b></div><div class="voucher-row"><span>البيان:</span><span>'+v.desc+'</span></div><div style="display:flex;justify-content:space-between;margin-top:20px"><span>المستلم<br><br>__________</span><span>المحاسب<br><br>__________</span><span>المدير<br><br>__________</span></div></div>';
+ document.getElementById('voucher-print-area').innerHTML=html+'<button class="btn btn-s" onclick="window.print()">🖨️ طباعة</button>';
+};
+
+function renderTrial(){
  let box=document.getElementById('trial-report');
  if(!accounts){ box.innerHTML=''; return; }
- let rows='';
- let totalDebit=0, totalCredit=0;
+ let rows=''; let totalD=0,totalC=0;
  accounts.forEach(function(acc){
+  let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  if(d===0&&c===0) return;
+  totalD+=d; totalC+=c;
+  rows+='<tr><td>'+acc.code+'</td><td>'+acc.name+'</td><td>'+d.toFixed(2)+'</td><td>'+c.toFixed(2)+'</td><td>'+(d-c).toFixed(2)+'</td></tr>';
+ });
+ let balanced=Math.abs(totalD-totalC)<0.001;
+ document.getElementById('balance-badge').textContent=(balanced?'✅ متوازن':'⚠️ غير متوازن')+' D:'+totalD.toFixed(2)+' C:'+totalC.toFixed(2);
+ document.getElementById('balance-badge').className=balanced?'badge badge-green':'badge badge-warn';
+ box.innerHTML='<table><thead><tr><th>Code</th><th>Account</th><th>Debit</th><th>Credit</th><th>Bal</th></tr></thead><tbody>'+rows+'<tr style="background:#e8f5e9;font-weight:700"><td></td><td>Total</td><td>'+totalD.toFixed(2)+'</td><td>'+totalC.toFixed(2)+'</td><td>'+(balanced?'✅':'⚠️')+'</td></tr></tbody></table>';
+}function generateIncomeStatement(){
+ let box=document.getElementById('income-statement');
+ let incomeAccounts=accounts.filter(function(a){return a.type==='income';});
+ let expenseAccounts=accounts.filter(function(a){return a.type==='expense';});
+ let totalIncome=0, totalExpense=0;
+ let incRows='', expRows='';
+ incomeAccounts.forEach(function(acc){
+  let credit=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let debit=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let net=credit-debit;
+  if(net!==0){ totalIncome+=net; incRows+='<tr><td>'+acc.code+' '+acc.name+'</td><td>'+net.toFixed(3)+'</td></tr>'; }
+ });
+ expenseAccounts.forEach(function(acc){
   let debit=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
   let credit=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
-  if(debit===0&&credit===0) return;
-  totalDebit+=debit; totalCredit+=credit;
-  let name=localStorage.getItem('pi_lang')==='ar'?acc.name:acc.name_en;
-  rows+='<tr><td>'+acc.code+'</td><td>'+name+'</td><td>'+debit.toFixed(2)+'</td><td>'+credit.toFixed(2)+'</td><td>'+(debit-credit).toFixed(2)+'</td></tr>';
+  let net=debit-credit;
+  if(net!==0){ totalExpense+=net; expRows+='<tr><td>'+acc.code+' '+acc.name+'</td><td>'+net.toFixed(3)+'</td></tr>'; }
  });
- let balanced = Math.abs(totalDebit-totalCredit)<0.001;
- let t=window._t;
- document.getElementById('balance-badge').textContent=(balanced? t('balanced') : t('unbalanced'))+' D:'+totalDebit.toFixed(2)+' = C:'+totalCredit.toFixed(2);
- document.getElementById('balance-badge').className= balanced ? 'badge' : 'badge badge-warn';
- box.innerHTML='<h5>ميزان المراجعة / Trial Balance - مدين=دائن</h5><table><thead><tr><th>Code</th><th>Account</th><th>Debit مدين</th><th>Credit دائن</th><th>Balance</th></tr></thead><tbody>'+rows+'<tr style="background:#e8f5e9;font-weight:700"><td></td><td>Total</td><td>'+totalDebit.toFixed(2)+'</td><td>'+totalCredit.toFixed(2)+'</td><td style="color:'+(balanced?'green':'red')+'">'+(balanced?'✅':'⚠️')+'</td></tr></tbody></table>';
+ let netIncome=totalIncome-totalExpense;
+ box.innerHTML='<h4 style="text-align:center">📈 قائمة الدخل - Income Statement</h4><p style="text-align:center"><small>من '+new Date().toLocaleDateString()+'</small></p><table><thead><tr><th>الإيرادات Revenues</th><th>Amount</th></tr></thead><tbody>'+incRows+'<tr style="background:#e8f5e9;font-weight:700"><td>إجمالي الإيرادات</td><td>'+totalIncome.toFixed(3)+'</td></tr></tbody></table><br><table><thead><tr><th>المصروفات Expenses</th><th>Amount</th></tr></thead><tbody>'+expRows+'<tr style="background:#ffebee;font-weight:700"><td>إجمالي المصروفات</td><td>'+totalExpense.toFixed(3)+'</td></tr></tbody></table><br><div style="background:'+(netIncome>=0?'#e8f5e9':'#ffebee')+';padding:10px;border-radius:8px;text-align:center;font-size:18px;font-weight:700">صافي الربح Net Income: '+netIncome.toFixed(3)+' '+(sysConfig?sysConfig.currency:'Pi')+' '+(netIncome>=0?'🟢':'🔴')+'</div>';
 }
-function renderInv(f){ f=f||''; let list=inv.filter(function(p){return p.name.toLowerCase().includes(f.toLowerCase());}); document.getElementById('inv-body').innerHTML=list.map(function(p){ return '<tr><td>'+p.name+'</td><td>'+p.qty+'</td><td>'+p.price+'</td><td><button onclick="window.delInv('+inv.indexOf(p)+')">x</button></td></tr>'; }).join(''); document.getElementById('inv-product').innerHTML=inv.map(function(p,i){ return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi</option>'; }).join(''); renderStorePreview(); }
-function renderInvoicesList(){ let b=document.getElementById('saved-invoices'); if(invoices.length===0){ b.innerHTML='<small>'+window._t('noInvList')+'</small>'; return;} b.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:5px;border-radius:6px;margin:3px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> '+it.customer+' - '+it.total.toFixed(3)+' Pi <br><small>'+it.date+'</small></div>'; }).join(''); }
-function renderStorePreview(){ let p=document.getElementById('store-preview'); p.innerHTML=inv.length===0?'<small>'+window._t('noInv')+'</small>':inv.slice(0,12).map(function(x){ return '<div style="background:#f8f8ff;border:1px solid #ddd;border-radius:8px;padding:6px;text-align:center"><b>'+x.name+'</b><br>'+x.price+' Pi</div>'; }).join(''); }
-function refreshCur(){ let el=document.getElementById('inv-items'); el.innerHTML=curInv.length===0?'<small>'+window._t('emptyCart')+'</small>':curInv.map(function(it,idx){ return '<div>'+it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(2)+' <button onclick="window.removeCur('+idx+')" style="color:red;background:none;border:none">x</button></div>'; }).join(''); document.getElementById('inv-total').textContent=invTotal.toFixed(3); }
-function updateReports(){ let inc=0, exp=0; ledger.forEach(function(x){ let acc=accounts?accounts.find(function(a){return a.id===x.creditId;}):null; if(acc&&acc.type==='income') inc+=x.amount; let acc2=accounts?accounts.find(function(a){return a.id===x.debitId;}):null; if(acc2&&acc2.type==='expense') exp+=x.amount; }); document.getElementById('r-inc').textContent=inc.toFixed(2); document.getElementById('r-exp').textContent=exp.toFixed(2); document.getElementById('r-net').textContent=(inc-exp).toFixed(2); let ctx=document.getElementById('financeChart'); if(chart) chart.destroy(); if(ctx){ chart=new Chart(ctx,{type:'bar',data:{labels:['Income','Expense','Net'],datasets:[{label:'Pi',data:[inc,exp,inc-exp],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true}}); } renderTrial(); }
-function updateUserUI(){ let u=currentUser; let l=localStorage.getItem('pi_lang')||'ar'; let t=I18N[l]||I18N.ar; document.getElementById('user-info').textContent=u==='guest'?t.guest:'@'+u+(isPro?' Pro':''); document.getElementById('btn-login').style.display=u==='guest'?'inline-block':'none'; document.getElementById('btn-logout').style.display=u==='guest'?'none':'inline-block'; document.getElementById('store-link').textContent=location.origin+location.pathname.replace('index.html','')+'store.html?user='+u; document.getElementById('usage-badge').textContent=(isPro?t.pro:t.free)+': '+(accounts?accounts.length:0)+' acc | '+ledger.length+' entries'; }
-window.delInv=function(i){ inv.splice(i,1); setData('inv2', inv); renderInv(); updateUserUI(); };
-window.removeCur=function(idx){ curInv.splice(idx,1); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty;},0); refreshCur(); };
-function renderAll(){ checkSetup(); renderTree(); renderLedger(); renderInv(); renderInvoicesList(); renderStorePreview(); refreshCur(); updateReports(); updateUserUI(); }
 
-document.querySelectorAll('.tab').forEach(function(tab){ tab.addEventListener('click', function(){ document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');}); document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active');}); tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active'); }); });
+function generateBalanceSheet(){
+ let box=document.getElementById('balance-sheet');
+ let assetAccounts=accounts.filter(function(a){return a.type==='asset';});
+ let liabAccounts=accounts.filter(function(a){return a.type==='liability';});
+ let equityAccounts=accounts.filter(function(a){return a.type==='equity';});
+ let totalAssets=0, totalLiab=0, totalEquity=0;
+ let assetRows='', liabRows='', equityRows='';
+ assetAccounts.forEach(function(acc){
+  let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let bal=d-c; if(bal!==0){ totalAssets+=bal; assetRows+='<tr><td>'+acc.code+' '+acc.name+'</td><td>'+bal.toFixed(3)+'</td></tr>'; }
+ });
+ liabAccounts.forEach(function(acc){
+  let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let bal=c-d; if(bal!==0){ totalLiab+=bal; liabRows+='<tr><td>'+acc.code+' '+acc.name+'</td><td>'+bal.toFixed(3)+'</td></tr>'; }
+ });
+ equityAccounts.forEach(function(acc){
+  let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let bal=c-d; if(bal!==0){ totalEquity+=bal; equityRows+='<tr><td>'+acc.code+' '+acc.name+'</td><td>'+bal.toFixed(3)+'</td></tr>'; }
+ });
+ let inc=0, exp=0;
+ ledger.forEach(function(x){ let a=accounts?accounts.find(function(z){return z.id===x.creditId;}):null; if(a&&a.type==='income') inc+=x.amount; let b=accounts?accounts.find(function(z){return z.id===x.debitId;}):null; if(b&&b.type==='expense') exp+=x.amount; });
+ let netIncome=inc-exp;
+ totalEquity+=netIncome;
+ let balanced=Math.abs(totalAssets-(totalLiab+totalEquity))<0.01;
+ box.innerHTML='<h4 style="text-align:center">⚖️ الميزانية العمومية - Balance Sheet</h4><p style="text-align:center"><small>كما في '+new Date().toLocaleDateString()+'</small></p><div class="row"><div><table><thead><tr><th>الأصول Assets</th><th>Amount</th></tr></thead><tbody>'+assetRows+'<tr style="background:#e3f2fd;font-weight:700"><td>إجمالي الأصول</td><td>'+totalAssets.toFixed(3)+'</td></tr></tbody></table></div><div><table><thead><tr><th>الخصوم Liabilities</th><th>Amount</th></tr></thead><tbody>'+liabRows+'<tr style="background:#fff3e0;font-weight:700"><td>إجمالي الخصوم</td><td>'+totalLiab.toFixed(3)+'</td></tr></tbody></table><br><table><thead><tr><th>حقوق الملكية Equity</th><th>Amount</th></tr></thead><tbody>'+equityRows+'<tr><td>صافي الربح Net Income</td><td>'+netIncome.toFixed(3)+'</td></tr><tr style="background:#e8f5e9;font-weight:700"><td>إجمالي حقوق الملكية</td><td>'+totalEquity.toFixed(3)+'</td></tr></tbody></table></div></div><div style="background:'+(balanced?'#e8f5e9':'#ffebee')+';padding:10px;border-radius:8px;text-align:center;font-weight:700;margin-top:8px">الأصول '+totalAssets.toFixed(3)+' = الخصوم '+totalLiab.toFixed(3)+' + حقوق الملكية '+totalEquity.toFixed(3)+' '+(balanced?'✅ متوازنة':'⚠️ غير متوازنة')+'</div>';
+}
+
+function renderInv(f){ f=f||''; let list=inv.filter(function(p){return p.name.toLowerCase().includes(f.toLowerCase());}); document.getElementById('inv-body').innerHTML=list.map(function(p){ return '<tr><td>'+p.name+'</td><td>'+p.qty+'</td><td>'+p.price+'</td><td><button onclick="window.delInv('+inv.indexOf(p)+')">x</button></td></tr>'; }).join(''); document.getElementById('inv-product').innerHTML=inv.map(function(p,i){ return '<option value="'+i+'">'+p.name+'</option>'; }).join(''); }
+function renderInvoices(){ document.getElementById('saved-invoices').innerHTML=invoices.slice(-10).reverse().map(function(it){ return '<div>'+it.customer+' '+it.total+'</div>'; }).join(''); }
+function refreshCur(){ document.getElementById('inv-items').innerHTML=curInv.length===0?'<small>فارغة</small>':curInv.map(function(it,idx){ return '<div>'+it.name+' x'+it.qty+' <button onclick="window.removeCur('+idx+')">x</button></div>'; }).join(''); document.getElementById('inv-total').textContent=invTotal.toFixed(3); }
+function updateReports(){ let inc=0,exp=0; ledger.forEach(function(x){ let a=accounts?accounts.find(function(z){return z.id===x.creditId;}):null; if(a&&a.type==='income') inc+=x.amount; let b=accounts?accounts.find(function(z){return z.id===x.debitId;}):null; if(b&&b.type==='expense') exp+=x.amount; }); document.getElementById('r-inc').textContent=inc.toFixed(2); document.getElementById('r-exp').textContent=exp.toFixed(2); document.getElementById('r-net').textContent=(inc-exp).toFixed(2); let ctx=document.getElementById('financeChart'); if(chart) chart.destroy(); if(ctx){ chart=new Chart(ctx,{type:'bar',data:{labels:['Income','Expense'],datasets:[{label:'Amount',data:[inc,exp],backgroundColor:['#4caf50','#f44336']}]},options:{responsive:true}}); } renderTrial(); }
+function updateUserUI(){ document.getElementById('user-info').textContent=currentUser==='guest'?'guest':'@'+currentUser; }
+window.delInv=function(i){ inv.splice(i,1); setData('inv2', inv); renderInv(); };
+window.removeCur=function(idx){ curInv.splice(idx,1); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty;},0); refreshCur(); };
+function renderAll(){ checkSetup(); renderTree(); renderLedger(); renderVouchers(); renderInv(); renderInvoices(); refreshCur(); updateReports(); }
+
+document.querySelectorAll('.tab').forEach(function(tab){ tab.addEventListener('click', function(){ document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');}); document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active');}); tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active'); if(tab.dataset.tab==='financials'){ generateIncomeStatement(); generateBalanceSheet(); } }); });
 
 document.getElementById('btn-do-setup').addEventListener('click', function(){
- let activity=document.getElementById('setup-activity').value;
- let currency=document.getElementById('setup-currency').value;
- let capital=parseFloat(document.getElementById('setup-capital').value||0);
- accounts=defaultTree(activity);
- sysConfig={activity:activity,currency:currency,capital:capital,date:new Date().toISOString()};
- setData('accounts_v4', accounts);
- setData('sysConfig', sysConfig);
- if(capital>0){
-  let cash=accounts.find(function(a){return a.code==='1101';});
-  let cap=accounts.find(function(a){return a.code==='3001';});
-  ledger.push({date:new Date().toLocaleDateString(), debitId:cash?cash.id:'111', debitCode:'1101', creditId:cap?cap.id:'31', creditCode:'3001', amount:capital, desc:'رأس المال الافتتاحي / Opening Capital - Double Entry'});
-  setData('ledger_double', ledger);
- }
- document.getElementById('setup-modal').style.display='none';
- renderAll();
- alert('✅ '+accounts.length+' accounts created - Double Entry Ready');
+ let activity=document.getElementById('setup-activity').value; let currency=document.getElementById('setup-currency').value; let capital=parseFloat(document.getElementById('setup-capital').value||0);
+ accounts=defaultTree(activity); sysConfig={activity:activity,currency:currency,capital:capital}; setData('accounts_v4', accounts); setData('sysConfig', sysConfig);
+ if(capital>0){ let cash=accounts.find(function(a){return a.code==='1101';}); let cap=accounts.find(function(a){return a.code==='3001';}); ledger.push({date:new Date().toLocaleDateString(), debitId:cash.id, debitCode:cash.code, creditId:cap.id, creditCode:cap.code, amount:capital, desc:'رأس المال الافتتاحي'}); setData('ledger_double', ledger); }
+ document.getElementById('setup-modal').style.display='none'; renderAll();
 });
-document.getElementById('btn-reset-setup').addEventListener('click', function(){ if(confirm('Reset tree?')){ accounts=null; sysConfig=null; localStorage.removeItem(k('accounts_v4')); localStorage.removeItem(k('sysConfig')); checkSetup(); } });
-document.getElementById('form-account').addEventListener('submit', function(e){ e.preventDefault(); let parent=document.getElementById('acc-parent').value||null; let pAcc=parent?accounts.find(function(a){return a.id===parent;}):null; let lvl=pAcc?pAcc.level+1:1; let na={id:Date.now().toString(), code:document.getElementById('acc-code').value, name:document.getElementById('acc-name').value, name_en:document.getElementById('acc-name').value, parent:parent, type:document.getElementById('acc-type').value, level:lvl}; accounts.push(na); setData('accounts_v4', accounts); renderTree(); renderTrial(); e.target.reset(); });
+document.getElementById('form-account').addEventListener('submit', function(e){ e.preventDefault(); let parent=document.getElementById('acc-parent').value||null; let na={id:Date.now().toString(), code:document.getElementById('acc-code').value, name:document.getElementById('acc-name').value, name_en:document.getElementById('acc-name').value, parent:parent, type:document.getElementById('acc-type').value, level:1}; accounts.push(na); setData('accounts_v4', accounts); renderTree(); renderTrial(); e.target.reset(); });
 document.getElementById('form-entry').addEventListener('submit', function(e){
- e.preventDefault();
- let dId=document.getElementById('e-debit').value;
- let cId=document.getElementById('e-credit').value;
- if(dId===cId){ alert('Debit and Credit cannot be same account - المدين والدائن لا يمكن أن يكون نفس الحساب'); return; }
- let dAcc=accounts.find(function(a){return a.id===dId;});
- let cAcc=accounts.find(function(a){return a.id===cId;});
- let amt=parseFloat(document.getElementById('e-amount').value);
- ledger.push({date:new Date().toLocaleDateString(), debitId:dId, debitCode:dAcc?dAcc.code:'', creditId:cId, creditCode:cAcc?cAcc.code:'', amount:amt, desc:document.getElementById('e-desc').value});
- setData('ledger_double', ledger); renderLedger(); updateReports(); updateUserUI(); e.target.reset();
+ e.preventDefault(); let dId=document.getElementById('e-debit').value; let cId=document.getElementById('e-credit').value; if(dId===cId){ alert('نفس الحساب'); return; } let dAcc=accounts.find(function(a){return a.id===dId;}); let cAcc=accounts.find(function(a){return a.id===cId;}); ledger.push({date:new Date().toLocaleDateString(), debitId:dId, debitCode:dAcc.code, creditId:cId, creditCode:cAcc.code, amount:parseFloat(document.getElementById('e-amount').value), desc:document.getElementById('e-desc').value}); setData('ledger_double', ledger); renderLedger(); updateReports(); e.target.reset();
 });
-document.getElementById('form-inv').addEventListener('submit', function(e){ e.preventDefault(); inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0), img:document.getElementById('p-img').value, cat:document.getElementById('p-cat').value}); setData('inv2', inv); renderInv(); updateUserUI(); e.target.reset(); });
-document.getElementById('search-prod').addEventListener('input', function(){ renderInv(this.value); });
-document.getElementById('btn-add-inv').addEventListener('click', function(){ let idx=document.getElementById('inv-product').value; let q=parseInt(document.getElementById('inv-qty').value||1); if(idx===''||inv.length===0) return; let prod=inv[idx]; curInv.push({name:prod.name, price:prod.price, qty:q}); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty;},0); refreshCur(); });
-document.getElementById('btn-save-inv').addEventListener('click', function(){
- if(curInv.length===0){ alert(window._t('noInv')); return; }
- let customer=document.getElementById('inv-customer').value||'عميل';
- let data={id:Date.now(), customer:customer, items:JSON.parse(JSON.stringify(curInv)), total:invTotal, date:new Date().toLocaleString()};
- invoices.push(data); setData('invoices_v23', invoices);
- let cash=accounts? accounts.find(function(a){return a.code==='1101';}) : null;
- let sales=accounts? accounts.find(function(a){return a.code==='4100';}) : null;
- if(cash&&sales){
-  ledger.push({date:new Date().toLocaleDateString(), debitId:cash.id, debitCode:cash.code, creditId:sales.id, creditCode:sales.code, amount:invTotal, desc:'فاتورة مبيعات '+customer+' / Sales Invoice '+customer});
+
+document.getElementById('btn-show-receipt').addEventListener('click', function(){ document.getElementById('voucher-form-card').style.display='block'; document.getElementById('v-type').value='receipt'; document.getElementById('v-number').value=voucherCounter; document.getElementById('v-date').valueAsDate=new Date(); });
+document.getElementById('btn-show-payment').addEventListener('click', function(){ document.getElementById('voucher-form-card').style.display='block'; document.getElementById('v-type').value='payment'; document.getElementById('v-number').value=voucherCounter; document.getElementById('v-date').valueAsDate=new Date(); });
+document.getElementById('form-voucher').addEventListener('submit', function(e){
+ e.preventDefault();
+ let type=document.getElementById('v-type').value;
+ let number=document.getElementById('v-number').value||voucherCounter;
+ let date=document.getElementById('v-date').value||new Date().toLocaleDateString();
+ let fromto=document.getElementById('v-fromto').value;
+ let amount=parseFloat(document.getElementById('v-amount').value);
+ let accountId=document.getElementById('v-account').value;
+ let desc=document.getElementById('v-desc').value;
+ let payMethod=document.getElementById('v-payment-method').value;
+ let v={id:Date.now().toString(), type:type, number:number, date:date, fromto:fromto, amount:amount, accountId:accountId, desc:desc, paymentMethod:payMethod};
+ vouchers.push(v); voucherCounter++; setData('vouchers_v1', vouchers); setData('voucherCounter', voucherCounter);
+ let cashAcc=accounts.find(function(a){return a.code==='1101';});
+ let bankAcc=accounts.find(function(a){return a.code==='1102';});
+ let mainAcc=cashAcc;
+ if(payMethod==='bank') mainAcc=bankAcc;
+ let targetAcc=accounts.find(function(a){return a.id===accountId;});
+ if(targetAcc&&mainAcc){
+  if(type==='receipt'){
+   ledger.push({date:date, debitId:mainAcc.id, debitCode:mainAcc.code, creditId:targetAcc.id, creditCode:targetAcc.code, amount:amount, desc:'سند قبض #'+number+' - '+fromto+' - '+desc});
+  }else{
+   ledger.push({date:date, debitId:targetAcc.id, debitCode:targetAcc.code, creditId:mainAcc.id, creditCode:mainAcc.code, amount:amount, desc:'سند صرف #'+number+' - '+fromto+' - '+desc});
+  }
   setData('ledger_double', ledger);
  }
- curInv.forEach(function(ci){ let p=inv.find(function(x){return x.name===ci.name;}); if(p) p.qty-=ci.qty; });
- setData('inv2', inv); renderInv(); renderLedger(); updateReports(); renderInvoicesList(); updateUserUI(); document.getElementById('invoice-actions').style.display='block';
+ renderAll(); e.target.reset(); document.getElementById('voucher-form-card').style.display='none';
+ alert('✅ تم حفظ السند #'+number+' وإنشاء قيد مزدوج تلقائي');
 });
-document.getElementById('btn-new-inv').addEventListener('click', function(){ curInv=[]; invTotal=0; refreshCur(); document.getElementById('invoice-actions').style.display='none'; });
-document.getElementById('btn-save-store').addEventListener('click', function(){ storeInfo.name=document.getElementById('store-name').value; storeInfo.desc=document.getElementById('store-desc').value; setData('storeInfo', storeInfo); alert(window._t('migrated')); });
-document.getElementById('btn-copy-store').addEventListener('click', function(){ navigator.clipboard.writeText(document.getElementById('store-link').textContent).then(function(){alert(window._t('copied'));}); });
-document.getElementById('btn-migrate').addEventListener('click', function(){ let old=localStorage.getItem('ledger'); if(old){ try{ let oldArr=JSON.parse(old); oldArr.forEach(function(o){ ledger.push({date:o.date, debitId:'111', debitCode:'1101', creditId:'4100', creditCode:'4100', amount:o.amount, desc:o.desc}); }); setData('ledger_double', ledger); }catch(e){} } renderAll(); alert('Migrated to Double Entry: '+ledger.length); });
-document.getElementById('btn-excel').addEventListener('click', function(){ let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ledger'); XLSX.writeFile(wb,'ledger_double.xlsx'); });
-document.getElementById('btn-report-pdf').addEventListener('click', function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Trial Balance',10,10); let y=20; accounts.forEach(function(acc){ let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0); let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0); if(d||c){ doc.text(acc.code+' '+acc.name+' D:'+d+' C:'+c,10,y); y+=7; } }); doc.save('trial.pdf'); });
-document.getElementById('btn-login').addEventListener('click', async function(){ try{ if(typeof Pi==='undefined'){ alert('Open Pi Browser'); return;} let auth=await Pi.authenticate(['username','payments'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); accounts=getData('accounts_v4', null); ledger=getData('ledger_double', []); inv=getData('inv2',[]); sysConfig=getData('sysConfig', null); renderAll(); }catch(e){ alert(e.message);} });
-document.getElementById('btn-logout').addEventListener('click', function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; accounts=getData('accounts_v4', null); ledger=getData('ledger_double', []); sysConfig=getData('sysConfig', null); renderAll(); });
 
-let savedLang=localStorage.getItem('pi_lang')||'ar';
-document.getElementById('lang-picker').value=savedLang;
-applyLang(savedLang);
-document.getElementById('lang-picker').addEventListener('change', function(){ applyLang(this.value); });
+document.getElementById('form-inv').addEventListener('submit', function(e){ e.preventDefault(); inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0)}); setData('inv2', inv); renderInv(); e.target.reset(); });
+document.getElementById('search-prod').addEventListener('input', function(){ renderInv(this.value); });
+document.getElementById('btn-add-inv').addEventListener('click', function(){ let idx=document.getElementById('inv-product').value; if(idx==='') return; let prod=inv[idx]; let q=parseInt(document.getElementById('inv-qty').value||1); curInv.push({name:prod.name, price:prod.price, qty:q}); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty;},0); refreshCur(); });
+document.getElementById('btn-save-inv').addEventListener('click', function(){ if(curInv.length===0) return; let customer=document.getElementById('inv-customer').value||'عميل'; invoices.push({id:Date.now(), customer:customer, items:JSON.parse(JSON.stringify(curInv)), total:invTotal, date:new Date().toLocaleString()}); setData('invoices_v23', invoices); let cash=accounts.find(function(a){return a.code==='1101';}); let sales=accounts.find(function(a){return a.code==='4100';}); if(cash&&sales){ ledger.push({date:new Date().toLocaleDateString(), debitId:cash.id, debitCode:cash.code, creditId:sales.id, creditCode:sales.code, amount:invTotal, desc:'فاتورة '+customer}); setData('ledger_double', ledger); } curInv.forEach(function(ci){ let p=inv.find(function(x){return x.name===ci.name;}); if(p) p.qty-=ci.qty; }); setData('inv2', inv); renderAll(); });
+document.getElementById('btn-gen-income').addEventListener('click', generateIncomeStatement);
+document.getElementById('btn-gen-balance').addEventListener('click', generateBalanceSheet);
+document.getElementById('btn-export-financials').addEventListener('click', function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Financial Statements - '+new Date().toLocaleDateString(),10,10); doc.text(document.getElementById('income-statement').innerText.substring(0,4000),10,20); doc.addPage(); doc.text(document.getElementById('balance-sheet').innerText.substring(0,4000),10,20); doc.save('financials.pdf'); });
+document.getElementById('btn-excel').addEventListener('click', function(){ let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ledger'); XLSX.writeFile(wb,'ledger.xlsx'); });
+document.getElementById('btn-report-pdf').addEventListener('click', function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Trial Balance',10,10); let y=20; accounts.forEach(function(acc){ let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0); let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0); if(d||c){ doc.text(acc.code+' '+acc.name+' D:'+d+' C:'+c,10,y); y+=7; } }); doc.save('trial.pdf'); });
+document.getElementById('btn-migrate').addEventListener('click', function(){ renderAll(); alert('Migrated'); });
+document.getElementById('btn-login').addEventListener('click', async function(){ try{ if(typeof Pi==='undefined'){ alert('Pi Browser only'); return;} let auth=await Pi.authenticate(['username'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); accounts=getData('accounts_v4', null); ledger=getData('ledger_double', []); vouchers=getData('vouchers_v1', []); renderAll(); }catch(e){ alert(e.message);} });
+document.getElementById('btn-logout').addEventListener('click', function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; renderAll(); });
 renderAll();
 });
 </script>
