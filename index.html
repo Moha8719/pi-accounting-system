@@ -232,7 +232,20 @@ if(savedUser){v3_setUser(savedUser);}
    }
  },2000);
 })();
-// Handle ?store=@username public view
+// Handle ?store=@username public view// Handle ?store=@username public view
+(function(){
+ let params=new URLSearchParams(location.search);
+ let store=params.get('store');
+ if(store){
+   let uname=store.replace('@','');
+   let pfx='user_'+uname+'_';
+   let inv=JSON.parse(localStorage.getItem(pfx+'inv2')||'[]');
+   if(inv.length){
+     let html = inv.map(p=>'<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #ddd"><span>'+p.name+'</span><b>'+p.price+' Pi</b></div>').join('');
+     document.body.innerHTML='<div class="container"><div class="card"><h2>متجر @'+uname+'</h2><div>'+html+'</div><p style="text-align:center"><a href="'+location.pathname+'">إنشاء متجرك مجانا</a></p></div></div>';
+   }
+ }
+})();
 (function(){
  let params=new URLSearchParams(location.search);
  let store=params.get('store');
@@ -243,7 +256,20 @@ if(savedUser){v3_setUser(savedUser);}
    if(inv.length){
      document.body.innerHTML='<div class="container"><div class="card"><h2>🛍️ متجر @'+uname+'</h2><div>'+inv.map(p=>'<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #ddd"><span>'+p.name+'</span><b>'+p.price+' Pi</b><button class="btn btn-w" onclick="window.open(\'https://wa.me/?text=اريد '+p.name+'\')\'>طلب</button></div>').join('')+'</div><p style="text-align:center"><a href="'+location.pathname+'">إنشاء متجرك مجانا</a></p></div></div>';
    }
+ }// Handle ?store=@username public view
+(function(){
+ let params=new URLSearchParams(location.search);
+ let store=params.get('store');
+ if(store){
+   let uname=store.replace('@','');
+   let pfx='user_'+uname+'_';
+   let inv=JSON.parse(localStorage.getItem(pfx+'inv2')||'[]');
+   if(inv.length){
+     let html = inv.map(p=>'<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #ddd"><span>'+p.name+'</span><b>'+p.price+' Pi</b></div>').join('');
+     document.body.innerHTML='<div class="container"><div class="card"><h2>متجر @'+uname+'</h2><div>'+html+'</div><p style="text-align:center"><a href="'+location.pathname+'">إنشاء متجرك مجانا</a></p></div></div>';
+   }
  }
+})();
 })();
 console.log('v3.0 Multi-Tenant Loaded - Prefix: '+v3_prefix);
 </script>
