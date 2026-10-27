@@ -1,115 +1,102 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Accounting ERP - Pi</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pi Merchant OS v2</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--p:#ffd700;--s:#6a1b9a;--bg:#2e004a}body{font-family:Segoe UI;background:var(--bg);color:#fff;margin:0;padding:12px}.container{max-width:900px;margin:auto;background:rgba(255,255,255,.1);padding:15px;border-radius:15px}.header{display:flex;justify-content:space-between;align-items:center}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:15px 0;border-bottom:2px solid var(--s);padding-bottom:10px}.tab{padding:8px 12px;background:rgba(255,255,255,.15);border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}.tab.active{background:var(--p);color:#2e004a}.tab-content{display:none}.tab-content.active{display:block}.btn{padding:10px 18px;border:none;border-radius:20px;font-weight:700;cursor:pointer}.btn-pi{background:var(--p);color:#2e004a}input,select{width:100%;padding:10px;border-radius:8px;border:2px solid var(--s);box-sizing:border-box;margin:5px 0}table{width:100%;background:#fff;color:#333;border-collapse:collapse;border-radius:8px;overflow:hidden;margin-top:10px}th,td{padding:8px;border-bottom:1px solid #ddd}th{background:var(--s);color:#fff}
+:root{--p:#ffd700;--s:#6a1b9a;--bg:#2e004a}body{font-family:system-ui;background:var(--bg);color:#fff;margin:0;padding:10px}.container{max-width:1000px;margin:auto;background:rgba(255,255,255,.08);padding:15px;border-radius:16px}.tabs{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}.tab{padding:8px 11px;background:rgba(255,255,255,.15);border-radius:10px;cursor:pointer;font-size:12px;font-weight:700}.tab.active{background:var(--p);color:#2e004a}.tab-content{display:none}.tab-content.active{display:block}.card{background:#fff;color:#222;padding:12px;border-radius:12px;margin:8px 0}.btn{padding:9px 14px;border:none;border-radius:20px;font-weight:700;cursor:pointer;margin:3px}.btn-pi{background:var(--p);color:#2e004a}.btn-s{background:var(--s);color:#fff}.btn-w{background:#25D366;color:#fff}input,select{width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--s);margin:4px 0;box-sizing:border-box}table{width:100%;border-collapse:collapse;margin-top:8px}th,td{padding:7px;border-bottom:1px solid #ddd;font-size:13px}th{background:var(--s);color:#fff}.alert-low{background:#ffebee;color:#c62828;padding:4px 8px;border-radius:6px;font-size:11px}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="header">
-<div style="color:#ffeb3b;font-size:13px"><span id="txt-welcome">مرحباً</span>: Pi Merchant</div>
-<div><label style="font-size:11px">Language:</label><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option></select></div>
-</div>
-<h1 id="main-title" style="text-align:center;color:var(--p)">النظام المحاسبي الذكي π</h1>
+<div style="display:flex;justify-content:space-between"><div>👋 Pi Merchant OS v2</div><select id="lang-picker" style="width:auto"><option value="ar">AR</option><option value="en">EN</option></select></div>
+<h2 id="main-title" style="text-align:center;color:var(--p)">نظام التاجر الذكي</h2>
 <div class="tabs">
-<div class="tab active" data-tab="entry" id="t-entry">إضافة قيد</div>
-<div class="tab" data-tab="ledger" id="t-ledger">دفتر الأستاذ</div>
-<div class="tab" data-tab="inventory" id="t-inv">المخزون</div>
-<div class="tab" data-tab="partners" id="t-part">العملاء والموردين</div>
-<div class="tab" data-tab="income" id="t-income">قائمة الدخل</div>
-<div class="tab" data-tab="pay" id="t-pay">الدفع بـ Pi</div>
+<div class="tab active" data-tab="entry">قيد</div><div class="tab" data-tab="invoice">فاتورة</div><div class="tab" data-tab="inventory">مخزون</div><div class="tab" data-tab="partners">عملاء</div><div class="tab" data-tab="reports">تقارير</div><div class="tab" data-tab="pay">Pi</div>
 </div>
 
-<div id="entry" class="tab-content active"><h2 id="h-entry" style="text-align:center;color:var(--p)">إضافة قيد محاسبي</h2><form id="accounting-form"><select id="entry-type"><option value="income">إيراد (+)</option><option value="expense">مصروف (-)</option><option value="asset">أصل</option></select><input id="amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="description" type="text" placeholder="الوصف" required><button class="btn btn-pi" type="submit" id="btn-save">حفظ القيد</button></form></div>
-<div id="ledger" class="tab-content"><h2>دفتر الأستاذ</h2><button class="btn" style="background:var(--s);color:#fff" id="btn-csv">CSV</button><table><thead><tr><th>التاريخ</th><th>الوصف</th><th>النوع</th><th>المبلغ</th></tr></thead><tbody id="ledger-body"></tbody></table></div>
-<div id="inventory" class="tab-content"><h2>المخزون</h2><form id="inv-form"><input id="prod-name" placeholder="اسم المنتج" required><input id="prod-qty" type="number" placeholder="الكمية" required><input id="prod-price" type="number" step="0.0001" placeholder="السعر" required><button class="btn btn-pi" type="submit">إضافة</button></form><table><tbody id="inv-body"></tbody></table></div>
-<div id="partners" class="tab-content"><h2>العملاء</h2><form id="partner-form"><input id="part-name" placeholder="الاسم" required><select id="part-type"><option value="customer">عميل</option><option value="supplier">مورد</option></select><input id="part-phone" placeholder="الهاتف"><button class="btn btn-pi" type="submit">حفظ</button></form><table><tbody id="partner-body"></tbody></table></div>
-<div id="income" class="tab-content"><h2>قائمة الدخل</h2><p>إيرادات: <span id="total-income">0</span> π</p><p>مصروفات: <span id="total-expenses">0</span> π</p><h3>صافي: <span id="net-profit">0</span> π</h3><div style="background:#fff;padding:10px;border-radius:8px"><canvas id="financeChart"></canvas></div></div>
-<div id="pay" class="tab-content"><h2>الدفع بـ Pi</h2><input id="pay_amount" type="number" value="0.1" step="0.01"><button class="btn btn-pi" id="btn-pi-pay">ادفع بـ π</button><div id="pi-status" style="margin-top:10px;color:#ffeb3b"></div></div>
+<!-- 1. قيد -->
+<div id="entry" class="tab-content active"><div class="card"><h3>إضافة قيد</h3><form id="form-entry"><select id="e-type"><option value="income">إيراد</option><option value="expense">مصروف</option><option value="asset">أصل</option></select><input id="e-amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="e-desc" placeholder="الوصف" required><button class="btn btn-pi" type="submit">حفظ</button></form></div><div class="card"><table><tbody id="ledger-body"></tbody></table></div></div>
+
+<!-- 2. فاتورة جديد -->
+<div id="invoice" class="tab-content"><div class="card"><h3>إنشاء فاتورة</h3><input id="inv-customer" placeholder="اسم العميل"><select id="inv-product"></select><input id="inv-qty" type="number" value="1"><button class="btn btn-pi" id="btn-add-to-inv">إضافة للفاتورة</button><div id="inv-items" style="margin:10px 0"></div><h4>الإجمالي: <span id="inv-total">0</span> π</h4><button class="btn btn-s" id="btn-pdf">PDF 📄</button><button class="btn btn-w" id="btn-wa">واتساب 💬</button><button class="btn btn-pi" id="btn-save-inv">حفظ وخصم مخزون</button></div></div>
+
+<!-- 3. مخزون مطور -->
+<div id="inventory" class="tab-content"><div class="card"><form id="form-inv"><input id="p-name" placeholder="اسم المنتج" required><input id="p-qty" type="number" placeholder="الكمية" required><input id="p-price" type="number" step="0.0001" placeholder="سعر البيع" required><input id="p-cost" type="number" step="0.0001" placeholder="تكلفة الشراء"><input id="p-min" type="number" placeholder="حد التنبيه (مثلا 5)"><button class="btn btn-pi" type="submit">إضافة منتج</button></form></div><div class="card"><h4>المخزون <span id="low-count"></span></h4><table><thead><tr><th>منتج</th><th>كمية</th><th>سعر</th><th>تكلفة</th><th>باركود</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+
+<!-- 4. عملاء مطور -->
+<div id="partners" class="tab-content"><div class="card"><form id="form-part"><input id="pt-name" placeholder="اسم العميل/المورد" required><select id="pt-type"><option value="customer">عميل</option><option value="supplier">مورد</option></select><input id="pt-phone" placeholder="واتساب مع رمز الدولة مثلا 9677..."><button class="btn btn-pi" type="submit">حفظ</button></form></div><div class="card"><table><thead><tr><th>الاسم</th><th>النوع</th><th>هاتف</th><th>رصيد</th><th>كشف حساب</th></tr></thead><tbody id="pt-body"></tbody></table></div><div class="card" id="statement-box" style="display:none"><h4>كشف حساب: <span id="st-name"></span></h4><div id="st-details"></div><button class="btn btn-s" id="btn-st-pdf">PDF كشف حساب</button></div></div>
+
+<!-- تقارير -->
+<div id="reports" class="tab-content"><div class="card"><select id="rep-period"><option value="all">الكل</option><option value="today">اليوم</option><option value="week">هذا الأسبوع</option><option value="month">هذا الشهر</option></select><p>إيراد: <span id="r-inc">0</span> | مصروف: <span id="r-exp">0</span> | صافي: <b id="r-net">0</b> | تكلفة بضاعة: <span id="r-cogs">0</span></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" id="btn-excel">Excel 📊</button><button class="btn btn-s" id="btn-report-pdf">تقرير PDF</button></div></div>
+
+<div id="pay" class="tab-content"><div class="card"><input id="pay_amount" type="number" value="1" step="0.01"><button class="btn btn-pi" id="btn-pi-pay">ادفع بـ Pi</button><div id="pi-status" style="margin-top:8px;color:#ffeb3b"></div></div></div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-const T={
-ar:{main:'النظام المحاسبي الذكي',wel:'مرحباً',e:'إضافة قيد',l:'دفتر الأستاذ',i:'المخزون',p:'العملاء والموردين',inc:'قائمة الدخل',pay:'الدفع بـ Pi',add:'إضافة قيد محاسبي',save:'حفظ القيد'},
-en:{main:'Smart Accounting ERP',wel:'Welcome',e:'Add Entry',l:'Ledger',i:'Inventory',p:'Partners',inc:'Income',pay:'Pi Payment',add:'Add Accounting Entry',save:'Save Entry'},
-tr:{main:'Akıllı Muhasebe ERP',wel:'Hoşgeldiniz',e:'Kayıt Ekle',l:'Defteri Kebir',i:'Envanter',p:'Ortaklar',inc:'Gelir',pay:'Pi Ödeme',add:'Muhasebe Kaydı',save:'Kaydet'},
-zh:{main:'智能会计ERP',wel:'欢迎',e:'添加',l:'总账',i:'库存',p:'合作伙伴',inc:'收入',pay:'Pi支付',add:'添加分录',save:'保存'},
-ja:{main:'スマート会計ERP',wel:'ようこそ',e:'追加',l:'元帳',i:'在庫',p:'パートナー',inc:'収益',pay:'Pi決済',add:'仕訳追加',save:'保存'},
-vi:{main:'ERP Kế toán',wel:'Chào mừng',e:'Thêm',l:'Sổ cái',i:'Kho',p:'Đối tác',inc:'Thu nhập',pay:'Thanh toán Pi',add:'Thêm bút toán',save:'Lưu'},
-fr:{main:'ERP Comptable',wel:'Bienvenue',e:'Ajouter',l:'Grand Livre',i:'Inventaire',p:'Partenaires',inc:'Revenu',pay:'Paiement Pi',add:'Ajouter Écriture',save:'Enregistrer'},
-de:{main:'Buchhaltungs-ERP',wel:'Willkommen',e:'Eintrag',l:'Hauptbuch',i:'Inventar',p:'Partner',inc:'Ergebnis',pay:'Pi Zahlung',add:'Buchung',save:'Speichern'},
-es:{main:'ERP Contable',wel:'Bienvenido',e:'Añadir',l:'Libro Mayor',i:'Inventario',p:'Socios',inc:'Ingresos',pay:'Pago Pi',add:'Añadir Asiento',save:'Guardar'}
-};
-let lang=localStorage.getItem('erp_lang')||'ar';
-const picker=document.getElementById('lang-picker'); picker.value=lang;
-function applyLang(l){
-const t=T[l]||T.en;
-document.documentElement.lang=l; document.documentElement.dir=(l==='ar'?'rtl':'ltr');
-document.getElementById('main-title').textContent=t.main; document.getElementById('txt-welcome').textContent=t.wel;
-document.getElementById('t-entry').textContent=t.e; document.getElementById('t-ledger').textContent=t.l;
-document.getElementById('t-inv').textContent=t.i; document.getElementById('t-part').textContent=t.p;
-document.getElementById('t-income').textContent=t.inc; document.getElementById('t-pay').textContent=t.pay;
-let he=document.getElementById('h-entry'); if(he) he.textContent=t.add;
-let bs=document.getElementById('btn-save'); if(bs) bs.textContent=t.save;
-localStorage.setItem('erp_lang',l);
-}
-picker.addEventListener('change',function(){applyLang(this.value)});
-applyLang(lang);
-
-document.querySelectorAll('.tab').forEach(function(tab){
-tab.addEventListener('click',function(){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active');
-});
-});
-
+document.addEventListener('DOMContentLoaded',()=>{
+// DATA
 let ledger=JSON.parse(localStorage.getItem('ledger')||'[]');
-let inv=JSON.parse(localStorage.getItem('inventory')||'[]');
-let parts=JSON.parse(localStorage.getItem('partners')||'[]');
-function renderLedger(){document.getElementById('ledger-body').innerHTML=ledger.map(l=>`<tr><td>${l.date}</td><td>${l.desc}</td><td>${l.type}</td><td>${l.amount}</td></tr>`).join('')}
-function renderInv(){document.getElementById('inv-body').innerHTML=inv.map(i=>`<tr><td>${i.name}</td><td>${i.qty}</td><td>${i.price}</td></tr>`).join('')}
-function renderPart(){document.getElementById('partner-body').innerHTML=parts.map(p=>`<tr><td>${p.name}</td><td>${p.type}</td><td>${p.phone}</td></tr>`).join('')}
-let chartObj=null;function updateIncome(){
-let inc=ledger.filter(e=>e.type==='income').reduce((s,e)=>s+e.amount,0);
-let exp=ledger.filter(e=>e.type==='expense').reduce((s,e)=>s+e.amount,0);
-let ast=ledger.filter(e=>e.type==='asset').reduce((s,e)=>s+e.amount,0);
-document.getElementById('total-income').textContent=inc.toFixed(4);
-document.getElementById('total-expenses').textContent=exp.toFixed(4);
-document.getElementById('net-profit').textContent=(inc-exp).toFixed(4);
-let ctx=document.getElementById('financeChart'); if(!ctx) return;
-if(chartObj) chartObj.destroy();
-chartObj=new Chart(ctx,{type:'bar',data:{labels:['Income','Expenses','Assets'],datasets:[{label:'Pi',data:[inc,exp,ast],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true,maintainAspectRatio:false}});
+let inv=JSON.parse(localStorage.getItem('inv2')||'[]');
+let partners=JSON.parse(localStorage.getItem('partners2')||'[]');
+let curInv=[]; let curPartner=null; let chart=null;
+
+// TABS
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById(t.dataset.tab).classList.add('active');}));
+
+// LANG SIMPLE
+document.getElementById('lang-picker').addEventListener('change',e=>{document.documentElement.dir=e.target.value==='ar'?'rtl':'ltr'});
+
+// RENDER FUNCTIONS
+function renderLedger(){document.getElementById('ledger-body').innerHTML=ledger.slice(-20).reverse().map(l=>`<tr><td>${l.date}</td><td>${l.desc}</td><td>${l.type}</td><td>${l.amount}</td></tr>`).join('')}
+function renderInv(){let low=0;document.getElementById('inv-body').innerHTML=inv.map((p,i)=>{let isLow=p.qty<= (p.min||5); if(isLow) low++; return `<tr><td>${p.name} ${isLow?'<span class=alert-low>ناقص</span>':''}</td><td>${p.qty}</td><td>${p.price}</td><td>${p.cost||0}</td><td><svg id="bc${i}"></svg></td><td><button onclick="delInv(${i})">x</button></td></tr>`}).join('');document.getElementById('low-count').textContent=low?`(${low} ناقص)`:'';
+setTimeout(()=>inv.forEach((p,i)=>{try{JsBarcode(`#bc${i}`,p.name.substring(0,10)+i,{width:1,height:20,displayValue:false})}catch{}}),200);
+document.getElementById('inv-product').innerHTML=inv.map((p,i)=>`<option value="${i}">${p.name} - ${p.price}π (${p.qty})</option>`).join('');
 }
-document.getElementById('accounting-form').addEventListener('submit',function(e){e.preventDefault();ledger.push({date:new Date().toLocaleDateString(),type:document.getElementById('entry-type').value,amount:parseFloat(document.getElementById('amount').value),desc:document.getElementById('description').value});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateIncome();e.target.reset();});
-document.getElementById('inv-form').addEventListener('submit',function(e){e.preventDefault();inv.push({name:document.getElementById('prod-name').value,qty:document.getElementById('prod-qty').value,price:document.getElementById('prod-price').value});localStorage.setItem('inventory',JSON.stringify(inv));renderInv();e.target.reset();});
-document.getElementById('partner-form').addEventListener('submit',function(e){e.preventDefault();parts.push({name:document.getElementById('part-name').value,type:document.getElementById('part-type').value,phone:document.getElementById('part-phone').value});localStorage.setItem('partners',JSON.stringify(parts));renderPart();e.target.reset();});
-document.getElementById('btn-csv').addEventListener('click',function(){let csv='Date,Desc,Type,Amount\n'+ledger.map(l=>`${l.date},"${l.desc}",${l.type},${l.amount}`).join('\n');let blob=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ledger.csv';a.click();});
-renderLedger();renderInv();renderPart();updateIncome();
+function renderPartners(){document.getElementById('pt-body').innerHTML=partners.map((p,i)=>{let bal=ledger.filter(l=>l.customer===p.name).reduce((s,l)=>s+(l.type==='income'?l.amount:-l.amount),0); return `<tr><td>${p.name}</td><td>${p.type}</td><td>${p.phone}</td><td>${bal.toFixed(2)}</td><td><button class="btn btn-s" onclick="openSt(${i})">كشف</button> <a class="btn btn-w" target="_blank" href="https://wa.me/${p.phone}">واتساب</a></td></tr>`}).join('');}
 
-// Pi - آمن حتى لو مو في Pi Browser
-try{
-if(typeof Pi!=='undefined'){Pi.init({version:"2.0",sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready (Sandbox)';}
-else{document.getElementById('pi-status').textContent='افتح في Pi Browser للدفع الحقيقي';}
-}catch(e){document.getElementById('pi-status').textContent='Pi SDK Error: '+e.message;}
+window.delInv=i=>{inv.splice(i,1);localStorage.setItem('inv2',JSON.stringify(inv));renderInv();}
+window.openSt=i=>{curPartner=partners[i];document.getElementById('st-name').textContent=curPartner.name;let rows=ledger.filter(l=>l.customer===curPartner.name);document.getElementById('st-details').innerHTML=rows.map(r=>`${r.date} - ${r.desc} - ${r.amount}π`).join('<br>')||'لا يوجد';document.getElementById('statement-box').style.display='block';}
 
-document.getElementById('btn-pi-pay').addEventListener('click',async function(){
-let amount=parseFloat(document.getElementById('pay_amount').value);let st=document.getElementById('pi-status');
-if(typeof Pi==='undefined'){alert('افتح هذا الرابط في Pi Browser');return;}
-try{
-st.textContent='Authenticating...';
-let auth=await Pi.authenticate(['username','payments'],function(p){console.log(p)});
-st.textContent='Hello '+auth.user.username;
-let payment=await Pi.createPayment({amount:amount,memo:"ERP Payment",metadata:{app:"erp"}},{onReadyForServerApproval:function(id){st.textContent='Approving '+id;},onReadyForServerCompletion:function(id,txid){st.textContent='Paid! '+txid;ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:amount,desc:'Pi Pay '+txid.slice(0,6)});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateIncome();},onCancel:function(){st.textContent='Cancelled';},onError:function(err){st.textContent='Error '+err.message;}});
-}catch(err){st.textContent='Failed: '+err.message;}
-});
+function updateReports(){let f=ledger;let period=document.getElementById('rep-period').value;let now=new Date();if(period==='today') f=ledger.filter(l=>new Date(l.date).toDateString()===now.toDateString());if(period==='week'){let w=new Date();w.setDate(now.getDate()-7);f=ledger.filter(l=>new Date(l.date)>=w);}if(period==='month') f=ledger.filter(l=>new Date(l.date).getMonth()===now.getMonth());
+let inc=f.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);let exp=f.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);let cogs=f.filter(x=>x.cogs).reduce((s,x)=>s+x.cogs,0);
+document.getElementById('r-inc').textContent=inc.toFixed(3);document.getElementById('r-exp').textContent=exp.toFixed(3);document.getElementById('r-net').textContent=(inc-exp-cogs).toFixed(3);document.getElementById('r-cogs').textContent=cogs.toFixed(3);
+let ctx=document.getElementById('financeChart'); if(chart) chart.destroy(); chart=new Chart(ctx,{type:'bar',data:{labels:['إيراد','مصروف','تكلفة','صافي'],datasets:[{data:[inc,exp,cogs,inc-exp-cogs],backgroundColor:['#4caf50','#f44336','#ff9800','#ffd700']}]},options:{plugins:{legend:{display:false}}}});
+}
+
+// EVENTS
+document.getElementById('form-entry').addEventListener('submit',e=>{e.preventDefault();ledger.push({date:new Date().toLocaleDateString(),type:document.getElementById('e-type').value,amount:parseFloat(document.getElementById('e-amount').value),desc:document.getElementById('e-desc').value});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateReports();e.target.reset();});
+document.getElementById('form-inv').addEventListener('submit',e=>{e.preventDefault();inv.push({name:document.getElementById('p-name').value,qty:parseInt(document.getElementById('p-qty').value),price:parseFloat(document.getElementById('p-price').value),cost:parseFloat(document.getElementById('p-cost').value||0),min:parseInt(document.getElementById('p-min').value||5)});localStorage.setItem('inv2',JSON.stringify(inv));renderInv();e.target.reset();});
+document.getElementById('form-part').addEventListener('submit',e=>{e.preventDefault();partners.push({name:document.getElementById('pt-name').value,type:document.getElementById('pt-type').value,phone:document.getElementById('pt-phone').value});localStorage.setItem('partners2',JSON.stringify(partners));renderPartners();e.target.reset();});
+
+let invTotal=0;
+document.getElementById('btn-add-to-inv').addEventListener('click',()=>{let idx=document.getElementById('inv-product').value;let q=parseInt(document.getElementById('inv-qty').value);if(idx==='')return;let prod=inv[idx];curInv.push({name:prod.name,price:prod.price,cost:prod.cost||0,qty:q});renderCurInv();});
+function renderCurInv(){invTotal=curInv.reduce((s,i)=>s+i.price*i.qty,0);document.getElementById('inv-items').innerHTML=curInv.map((it,k)=>`${it.name} x${it.qty} = ${(it.price*it.qty).toFixed(3)} <button onclick="curInv.splice(${k},1);renderCurInv()">x</button><br>`).join('');document.getElementById('inv-total').textContent=invTotal.toFixed(3);}
+
+document.getElementById('btn-save-inv').addEventListener('click',()=>{if(!curInv.length) return alert('أضف منتجات');let cust=document.getElementById('inv-customer').value||'عميل';let cogs=curInv.reduce((s,i)=>s+i.cost*i.qty,0);ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:invTotal,cogs,desc:`فاتورة ${cust}`,customer:cust});curInv.forEach(ci=>{let p=inv.find(x=>x.name===ci.name); if(p) p.qty-=ci.qty;});localStorage.setItem('ledger',JSON.stringify(ledger));localStorage.setItem('inv2',JSON.stringify(inv));renderInv();renderLedger();updateReports();curInv=[];renderCurInv();alert('تم حفظ الفاتورة وخصم المخزون');});
+
+// PDF
+document.getElementById('btn-pdf').addEventListener('click',()=>{let {jsPDF}=window.jspdf;let doc=new jsPDF();doc.text(`Invoice - ${document.getElementById('inv-customer').value||'Customer'}`,10,10);let y=20;curInv.forEach(it=>{doc.text(`${it.name} x${it.qty} = ${it.price*it.qty} Pi`,10,y);y+=7;});doc.text(`Total: ${invTotal} Pi`,10,y+10);doc.save('invoice.pdf');});
+document.getElementById('btn-report-pdf').addEventListener('click',()=>{let {jsPDF}=window.jspdf;let doc=new jsPDF();doc.text('Pi Merchant Report',10,10);doc.text(`Income: ${document.getElementById('r-inc').textContent} Pi`,10,20);doc.text(`Expenses: ${document.getElementById('r-exp').textContent} Pi`,10,30);doc.text(`Net: ${document.getElementById('r-net').textContent} Pi`,10,40);doc.save('report.pdf');});
+document.getElementById('btn-st-pdf').addEventListener('click',()=>{let {jsPDF}=window.jspdf;let doc=new jsPDF();doc.text(`Statement: ${curPartner.name}`,10,10);let y=20;ledger.filter(l=>l.customer===curPartner.name).forEach(l=>{doc.text(`${l.date} ${l.desc} ${l.amount}`,10,y);y+=7;});doc.save('statement.pdf');});
+
+// Excel
+document.getElementById('btn-excel').addEventListener('click',()=>{let ws=XLSX.utils.json_to_sheet(ledger);let wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Ledger');XLSX.writeFile(wb,'ledger.xlsx');});
+
+// WhatsApp
+document.getElementById('btn-wa').addEventListener('click',()=>{let phone=partners.find(p=>p.name===document.getElementById('inv-customer').value)?.phone||'';let text=`*فاتورة Pi Merchant*%0Aالعميل: ${document.getElementById('inv-customer').value}%0A${curInv.map(i=>`${i.name} x${i.qty} = ${i.price*i.qty} Pi`).join('%0A')}%0A*الإجمالي: ${invTotal} Pi*`;let url=`https://wa.me/${phone}?text=${text}`;if(phone) window.open(url,'_blank'); else {navigator.clipboard.writeText(decodeURIComponent(text)); alert('تم نسخ نص الواتساب - الصقه للعميل');}});
+
+// Pi safe init
+try{if(typeof Pi!=='undefined'){Pi.init({version:"2.0",sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready';}else document.getElementById('pi-status').textContent='افتح في Pi Browser للدفع';}catch(e){document.getElementById('pi-status').textContent=e.message;}
+
+document.getElementById('rep-period').addEventListener('change',updateReports);
+renderLedger();renderInv();renderPartners();updateReports();
 });
 </script>
 </body>
-                                                                                                                                                                                                            </html>
+</html>
