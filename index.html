@@ -2,91 +2,109 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pi Business OS v3.3 Full i18n</title>
+<title>Pi Business OS v3.5 - Double Entry</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{--p:#ffd700;--s:#6a1b9a;--bg:#1a0030}
-body{font-family:system-ui;background:var(--bg);color:#fff;margin:0;padding:10px}
-.container{max-width:1100px;margin:auto;background:rgba(255,255,255,.07);padding:14px;border-radius:16px}
-.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:#fff;color:#222;padding:10px;border-radius:12px}
-.tabs{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}
-.tab{padding:8px 12px;background:rgba(255,255,255,.15);border-radius:10px;cursor:pointer;font-size:13px;font-weight:700}
+body{font-family:system-ui;background:var(--bg);color:#fff;margin:0;padding:8px}
+.container{max-width:1150px;margin:auto;background:rgba(255,255,255,.07);padding:12px;border-radius:16px}
+.header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;background:#fff;color:#222;padding:10px;border-radius:12px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
+.tab{padding:7px 9px;background:rgba(255,255,255,.15);border-radius:9px;cursor:pointer;font-size:11px;font-weight:700}
 .tab.active{background:var(--p);color:#1a0030}
 .tab-content{display:none}.tab-content.active{display:block}
-.card{background:#fff;color:#222;padding:12px;border-radius:12px;margin:8px 0}
-.btn{padding:9px 14px;border:none;border-radius:20px;font-weight:700;cursor:pointer;margin:3px}
+.card{background:#fff;color:#222;padding:10px;border-radius:10px;margin:6px 0}
+.btn{padding:7px 11px;border:none;border-radius:18px;font-weight:700;cursor:pointer;margin:2px;font-size:11px}
 .btn-pi{background:var(--p);color:#1a0030}.btn-s{background:var(--s);color:#fff}.btn-w{background:#25D366;color:#fff}.btn-g{background:#eee;color:#333}.btn-red{background:#e53935;color:#fff}
-input,select{width:100%;padding:9px;border-radius:8px;border:1.5px solid var(--s);margin:4px 0;box-sizing:border-box}
-table{width:100%;border-collapse:collapse}th,td{padding:6px;border-bottom:1px solid #ddd;font-size:12px}th{background:var(--s);color:#fff}
-.badge{background:#e0ffe0;color:#0a0;padding:4px 8px;border-radius:10px;font-size:11px}
-.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.store-item{background:#f8f8ff;border:1px solid #ddd;border-radius:12px;padding:8px;text-align:center}
+input,select{width:100%;padding:7px;border-radius:7px;border:1.5px solid var(--s);margin:3px 0;box-sizing:border-box;font-size:13px}
+table{width:100%;border-collapse:collapse}th,td{padding:5px;border-bottom:1px solid #ddd;font-size:10px}th{background:var(--s);color:#fff}
+.badge{background:#e0ffe0;color:#060;padding:3px 7px;border-radius:8px;font-size:10px}
+.badge-warn{background:#fff3cd;color:#856404}
+.tree-item{padding:5px 9px;border-right:3px solid var(--s);margin:3px 0;background:#f9f9ff;border-radius:0 7px 7px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.tree-item.l1{border-color:#ffd700;background:#fffde7;font-weight:700}.tree-item.l2{margin-right:15px}.tree-item.l3{margin-right:30px}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:9999}
+.modal-box{background:#fff;color:#222;padding:18px;border-radius:14px;max-width:520px;width:92%;max-height:92vh;overflow:auto}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.debit{border-right:4px solid #4caf50}.credit{border-right:4px solid #f44336}
 </style>
 </head>
 <body>
+<div id="setup-modal" class="modal" style="display:none"><div class="modal-box">
+<h2 id="setup-title">🎉 تهيئة النظام</h2>
+<p id="setup-desc">اختر نوع نشاطك والعملة لإنشاء شجرة الحسابات تلقائياً</p>
+<label id="lb-setup-activity">النشاط</label><select id="setup-activity"><option value="store">متجر عام</option><option value="grocery">مواد غذائية</option><option value="stationery">قرطاسية</option><option value="electronics">إلكترونيات</option><option value="service">خدمات</option></select>
+<label id="lb-setup-currency">العملة</label><select id="setup-currency"><option value="Pi">Pi π</option><option value="SAR">SAR</option><option value="USD">USD</option></select>
+<label id="lb-setup-capital">رأس المال الافتتاحي</label><input id="setup-capital" type="number" value="1000">
+<button class="btn btn-pi" id="btn-do-setup" style="width:100%;margin-top:10px"></button>
+</div></div>
 <div class="container">
-<div class="header">
-<div><b>Pi Business OS v3.3</b><br><small id="user-info"></small></div>
-<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
-<select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="es">Español</option><option value="ru">Русский</option></select>
-<button class="btn btn-red" id="btn-migrate" style="font-size:11px"></button>
-<button class="btn btn-pi" id="btn-login"></button>
-<button class="btn btn-g" id="btn-logout" style="display:none"></button>
-</div>
-</div>
-<h2 style="text-align:center;color:var(--p)" id="main-title"></h2>
-<div style="text-align:center"><span class="badge" id="usage-badge"></span> <button class="btn btn-pi" id="btn-upgrade" style="padding:5px 10px;font-size:12px"></button></div>
-<div class="tabs">
-<div class="tab active" data-tab="entry" id="lb-entry"></div>
-<div class="tab" data-tab="invoice" id="lb-inv"></div>
-<div class="tab" data-tab="inventory" id="lb-stock"></div>
-<div class="tab" data-tab="orders" id="lb-orders"></div>
-<div class="tab" data-tab="store" id="lb-store"></div>
-<div class="tab" data-tab="reports" id="lb-rep"></div>
-</div>
-<div id="entry" class="tab-content active"><div class="card"><h3 id="h-entry"></h3><form id="form-entry"><select id="e-type"><option value="income" id="opt-income"></option><option value="expense" id="opt-expense"></option><option value="asset" id="opt-asset"></option></select><input id="e-amount" type="number" step="0.0001" required><input id="e-desc" required><button class="btn btn-pi" type="submit" id="btn-save-entry"></button></form></div><div class="card"><h4 id="h-ledger"></h4><table><tbody id="ledger-body"></tbody></table></div></div>
-<div id="invoice" class="tab-content"><div class="card"><h3 id="h-inv"></h3><input id="inv-customer"><select id="inv-product"></select><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv"></button><div id="inv-items" style="background:#f9f9f9;padding:8px;border-radius:8px;margin:8px 0"></div><h4><span id="lb-total"></span>: <span id="inv-total">0</span> π</h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%"></button><div id="invoice-actions" style="display:none;margin-top:10px;border-top:2px dashed #6a1b9a;padding-top:8px"><span class="badge" id="badge-saved"></span><button class="btn btn-s" type="button" id="btn-pdf-last">PDF</button><button class="btn btn-w" type="button" id="btn-wa-last">WhatsApp</button><button class="btn btn-g" type="button" id="btn-new-inv"></button></div></div><div class="card"><h4 id="h-saved"></h4><div id="saved-invoices"></div></div></div>
-<div id="inventory" class="tab-content"><div class="card"><h3 id="h-add-prod"></h3><form id="form-inv"><input id="p-name" required><input id="p-qty" type="number" required><input id="p-price" type="number" step="0.0001" required><input id="p-cost" type="number" step="0.0001"><input id="p-img"><select id="p-cat"><option value="general" id="cat-general"></option><option value="food" id="cat-food"></option><option value="stationery" id="cat-stationery"></option><option value="electronics" id="cat-electronics"></option><option value="clothes" id="cat-clothes"></option></select><button class="btn btn-pi" type="submit" id="btn-add-prod"></button></form></div><div class="card"><input id="search-prod"><table><thead><tr><th id="th-prod"></th><th id="th-qty"></th><th id="th-price"></th><th id="th-barcode"></th><th id="th-action"></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
-<div id="orders" class="tab-content"><div class="card"><h3 id="h-orders"></h3><div id="orders-list"></div></div></div>
-<div id="store" class="tab-content"><div class="card"><h3 id="h-store"></h3><p><span id="lb-link"></span>: <b id="store-link"></b> <button class="btn btn-w" id="btn-copy-store"></button></p><input id="store-name"><input id="store-desc"><button class="btn btn-s" type="button" id="btn-save-store"></button><div style="margin-top:12px"><h4 id="h-preview"></h4><div id="store-preview" class="store-grid"></div></div></div></div>
-<div id="reports" class="tab-content"><div class="card"><h3 id="h-reports"></h3><p><span id="lb-inc"></span>: <span id="r-inc">0</span> | <span id="lb-exp"></span>: <span id="r-exp">0</span> | <b id="lb-net"></b>: <b id="r-net">0</b></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" type="button" id="btn-excel">Excel</button><button class="btn btn-s" type="button" id="btn-report-pdf">PDF</button></div></div>
+<div class="header"><div><b>Pi Business OS v3.5</b> <span style="background:#4caf50;color:#fff;padding:2px 6px;border-radius:6px;font-size:9px">DOUBLE ENTRY</span><br><small id="user-info"></small><br><small id="currency-badge"></small></div><div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap"><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option></select><button class="btn btn-red" id="btn-migrate" style="font-size:9px"></button><button class="btn btn-pi" id="btn-login"></button><button class="btn btn-g" id="btn-logout" style="display:none"></button></div></div>
+<h3 style="text-align:center;color:var(--p)" id="main-title"></h3>
+<div style="text-align:center"><span class="badge" id="usage-badge"></span> <span class="badge badge-warn" id="balance-badge"></span> <button class="btn btn-g" id="btn-reset-setup" style="font-size:9px">⚙️ Reset</button></div>
+<div class="tabs"><div class="tab active" data-tab="tree" id="lb-tree">🌳 الشجرة</div><div class="tab" data-tab="entry" id="lb-entry"></div><div class="tab" data-tab="invoice" id="lb-inv"></div><div class="tab" data-tab="inventory" id="lb-stock"></div><div class="tab" data-tab="store" id="lb-store"></div><div class="tab" data-tab="reports" id="lb-rep"></div></div>
+
+<div id="tree" class="tab-content active"><div class="card"><div style="display:flex;justify-content:space-between"><h4 id="h-tree"></h4><span><span id="lb-total-accounts"></span>: <b id="total-acc">0</b></span></div><div id="tree-container"></div><div class="card" style="background:#f5f5ff"><h5 id="h-add-acc-form"></h5><form id="form-account"><div class="row"><input id="acc-code" placeholder="1001" required><input id="acc-name" required></div><div class="row"><select id="acc-parent"></select><select id="acc-type"><option value="asset">Asset أصول</option><option value="liability">Liability خصوم</option><option value="equity">Equity حقوق ملكية</option><option value="income">Income إيرادات</option><option value="expense">Expense مصروفات</option></select></div><button class="btn btn-pi" type="submit" id="btn-save-acc" style="width:100%"></button></form></div></div></div>
+
+<div id="entry" class="tab-content"><div class="card">
+<h4 id="h-entry"></h4>
+<p style="font-size:11px;background:#e3f2fd;padding:6px;border-radius:6px" id="entry-help">كل قيد = مدين + دائن - مثال: عند شراء بضاعة: المدين=المخزون، الدائن=الصندوق</p>
+<form id="form-entry">
+<div class="row"><div><label id="lb-debit" style="color:#4caf50;font-weight:700">● مدين (منه)</label><select id="e-debit" required></select></div><div><label id="lb-credit" style="color:#f44336;font-weight:700">● دائن (له)</label><select id="e-credit" required></select></div></div>
+<input id="e-amount" type="number" step="0.0001" required><input id="e-desc" required>
+<button class="btn btn-pi" type="submit" id="btn-save-entry" style="width:100%"></button>
+</form>
+                                                                                                                                                                                                                                                                                                                       </div><div class="card"><h5 id="h-ledger"></h5><div style="overflow:auto"><table><thead><tr><th id="th-date"></th><th id="th-debit"></th><th id="th-credit"></th><th id="th-desc"></th><th id="th-amount"></th></tr></thead><tbody id="ledger-body"></tbody></table></div></div></div>
+
+<div id="invoice" class="tab-content"><div class="card"><h4 id="h-inv"></h4><input id="inv-customer"><select id="inv-product"></select><div class="row"><input id="inv-qty" type="number" value="1" min="1"><button class="btn btn-pi" type="button" id="btn-add-inv"></button></div><div id="inv-items" style="background:#f9f9f9;padding:6px;border-radius:6px;margin:6px 0"></div><h4><span id="lb-total"></span>: <span id="inv-total">0</span></h4><button class="btn btn-pi" type="button" id="btn-save-inv" style="width:100%"></button><div id="invoice-actions" style="display:none;margin-top:8px"><span class="badge" id="badge-saved"></span> <button class="btn btn-s" id="btn-pdf-last">PDF</button><button class="btn btn-w" id="btn-wa-last">WA</button><button class="btn btn-g" id="btn-new-inv"></button></div></div><div class="card"><h5 id="h-saved"></h5><div id="saved-invoices"></div></div></div>
+
+<div id="inventory" class="tab-content"><div class="card"><h4 id="h-add-prod"></h4><form id="form-inv"><div class="row"><input id="p-name" required><input id="p-qty" type="number" required></div><div class="row"><input id="p-price" type="number" step="0.0001" required><input id="p-cost" type="number" step="0.0001"></div><div class="row"><input id="p-img"><select id="p-cat"><option value="general">عام</option><option value="food">غذائية</option><option value="stationery">قرطاسية</option></select></div><button class="btn btn-pi" type="submit" id="btn-add-prod" style="width:100%"></button></form></div><div class="card"><input id="search-prod"><table><thead><tr><th id="th-prod"></th><th id="th-qty"></th><th id="th-price"></th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+
+<div id="store" class="tab-content"><div class="card"><h4 id="h-store"></h4><p><span id="lb-link"></span>: <b id="store-link" style="font-size:10px"></b> <button class="btn btn-w" id="btn-copy-store"></button></p><div class="row"><input id="store-name"><input id="store-desc"></div><button class="btn btn-s" type="button" id="btn-save-store"></button><div id="store-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin-top:8px"></div></div></div>
+
+<div id="reports" class="tab-content"><div class="card"><h4 id="h-reports"></h4><div id="trial-report"></div><p><span id="lb-inc"></span>: <b id="r-inc">0</b> | <span id="lb-exp"></span>: <b id="r-exp">0</b> | <b id="lb-net"></b>: <b id="r-net">0</b></p><canvas id="financeChart" style="max-height:200px"></canvas><div class="row"><button class="btn btn-s" id="btn-excel">Excel</button><button class="btn btn-s" id="btn-report-pdf">Trial PDF</button></div></div></div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 const I18N={
- ar:{dir:"rtl",guest:"guest - تجريبي",restore:"🔄 استرجاع",login:"Login with Pi",logout:"خروج",upgrade:"Pro بـ 1 Pi",title:"نظام محاسبي للرواد",entry:"قيد",invoice:"فاتورة",stock:"مخزون",orders:"طلبات",store:"متجري",rep:"تقارير",addEntry:"إضافة قيد",income:"إيراد",expense:"مصروف",asset:"أصل",amount:"المبلغ π",desc:"الوصف",save:"حفظ",ledgerTitle:"القيود (آخر 30)",addInvTitle:"إنشاء فاتورة",customer:"اسم العميل",addToInv:"إضافة للفاتورة",total:"الإجمالي",saveInv:"💾 حفظ الفاتورة",savedBadge:"✓ تم الحفظ",newInv:"+ فاتورة جديدة",savedInvs:"الفواتير المحفوظة",addProdTitle:"إضافة منتج - مع صورة وتصنيف وباركود",prodName:"اسم المنتج",qty:"الكمية",price:"سعر البيع π",cost:"التكلفة",img:"رابط صورة (اختياري)",general:"عام",food:"مواد غذائية",stationery:"قرطاسية",electronics:"إلكترونيات",clothes:"ملابس",addProd:"إضافة منتج",search:"بحث في المخزون...",thProd:"Product",thQty:"Qty",thPrice:"Price",thBarcode:"Barcode",thAction:"حذف",ordersTitle:"الطلبات الواردة من متجرك العام",noOrders:"لا يوجد طلبات بعد - شارك رابط متجرك",accept:"قبول وتحويل لإيراد",storeTitle:"متجري العام - رابط مشاركة للرواد",link:"رابط متجرك",copy:"نسخ الرابط",storeName:"اسم متجرك (مثال: متجر النور)",storeDesc:"وصف قصير لمتجرك",saveStore:"حفظ بيانات المتجر",preview:"معاينة متجرك (ما يراه الزبون)",reportsTitle:"التقارير المالية",inc:"إيراد",exp:"مصروف",net:"صافي",free:"مجاني",pro:"Pro غير محدود",noInv:"لا يوجد منتجات - أضف منتجات ليظهر متجرك",noInvList:"لا يوجد فواتير بعد",emptyCart:"فارغة - اختر منتج من القائمة",copied:"تم نسخ الرابط",migrated:"تم الاسترجاع",loginFirst:"سجل دخول بـ Pi أولا",proActive:"Pro مفعل",needAdd:"أضف منتجات أولاً",qtyNotAvail:"الكمية غير متوفرة، المتوفر: ",welcome:"أهلا @"},
- en:{dir:"ltr",guest:"guest - demo",restore:"🔄 Restore",login:"Login with Pi",logout:"Logout",upgrade:"Pro for 1 Pi",title:"Pioneer Accounting System",entry:"Entry",invoice:"Invoice",stock:"Stock",orders:"Orders",store:"My Store",rep:"Reports",addEntry:"Add Accounting Entry",income:"Income",expense:"Expense",asset:"Asset",amount:"Amount π",desc:"Description",save:"Save",ledgerTitle:"Ledger (last 30)",addInvTitle:"Create Invoice - Save then PDF/WhatsApp",customer:"Customer name",addToInv:"Add to invoice",total:"Total",saveInv:"💾 Save Invoice (deduct stock)",savedBadge:"✓ Saved - Now you can:",newInv:"+ New Invoice",savedInvs:"Saved Invoices - Each with PDF & WhatsApp",addProdTitle:"Add Product - with image, category & barcode",prodName:"Product name",qty:"Quantity",price:"Selling price π",cost:"Cost",img:"Image URL (optional)",general:"General",food:"Groceries",stationery:"Stationery",electronics:"Electronics",clothes:"Clothes",addProd:"Add Product",search:"Search inventory...",thProd:"Product",thQty:"Qty",thPrice:"Price",thBarcode:"Barcode",thAction:"Delete",ordersTitle:"Incoming Orders from Your Store",noOrders:"No orders yet - share your store link",accept:"Accept & Convert to Income",storeTitle:"My Public Store - Share Link for Pioneers",link:"Your store link",copy:"Copy Link",storeName:"Your store name (e.g. Noor Store)",storeDesc:"Short description of your store",saveStore:"Save Store Data",preview:"Your store preview (customer view)",reportsTitle:"Financial Reports",inc:"Income",exp:"Expense",net:"Net",free:"Free",pro:"Pro Unlimited",noInv:"No products - add products to show your store",noInvList:"No invoices yet - create one",emptyCart:"Empty - choose product",copied:"Link copied",migrated:"Restored",loginFirst:"Login with Pi first",proActive:"Pro activated",needAdd:"Add products first",qtyNotAvail:"Not enough stock, available: ",welcome:"Welcome @"}
-};const T=I18N;
+ ar:{dir:"rtl",guest:"guest تجريبي",restore:"🔄 استرجاع",login:"Login Pi",logout:"خروج",title:"نظام محاسبي - قيد مزدوج",entry:"قيد مزدوج",invoice:"فاتورة",stock:"مخزون",store:"متجري",rep:"تقارير",tree:"🌳 الشجرة",hTree:"شجرة الحسابات - 5 مجموعات رئيسية",totalAcc:"الحسابات",addAccForm:"إضافة حساب للشجرة",code:"كود",accName:"اسم الحساب",save:"حفظ",entryTitle:"إضافة قيد مزدوج - مدين ودائن",help:"كل قيد = مدين (منه) + دائن (له) - مثال: شراء بضاعة نقدا: مدين=المخزون، دائن=الصندوق",debit:"● مدين (منه) Debit",credit:"● دائن (له) Credit",amount:"المبلغ",desc:"البيان / الوصف",ledgerTitle:"دفتر اليومية - قيود مزدوجة",thDate:"التاريخ",thDebit:"مدين",thCredit:"دائن",thDesc:"البيان",thAmount:"المبلغ",customer:"اسم العميل",addToInv:"إضافة",total:"الإجمالي",saveInv:"💾 حفظ فاتورة (قيد مزدوج تلقائي)",savedBadge:"✓ تم",newInv:"+ جديد",savedInvs:"فواتير",addProdTitle:"إضافة منتج",prodName:"اسم المنتج",qty:"الكمية",price:"سعر البيع",cost:"التكلفة",img:"صورة",addProd:"إضافة",search:"بحث...",thProd:"Product",thQty:"Qty",thPrice:"Price",storeTitle:"متجري",link:"رابط",copy:"نسخ",storeName:"اسم المتجر",storeDesc:"وصف",saveStore:"حفظ",reportsTitle:"تقارير + ميزان المراجعة - مدين=دائن",inc:"إيراد",exp:"مصروف",net:"صافي",free:"مجاني",pro:"Pro",noInv:"لا يوجد منتجات",noInvList:"لا يوجد فواتير",emptyCart:"فارغة",copied:"تم النسخ",migrated:"تم",setupTitle:"🎉 تهيئة النظام",setupDesc:"اختر نشاطك والعملة",activity:"النشاط",currency:"العملة",capital:"رأس المال الافتتاحي",doSetup:"✨ إنشاء الشجرة والبدء",balanced:"✅ متوازن",unbalanced:"⚠️ غير متوازن"},
+ en:{dir:"ltr",guest:"guest demo",restore:"🔄 Restore",login:"Login Pi",logout:"Logout",title:"Double-Entry Accounting System",entry:"Double Entry",invoice:"Invoice",stock:"Stock",store:"Store",rep:"Reports",tree:"🌳 Chart",hTree:"Chart of Accounts - 5 Main Groups",totalAcc:"Accounts",addAccForm:"Add Account to Tree",code:"Code",accName:"Account Name",save:"Save",entryTitle:"Add Double-Entry Journal - Debit & Credit",help:"Every entry = Debit + Credit - Example: Buy goods cash: Debit=Inventory, Credit=Cash",debit:"● Debit (From)",credit:"● Credit (To)",amount:"Amount",desc:"Description",ledgerTitle:"Journal - Double Entries",thDate:"Date",thDebit:"Debit",thCredit:"Credit",thDesc:"Desc",thAmount:"Amount",customer:"Customer",addToInv:"Add",total:"Total",saveInv:"💾 Save Invoice (Auto Double Entry)",savedBadge:"✓ Saved",newInv:"+ New",savedInvs:"Invoices",addProdTitle:"Add Product",prodName:"Product Name",qty:"Qty",price:"Price",cost:"Cost",img:"Image",addProd:"Add",search:"Search...",thProd:"Product",thQty:"Qty",thPrice:"Price",storeTitle:"My Store",link:"Link",copy:"Copy",storeName:"Store Name",storeDesc:"Desc",saveStore:"Save",reportsTitle:"Reports + Trial Balance - Debit=Credit",inc:"Income",exp:"Expense",net:"Net",free:"Free",pro:"Pro",noInv:"No products",noInvList:"No invoices",emptyCart:"Empty",copied:"Copied",migrated:"Restored",setupTitle:"🎉 System Setup",setupDesc:"Choose activity & currency",activity:"Activity",currency:"Currency",capital:"Opening Capital",doSetup:"✨ Create Chart & Start",balanced:"✅ Balanced",unbalanced:"⚠️ Unbalanced"}
+};
 function applyLang(l){
- let t=T[l]||T.ar;
- if(!t) return;
- document.documentElement.lang=l;
- document.documentElement.dir=t.dir;
- document.getElementById('user-info').textContent = (localStorage.getItem('pi_current_user')||'guest')==='guest' ? t.guest : '👤 @'+(localStorage.getItem('pi_current_user')||'guest');
+ let t=I18N[l]||I18N.ar;
+ document.documentElement.lang=l; document.documentElement.dir=t.dir;
  document.getElementById('btn-migrate').textContent=t.restore;
  document.getElementById('btn-login').textContent=t.login;
  document.getElementById('btn-logout').textContent=t.logout;
- document.getElementById('btn-upgrade').textContent=t.upgrade;
  document.getElementById('main-title').textContent=t.title;
+ document.getElementById('lb-tree').textContent=t.tree;
  document.getElementById('lb-entry').textContent=t.entry;
  document.getElementById('lb-inv').textContent=t.invoice;
  document.getElementById('lb-stock').textContent=t.stock;
- document.getElementById('lb-orders').textContent=t.orders;
  document.getElementById('lb-store').textContent=t.store;
  document.getElementById('lb-rep').textContent=t.rep;
- document.getElementById('h-entry').textContent=t.addEntry;
- document.getElementById('opt-income').textContent=t.income;
- document.getElementById('opt-expense').textContent=t.expense;
- document.getElementById('opt-asset').textContent=t.asset;
+ document.getElementById('h-tree').textContent=t.hTree;
+ document.getElementById('lb-total-accounts').textContent=t.totalAcc;
+ document.getElementById('h-add-acc-form').textContent=t.addAccForm;
+ document.getElementById('acc-code').placeholder=t.code;
+ document.getElementById('acc-name').placeholder=t.accName;
+ document.getElementById('btn-save-acc').textContent=t.save;
+ document.getElementById('h-entry').textContent=t.entryTitle;
+ document.getElementById('entry-help').textContent=t.help;
+ document.getElementById('lb-debit').textContent=t.debit;
+ document.getElementById('lb-credit').textContent=t.credit;
  document.getElementById('e-amount').placeholder=t.amount;
  document.getElementById('e-desc').placeholder=t.desc;
  document.getElementById('btn-save-entry').textContent=t.save;
  document.getElementById('h-ledger').textContent=t.ledgerTitle;
- document.getElementById('h-inv').textContent=t.addInvTitle;
+ document.getElementById('th-date').textContent=t.thDate;
+ document.getElementById('th-debit').textContent=t.thDebit;
+ document.getElementById('th-credit').textContent=t.thCredit;
+ document.getElementById('th-desc').textContent=t.thDesc;
+ document.getElementById('th-amount').textContent=t.thAmount;
+ document.getElementById('h-inv').textContent=t.total;
  document.getElementById('inv-customer').placeholder=t.customer;
  document.getElementById('btn-add-inv').textContent=t.addToInv;
  document.getElementById('lb-total').textContent=t.total;
@@ -100,149 +118,192 @@ function applyLang(l){
  document.getElementById('p-price').placeholder=t.price;
  document.getElementById('p-cost').placeholder=t.cost;
  document.getElementById('p-img').placeholder=t.img;
- document.getElementById('cat-general').textContent=t.general;
- document.getElementById('cat-food').textContent=t.food;
- document.getElementById('cat-stationery').textContent=t.stationery;
- document.getElementById('cat-electronics').textContent=t.electronics;
- document.getElementById('cat-clothes').textContent=t.clothes;
  document.getElementById('btn-add-prod').textContent=t.addProd;
  document.getElementById('search-prod').placeholder=t.search;
  document.getElementById('th-prod').textContent=t.thProd;
  document.getElementById('th-qty').textContent=t.thQty;
  document.getElementById('th-price').textContent=t.thPrice;
- document.getElementById('th-barcode').textContent=t.thBarcode;
- document.getElementById('th-action').textContent=t.thAction;
- document.getElementById('h-orders').textContent=t.ordersTitle;
  document.getElementById('h-store').textContent=t.storeTitle;
  document.getElementById('lb-link').textContent=t.link;
  document.getElementById('btn-copy-store').textContent=t.copy;
  document.getElementById('store-name').placeholder=t.storeName;
  document.getElementById('store-desc').placeholder=t.storeDesc;
  document.getElementById('btn-save-store').textContent=t.saveStore;
- document.getElementById('h-preview').textContent=t.preview;
  document.getElementById('h-reports').textContent=t.reportsTitle;
  document.getElementById('lb-inc').textContent=t.inc;
  document.getElementById('lb-exp').textContent=t.exp;
  document.getElementById('lb-net').textContent=t.net;
+ document.getElementById('setup-title').textContent=t.setupTitle;
+ document.getElementById('setup-desc').textContent=t.setupDesc;
+ document.getElementById('lb-setup-activity').textContent=t.activity;
+ document.getElementById('lb-setup-currency').textContent=t.currency;
+ document.getElementById('lb-setup-capital').textContent=t.capital;
+ document.getElementById('btn-do-setup').textContent=t.doSetup;
  localStorage.setItem('pi_lang', l);
- updateUserUI();
- renderLedger();
- renderInv(document.getElementById('search-prod').value||'');
- renderInvoicesList();
- renderOrders();
- renderStorePreview();
- refreshCur();
+ renderAll();
 }
-window._t = function(k){ let l=localStorage.getItem('pi_lang')||'ar'; let t=T[l]||T.ar; return t[k]||k; };
+window._t=function(k){ let l=localStorage.getItem('pi_lang')||'ar'; return (I18N[l]||I18N.ar)[k]||k; };
 
 let currentUser=localStorage.getItem('pi_current_user')||'guest';
-let userDataKey=function(k){ return k+'_'+currentUser; };
-function getData(k, def){ try{ return JSON.parse(localStorage.getItem(userDataKey(k))||JSON.stringify(def)); }catch(e){ return def; } }
-function setData(k,v){ localStorage.setItem(userDataKey(k), JSON.stringify(v)); }
-let ledger=getData('ledger',[]); let inv=getData('inv2',[]); let invoices=getData('invoices_v23',[]); let orders=getData('orders_v3',[]); let storeInfo=getData('storeInfo',{name:'',desc:''}); let isPro=getData('isPro',false);
-let curInv=[]; let invTotal=0; let lastSavedInvoice=null; let chart=null;
+let k=function(n){ return n+'_'+currentUser; };
+function getData(n,d){ try{ return JSON.parse(localStorage.getItem(k(n))||JSON.stringify(d)); }catch(e){ return d; } }
+function setData(n,v){ localStorage.setItem(k(n), JSON.stringify(v)); }
+let accounts=getData('accounts_v4', null);
+let ledger=getData('ledger_double', []);
+let inv=getData('inv2',[]); let invoices=getData('invoices_v23',[]); let storeInfo=getData('storeInfo',{name:'',desc:''}); let sysConfig=getData('sysConfig', null); let isPro=getData('isPro',false);
+let curInv=[]; let invTotal=0; let chart=null;
 
-function updateUserUI(){
- let u=currentUser; let l=localStorage.getItem('pi_lang')||'ar'; let t=T[l]||T.ar;
- document.getElementById('user-info').textContent = u==='guest' ? t.guest : '👤 @'+u + (isPro?' - Pro ⭐':' - '+t.free);
- document.getElementById('btn-login').style.display = u==='guest' ? 'inline-block':'none';
- document.getElementById('btn-logout').style.display = u==='guest' ? 'none':'inline-block';
- let link = location.origin + location.pathname.replace('index.html','') + 'store.html?user='+u;
- document.getElementById('store-link').textContent=link;
- document.getElementById('store-name').value=storeInfo.name||'';
- document.getElementById('store-desc').value=storeInfo.desc||'';
- let badgeFree = isPro? t.pro : t.free;
- document.getElementById('usage-badge').textContent = badgeFree+': '+inv.length+'/50 - '+ledger.length+'/100 | '+invoices.length+' inv';
+function defaultTree(activity){
+ let base=[
+  {id:'1',code:'1000',name:'الأصول',name_en:'Assets',parent:null,type:'asset',level:1},
+  {id:'11',code:'1100',name:'أصول متداولة',name_en:'Current Assets',parent:'1',type:'asset',level:2},
+  {id:'111',code:'1101',name:'الصندوق - Pi',name_en:'Cash - Pi',parent:'11',type:'asset',level:3},
+  {id:'112',code:'1102',name:'البنك',name_en:'Bank',parent:'11',type:'asset',level:3},
+  {id:'113',code:'1103',name:'المخزون',name_en:'Inventory',parent:'11',type:'asset',level:3},
+  {id:'12',code:'1200',name:'أصول ثابتة',name_en:'Fixed Assets',parent:'1',type:'asset',level:2},
+  {id:'121',code:'1201',name:'مباني ومعدات',name_en:'Buildings',parent:'12',type:'asset',level:3},
+  {id:'2',code:'2000',name:'الخصوم',name_en:'Liabilities',parent:null,type:'liability',level:1},
+  {id:'21',code:'2100',name:'موردين',name_en:'Suppliers',parent:'2',type:'liability',level:2},
+  {id:'22',code:'2200',name:'قروض',name_en:'Loans',parent:'2',type:'liability',level:2},
+  {id:'3',code:'3000',name:'حقوق الملكية',name_en:'Equity',parent:null,type:'equity',level:1},
+  {id:'31',code:'3001',name:'رأس المال',name_en:'Capital',parent:'3',type:'equity',level:2},
+  {id:'4',code:'4000',name:'الإيرادات',name_en:'Income',parent:null,type:'income',level:1},
+  {id:'41',code:'4100',name:'مبيعات منتجات',name_en:'Product Sales',parent:'4',type:'income',level:2},
+  {id:'42',code:'4200',name:'خدمات',name_en:'Services',parent:'4',type:'income',level:2},
+  {id:'5',code:'5000',name:'المصروفات',name_en:'Expenses',parent:null,type:'expense',level:1},
+  {id:'51',code:'5100',name:'إيجار',name_en:'Rent',parent:'5',type:'expense',level:2},
+  {id:'52',code:'5200',name:'كهرباء',name_en:'Utilities',parent:'5',type:'expense',level:2},
+  {id:'53',code:'5300',name:'مشتريات',name_en:'Purchases',parent:'5',type:'expense',level:2},
+  {id:'54',code:'5400',name:'رواتب',name_en:'Salaries',parent:'5',type:'expense',level:2}
+ ];
+ if(activity==='grocery') base.push({id:'411',code:'4101',name:'مبيعات مواد غذائية',name_en:'Grocery Sales',parent:'41',type:'income',level:3});
+ if(activity==='stationery') base.push({id:'412',code:'4102',name:'مبيعات قرطاسية',name_en:'Stationery Sales',parent:'41',type:'income',level:3});
+ if(activity==='electronics') base.push({id:'413',code:'4103',name:'مبيعات إلكترونيات',name_en:'Electronics Sales',parent:'41',type:'income',level:3});
+ return base;
 }
-document.querySelectorAll('.tab').forEach(function(tab){
- tab.addEventListener('click', function(){
-  document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
-  document.querySelectorAll('.tab-content').forEach(function(x){ x.classList.remove('active'); });
-  tab.classList.add('active');
-  let target=document.getElementById(tab.dataset.tab);
-  if(target) target.classList.add('active');
+function checkSetup(){ if(!accounts||!sysConfig){ document.getElementById('setup-modal').style.display='flex'; }else{ document.getElementById('setup-modal').style.display='none'; document.getElementById('currency-badge').textContent='💰 '+(sysConfig.currency||'Pi')+' | 🏢 '+(sysConfig.activity||''); } }
+function renderTree(){
+ if(!accounts) return;
+ let l=localStorage.getItem('pi_lang')||'ar';
+ document.getElementById('total-acc').textContent=accounts.length;
+ let html=''; function node(pid,d){ accounts.filter(function(a){return a.parent===pid;}).forEach(function(acc){
+  let name=l==='ar'?acc.name:acc.name_en;
+  let debitSum=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let creditSum=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let bal=debitSum-creditSum;
+  html+='<div class="tree-item l'+(d>3?3:d)+'"><div><b>'+acc.code+'</b> '+name+' <small>('+acc.type+' | '+bal.toFixed(2)+')</small></div><div><button onclick="window.delAcc(\''+acc.id+'\')" style="background:none;border:none;color:red">x</button></div></div>';
+  node(acc.id,d+1);
+ }); }
+ node(null,1); document.getElementById('tree-container').innerHTML=html;
+ let opts=accounts.map(function(a){ let n=l==='ar'?a.name:a.name_en; return '<option value="'+a.id+'">'+a.code+' - '+n+'</option>'; }).join('');
+ document.getElementById('acc-parent').innerHTML='<option value="">Root</option>'+opts;
+ document.getElementById('e-debit').innerHTML=opts;
+ document.getElementById('e-credit').innerHTML=opts;
+}
+window.delAcc=function(id){ if(accounts.some(function(a){return a.parent===id;})){ alert('Has children'); return; } if(ledger.some(function(x){return x.debitId===id||x.creditId===id;})){ alert('Account has entries - cannot delete'); return; } accounts=accounts.filter(function(a){return a.id!==id;}); setData('accounts_v4', accounts); renderTree(); renderTrial(); };
+
+function renderLedger(){
+ document.getElementById('ledger-body').innerHTML=ledger.slice(-50).reverse().map(function(x){
+  let l=localStorage.getItem('pi_lang')||'ar';
+  let dAcc=accounts?accounts.find(function(a){return a.id===x.debitId;}):null;
+  let cAcc=accounts?accounts.find(function(a){return a.id===x.creditId;}):null;
+  let dName=dAcc? (l==='ar'?dAcc.name:dAcc.name_en) : x.debitId;
+  let cName=cAcc? (l==='ar'?cAcc.name:cAcc.name_en) : x.creditId;
+  return '<tr><td>'+x.date+'</td><td class="debit" style="color:#2e7d32"><b>'+dName+'</b><br><small>'+(x.debitCode||'')+'</small></td><td class="credit" style="color:#c62828"><b>'+cName+'</b><br><small>'+(x.creditCode||'')+'</small></td><td>'+x.desc+'</td><td><b>'+x.amount+'</b></td></tr>';
+ }).join('');
+}function renderTrial(){
+ let box=document.getElementById('trial-report');
+ if(!accounts){ box.innerHTML=''; return; }
+ let rows='';
+ let totalDebit=0, totalCredit=0;
+ accounts.forEach(function(acc){
+  let debit=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  let credit=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0);
+  if(debit===0&&credit===0) return;
+  totalDebit+=debit; totalCredit+=credit;
+  let name=localStorage.getItem('pi_lang')==='ar'?acc.name:acc.name_en;
+  rows+='<tr><td>'+acc.code+'</td><td>'+name+'</td><td>'+debit.toFixed(2)+'</td><td>'+credit.toFixed(2)+'</td><td>'+(debit-credit).toFixed(2)+'</td></tr>';
  });
-});
-function renderLedger(){ let l=localStorage.getItem('pi_lang')||'ar'; let t=T[l]||T.ar; document.getElementById('ledger-body').innerHTML=ledger.slice(-30).reverse().map(function(x){return '<tr><td>'+x.date+'</td><td>'+x.desc+'</td><td>'+(t[x.type]||x.type)+'</td><td>'+x.amount+'</td></tr>';}).join(''); }
-function renderInv(filter){
- filter=filter||'';
- let list=inv.filter(function(p){ return p.name.toLowerCase().includes(filter.toLowerCase()); });
+ let balanced = Math.abs(totalDebit-totalCredit)<0.001;
  let t=window._t;
- document.getElementById('inv-body').innerHTML=list.map(function(p,i){ return '<tr><td>'+p.name+'</td><td style="'+(p.qty<5?'color:red;font-weight:700':'')+'">'+p.qty+'</td><td>'+p.price+'</td><td><svg id="bc'+i+'"></svg></td><td><button type="button" onclick="window.delInv('+inv.indexOf(p)+')">'+t('thAction')+'</button></td></tr>'; }).join('');
- document.getElementById('inv-product').innerHTML=inv.length===0?'<option>'+t('noInv')+'</option>':inv.map(function(p,i){ return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi (Qty:'+p.qty+')</option>'; }).join('');
- setTimeout(function(){ list.forEach(function(p,i){ try{ JsBarcode('#bc'+i, p.name.substring(0,10)+i, {width:1,height:20,displayValue:false}); }catch(e){} }); },200);
- renderStorePreview();
+ document.getElementById('balance-badge').textContent=(balanced? t('balanced') : t('unbalanced'))+' D:'+totalDebit.toFixed(2)+' = C:'+totalCredit.toFixed(2);
+ document.getElementById('balance-badge').className= balanced ? 'badge' : 'badge badge-warn';
+ box.innerHTML='<h5>ميزان المراجعة / Trial Balance - مدين=دائن</h5><table><thead><tr><th>Code</th><th>Account</th><th>Debit مدين</th><th>Credit دائن</th><th>Balance</th></tr></thead><tbody>'+rows+'<tr style="background:#e8f5e9;font-weight:700"><td></td><td>Total</td><td>'+totalDebit.toFixed(2)+'</td><td>'+totalCredit.toFixed(2)+'</td><td style="color:'+(balanced?'green':'red')+'">'+(balanced?'✅':'⚠️')+'</td></tr></tbody></table>';
 }
-function renderOrders(){ let box=document.getElementById('orders-list'); let t=window._t; if(orders.length===0){ box.innerHTML='<small>'+t('noOrders')+'</small>'; return; } box.innerHTML=orders.slice(-20).reverse().map(function(o){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0"><b>'+o.customer+'</b> - '+o.date+' - '+o.total.toFixed(3)+' Pi<br>'+o.items.map(function(it){return it.name+' x'+it.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.acceptOrder('+o.id+')">'+t('accept')+'</button></div>'; }).join(''); }
-function renderStorePreview(){ let preview=document.getElementById('store-preview'); let t=window._t; if(inv.length===0){ preview.innerHTML='<small>'+t('noInv')+'</small>'; return; } preview.innerHTML=inv.slice(0,12).map(function(p){ return '<div class="store-item"><div style="height:80px;background:#eee;border-radius:8px;display:flex;align-items:center;justify-content:center">'+(p.img?'<img src="'+p.img+'" style="max-height:80px;max-width:100%">':'📦')+'</div><b>'+p.name+'</b><br><small>'+(p.cat||'')+'</small><br><b style="color:#6a1b9a">'+p.price+' Pi</b></div>'; }).join(''); }
-function renderInvoicesList(){ let box=document.getElementById('saved-invoices'); let t=window._t; if(invoices.length===0){ box.innerHTML='<small>'+t('noInvList')+'</small>'; return; } box.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:8px;border-radius:8px;margin:5px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> - '+it.customer+' - <b>'+it.total.toFixed(3)+' Pi</b><br><small>'+it.date+'</small><br>'+it.items.map(function(j){return j.name+' x'+j.qty}).join(', ')+'<br><button class="btn btn-s" type="button" onclick="window.pdfInvoice('+it.id+')">PDF</button><button class="btn btn-w" type="button" onclick="window.waInvoice('+it.id+')">WhatsApp</button></div>'; }).join(''); }
-function updateReports(){
- let inc=ledger.filter(function(x){return x.type==='income'}).reduce(function(s,x){return s+x.amount},0);
- let exp=ledger.filter(function(x){return x.type==='expense'}).reduce(function(s,x){return s+x.amount},0);
- document.getElementById('r-inc').textContent=inc.toFixed(2);
- document.getElementById('r-exp').textContent=exp.toFixed(2);
- document.getElementById('r-net').textContent=(inc-exp).toFixed(2);
- let ctx=document.getElementById('financeChart'); if(!ctx) return; if(chart) chart.destroy();
- chart=new Chart(ctx,{type:'bar',data:{labels:['Income','Expense','Net'],datasets:[{label:'Pi',data:[inc,exp,inc-exp],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-}
+function renderInv(f){ f=f||''; let list=inv.filter(function(p){return p.name.toLowerCase().includes(f.toLowerCase());}); document.getElementById('inv-body').innerHTML=list.map(function(p){ return '<tr><td>'+p.name+'</td><td>'+p.qty+'</td><td>'+p.price+'</td><td><button onclick="window.delInv('+inv.indexOf(p)+')">x</button></td></tr>'; }).join(''); document.getElementById('inv-product').innerHTML=inv.map(function(p,i){ return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi</option>'; }).join(''); renderStorePreview(); }
+function renderInvoicesList(){ let b=document.getElementById('saved-invoices'); if(invoices.length===0){ b.innerHTML='<small>'+window._t('noInvList')+'</small>'; return;} b.innerHTML=invoices.slice(-20).reverse().map(function(it){ return '<div style="border:1px solid #ccc;padding:5px;border-radius:6px;margin:3px 0;background:#fafafa;color:#222"><b>#'+it.id+'</b> '+it.customer+' - '+it.total.toFixed(3)+' Pi <br><small>'+it.date+'</small></div>'; }).join(''); }
+function renderStorePreview(){ let p=document.getElementById('store-preview'); p.innerHTML=inv.length===0?'<small>'+window._t('noInv')+'</small>':inv.slice(0,12).map(function(x){ return '<div style="background:#f8f8ff;border:1px solid #ddd;border-radius:8px;padding:6px;text-align:center"><b>'+x.name+'</b><br>'+x.price+' Pi</div>'; }).join(''); }
+function refreshCur(){ let el=document.getElementById('inv-items'); el.innerHTML=curInv.length===0?'<small>'+window._t('emptyCart')+'</small>':curInv.map(function(it,idx){ return '<div>'+it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(2)+' <button onclick="window.removeCur('+idx+')" style="color:red;background:none;border:none">x</button></div>'; }).join(''); document.getElementById('inv-total').textContent=invTotal.toFixed(3); }
+function updateReports(){ let inc=0, exp=0; ledger.forEach(function(x){ let acc=accounts?accounts.find(function(a){return a.id===x.creditId;}):null; if(acc&&acc.type==='income') inc+=x.amount; let acc2=accounts?accounts.find(function(a){return a.id===x.debitId;}):null; if(acc2&&acc2.type==='expense') exp+=x.amount; }); document.getElementById('r-inc').textContent=inc.toFixed(2); document.getElementById('r-exp').textContent=exp.toFixed(2); document.getElementById('r-net').textContent=(inc-exp).toFixed(2); let ctx=document.getElementById('financeChart'); if(chart) chart.destroy(); if(ctx){ chart=new Chart(ctx,{type:'bar',data:{labels:['Income','Expense','Net'],datasets:[{label:'Pi',data:[inc,exp,inc-exp],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true}}); } renderTrial(); }
+function updateUserUI(){ let u=currentUser; let l=localStorage.getItem('pi_lang')||'ar'; let t=I18N[l]||I18N.ar; document.getElementById('user-info').textContent=u==='guest'?t.guest:'@'+u+(isPro?' Pro':''); document.getElementById('btn-login').style.display=u==='guest'?'inline-block':'none'; document.getElementById('btn-logout').style.display=u==='guest'?'none':'inline-block'; document.getElementById('store-link').textContent=location.origin+location.pathname.replace('index.html','')+'store.html?user='+u; document.getElementById('usage-badge').textContent=(isPro?t.pro:t.free)+': '+(accounts?accounts.length:0)+' acc | '+ledger.length+' entries'; }
 window.delInv=function(i){ inv.splice(i,1); setData('inv2', inv); renderInv(); updateUserUI(); };
-window.acceptOrder=function(id){ let o=orders.find(function(x){return x.id===id}); if(!o) return; ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:o.total, desc:'طلب متجر '+o.customer}); setData('ledger', ledger); alert(window._t('migrated')); renderLedger(); updateReports(); };
-function refreshCur(){ let el=document.getElementById('inv-items'); el.innerHTML = curInv.length===0 ? '<small>'+window._t('emptyCart')+'</small>' : curInv.map(function(it,idx){ return '<div>'+it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi <button type="button" onclick="window.removeCur('+idx+')" style="color:red;border:none;background:none">x</button></div>'; }).join(''); document.getElementById('inv-total').textContent=invTotal.toFixed(3); }
-window.removeCur=function(idx){ curInv.splice(idx,1); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0); refreshCur(); };
+window.removeCur=function(idx){ curInv.splice(idx,1); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty;},0); refreshCur(); };
+function renderAll(){ checkSetup(); renderTree(); renderLedger(); renderInv(); renderInvoicesList(); renderStorePreview(); refreshCur(); updateReports(); updateUserUI(); }
 
-document.getElementById('form-entry').addEventListener('submit',function(e){
- e.preventDefault(); ledger.push({date:new Date().toLocaleDateString(), type:document.getElementById('e-type').value, amount:parseFloat(document.getElementById('e-amount').value), desc:document.getElementById('e-desc').value}); setData('ledger', ledger); renderLedger(); updateReports(); updateUserUI(); e.target.reset();
+document.querySelectorAll('.tab').forEach(function(tab){ tab.addEventListener('click', function(){ document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');}); document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active');}); tab.classList.add('active'); document.getElementById(tab.dataset.tab).classList.add('active'); }); });
+
+document.getElementById('btn-do-setup').addEventListener('click', function(){
+ let activity=document.getElementById('setup-activity').value;
+ let currency=document.getElementById('setup-currency').value;
+ let capital=parseFloat(document.getElementById('setup-capital').value||0);
+ accounts=defaultTree(activity);
+ sysConfig={activity:activity,currency:currency,capital:capital,date:new Date().toISOString()};
+ setData('accounts_v4', accounts);
+ setData('sysConfig', sysConfig);
+ if(capital>0){
+  let cash=accounts.find(function(a){return a.code==='1101';});
+  let cap=accounts.find(function(a){return a.code==='3001';});
+  ledger.push({date:new Date().toLocaleDateString(), debitId:cash?cash.id:'111', debitCode:'1101', creditId:cap?cap.id:'31', creditCode:'3001', amount:capital, desc:'رأس المال الافتتاحي / Opening Capital - Double Entry'});
+  setData('ledger_double', ledger);
+ }
+ document.getElementById('setup-modal').style.display='none';
+ renderAll();
+ alert('✅ '+accounts.length+' accounts created - Double Entry Ready');
 });
-document.getElementById('form-inv').addEventListener('submit',function(e){
- e.preventDefault(); inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0), img:document.getElementById('p-img').value, cat:document.getElementById('p-cat').value}); setData('inv2', inv); renderInv(); updateUserUI(); e.target.reset();
+document.getElementById('btn-reset-setup').addEventListener('click', function(){ if(confirm('Reset tree?')){ accounts=null; sysConfig=null; localStorage.removeItem(k('accounts_v4')); localStorage.removeItem(k('sysConfig')); checkSetup(); } });
+document.getElementById('form-account').addEventListener('submit', function(e){ e.preventDefault(); let parent=document.getElementById('acc-parent').value||null; let pAcc=parent?accounts.find(function(a){return a.id===parent;}):null; let lvl=pAcc?pAcc.level+1:1; let na={id:Date.now().toString(), code:document.getElementById('acc-code').value, name:document.getElementById('acc-name').value, name_en:document.getElementById('acc-name').value, parent:parent, type:document.getElementById('acc-type').value, level:lvl}; accounts.push(na); setData('accounts_v4', accounts); renderTree(); renderTrial(); e.target.reset(); });
+document.getElementById('form-entry').addEventListener('submit', function(e){
+ e.preventDefault();
+ let dId=document.getElementById('e-debit').value;
+ let cId=document.getElementById('e-credit').value;
+ if(dId===cId){ alert('Debit and Credit cannot be same account - المدين والدائن لا يمكن أن يكون نفس الحساب'); return; }
+ let dAcc=accounts.find(function(a){return a.id===dId;});
+ let cAcc=accounts.find(function(a){return a.id===cId;});
+ let amt=parseFloat(document.getElementById('e-amount').value);
+ ledger.push({date:new Date().toLocaleDateString(), debitId:dId, debitCode:dAcc?dAcc.code:'', creditId:cId, creditCode:cAcc?cAcc.code:'', amount:amt, desc:document.getElementById('e-desc').value});
+ setData('ledger_double', ledger); renderLedger(); updateReports(); updateUserUI(); e.target.reset();
 });
-document.getElementById('search-prod').addEventListener('input',function(){ renderInv(this.value); });
-document.getElementById('btn-add-inv').addEventListener('click',function(){
- let idx=document.getElementById('inv-product').value; let q=parseInt(document.getElementById('inv-qty').value||1);
- if(idx===''||inv.length===0) return;
- let prod=inv[idx]; if(prod.qty<q){ alert(window._t('qtyNotAvail')+prod.qty); return; }
- curInv.push({name:prod.name, price:prod.price, qty:q}); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0); refreshCur();
-});
-document.getElementById('btn-save-inv').addEventListener('click',function(){
- if(curInv.length===0){ alert(window._t('needAdd')); return; }
+document.getElementById('form-inv').addEventListener('submit', function(e){ e.preventDefault(); inv.push({name:document.getElementById('p-name').value, qty:parseInt(document.getElementById('p-qty').value), price:parseFloat(document.getElementById('p-price').value), cost:parseFloat(document.getElementById('p-cost').value||0), img:document.getElementById('p-img').value, cat:document.getElementById('p-cat').value}); setData('inv2', inv); renderInv(); updateUserUI(); e.target.reset(); });
+document.getElementById('search-prod').addEventListener('input', function(){ renderInv(this.value); });
+document.getElementById('btn-add-inv').addEventListener('click', function(){ let idx=document.getElementById('inv-product').value; let q=parseInt(document.getElementById('inv-qty').value||1); if(idx===''||inv.length===0) return; let prod=inv[idx]; curInv.push({name:prod.name, price:prod.price, qty:q}); invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty;},0); refreshCur(); });
+document.getElementById('btn-save-inv').addEventListener('click', function(){
+ if(curInv.length===0){ alert(window._t('noInv')); return; }
  let customer=document.getElementById('inv-customer').value||'عميل';
  let data={id:Date.now(), customer:customer, items:JSON.parse(JSON.stringify(curInv)), total:invTotal, date:new Date().toLocaleString()};
- invoices.push(data); lastSavedInvoice=data; setData('invoices_v23', invoices);
- ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:invTotal, desc:'فاتورة '+customer});
- curInv.forEach(function(ci){ let p=inv.find(function(x){return x.name===ci.name}); if(p) p.qty-=ci.qty; });
- setData('ledger', ledger); setData('inv2', inv);
- renderInv(); renderLedger(); updateReports(); renderInvoicesList(); updateUserUI();
- document.getElementById('invoice-actions').style.display='block';
+ invoices.push(data); setData('invoices_v23', invoices);
+ let cash=accounts? accounts.find(function(a){return a.code==='1101';}) : null;
+ let sales=accounts? accounts.find(function(a){return a.code==='4100';}) : null;
+ if(cash&&sales){
+  ledger.push({date:new Date().toLocaleDateString(), debitId:cash.id, debitCode:cash.code, creditId:sales.id, creditCode:sales.code, amount:invTotal, desc:'فاتورة مبيعات '+customer+' / Sales Invoice '+customer});
+  setData('ledger_double', ledger);
+ }
+ curInv.forEach(function(ci){ let p=inv.find(function(x){return x.name===ci.name;}); if(p) p.qty-=ci.qty; });
+ setData('inv2', inv); renderInv(); renderLedger(); updateReports(); renderInvoicesList(); updateUserUI(); document.getElementById('invoice-actions').style.display='block';
 });
-document.getElementById('btn-new-inv').addEventListener('click',function(){ curInv=[]; invTotal=0; refreshCur(); document.getElementById('invoice-actions').style.display='none'; });
-function makePdf(d){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Pi Business OS - Invoice #'+d.id,10,10); doc.text('Customer: '+d.customer,10,18); doc.text('Date: '+d.date,10,26); let y=36; d.items.forEach(function(it){ doc.text(it.name+' x'+it.qty+' = '+(it.price*it.qty).toFixed(3)+' Pi',10,y); y+=8; }); doc.text('Total: '+d.total.toFixed(3)+' Pi',10,y+10); return doc; }
-document.getElementById('btn-pdf-last').addEventListener('click',function(){ if(lastSavedInvoice) makePdf(lastSavedInvoice).save('invoice-'+lastSavedInvoice.id+'.pdf'); });
-document.getElementById('btn-wa-last').addEventListener('click',function(){ if(lastSavedInvoice) window.waInvoice(lastSavedInvoice.id); });
-window.pdfInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(d) makePdf(d).save('invoice-'+id+'.pdf'); };
-window.waInvoice=function(id){ let d=invoices.find(function(x){return x.id===id}); if(!d) return; let text='*فاتورة #'+d.id+'*%0Aالعميل: '+d.customer+'%0A'+d.items.map(function(i){return i.name+' x'+i.qty}).join('%0A')+'%0A*Total '+d.total.toFixed(3)+' Pi*'; window.open('https://wa.me/?text='+text,'_blank'); };
-document.getElementById('btn-excel').addEventListener('click',function(){ let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ledger'); XLSX.writeFile(wb,'ledger.xlsx'); });
-document.getElementById('btn-report-pdf').addEventListener('click',function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Report Income '+document.getElementById('r-inc').textContent,10,10); doc.save('report.pdf'); });
-document.getElementById('btn-save-store').addEventListener('click',function(){ storeInfo.name=document.getElementById('store-name').value; storeInfo.desc=document.getElementById('store-desc').value; setData('storeInfo', storeInfo); alert(window._t('migrated')); });
-document.getElementById('btn-copy-store').addEventListener('click',function(){ let link=document.getElementById('store-link').textContent; navigator.clipboard.writeText(link).then(function(){alert(window._t('copied'));}); });
-document.getElementById('btn-migrate').addEventListener('click',function(){ ['ledger','inv2','invoices_v23','storeInfo'].forEach(function(k){ let old=localStorage.getItem(k); if(old) localStorage.setItem(k+'_guest', old); }); ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); storeInfo=getData('storeInfo',{name:'',desc:''}); updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); alert(window._t('migrated')+': '+ledger.length+' - '+inv.length); });
-try{ if(typeof Pi!=='undefined'){ Pi.init({version:'2.0', sandbox:true}); } }catch(e){}
-document.getElementById('btn-login').addEventListener('click', async function(){ try{ if(typeof Pi==='undefined'){ alert('Open in Pi Browser'); return; } let auth=await Pi.authenticate(['username','payments'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); orders=getData('orders_v3',[]); storeInfo=getData('storeInfo',{name:'',desc:''}); isPro=getData('isPro',false); updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); alert(window._t('welcome')+currentUser); }catch(e){ alert(e.message); } });
-document.getElementById('btn-logout').addEventListener('click',function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; ledger=getData('ledger',[]); inv=getData('inv2',[]); invoices=getData('invoices_v23',[]); storeInfo={name:'',desc:''}; updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur(); });
-document.getElementById('btn-upgrade').addEventListener('click', async function(){ if(currentUser==='guest'){ alert(window._t('loginFirst')); return; } isPro=true; setData('isPro',true); updateUserUI(); alert(window._t('proActive')); });
+document.getElementById('btn-new-inv').addEventListener('click', function(){ curInv=[]; invTotal=0; refreshCur(); document.getElementById('invoice-actions').style.display='none'; });
+document.getElementById('btn-save-store').addEventListener('click', function(){ storeInfo.name=document.getElementById('store-name').value; storeInfo.desc=document.getElementById('store-desc').value; setData('storeInfo', storeInfo); alert(window._t('migrated')); });
+document.getElementById('btn-copy-store').addEventListener('click', function(){ navigator.clipboard.writeText(document.getElementById('store-link').textContent).then(function(){alert(window._t('copied'));}); });
+document.getElementById('btn-migrate').addEventListener('click', function(){ let old=localStorage.getItem('ledger'); if(old){ try{ let oldArr=JSON.parse(old); oldArr.forEach(function(o){ ledger.push({date:o.date, debitId:'111', debitCode:'1101', creditId:'4100', creditCode:'4100', amount:o.amount, desc:o.desc}); }); setData('ledger_double', ledger); }catch(e){} } renderAll(); alert('Migrated to Double Entry: '+ledger.length); });
+document.getElementById('btn-excel').addEventListener('click', function(){ let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ledger'); XLSX.writeFile(wb,'ledger_double.xlsx'); });
+document.getElementById('btn-report-pdf').addEventListener('click', function(){ let jsPDF=window.jspdf.jsPDF; let doc=new jsPDF(); doc.text('Trial Balance',10,10); let y=20; accounts.forEach(function(acc){ let d=ledger.filter(function(x){return x.debitId===acc.id;}).reduce(function(s,x){return s+x.amount;},0); let c=ledger.filter(function(x){return x.creditId===acc.id;}).reduce(function(s,x){return s+x.amount;},0); if(d||c){ doc.text(acc.code+' '+acc.name+' D:'+d+' C:'+c,10,y); y+=7; } }); doc.save('trial.pdf'); });
+document.getElementById('btn-login').addEventListener('click', async function(){ try{ if(typeof Pi==='undefined'){ alert('Open Pi Browser'); return;} let auth=await Pi.authenticate(['username','payments'], function(){}); currentUser=auth.user.username; localStorage.setItem('pi_current_user', currentUser); accounts=getData('accounts_v4', null); ledger=getData('ledger_double', []); inv=getData('inv2',[]); sysConfig=getData('sysConfig', null); renderAll(); }catch(e){ alert(e.message);} });
+document.getElementById('btn-logout').addEventListener('click', function(){ localStorage.removeItem('pi_current_user'); currentUser='guest'; accounts=getData('accounts_v4', null); ledger=getData('ledger_double', []); sysConfig=getData('sysConfig', null); renderAll(); });
 
 let savedLang=localStorage.getItem('pi_lang')||'ar';
 document.getElementById('lang-picker').value=savedLang;
 applyLang(savedLang);
 document.getElementById('lang-picker').addEventListener('change', function(){ applyLang(this.value); });
-
-if(!localStorage.getItem('migrated_v32')){
- ['ledger','inv2','invoices_v23','storeInfo'].forEach(function(k){
-   let old=localStorage.getItem(k);
-   if(old && !localStorage.getItem(k+'_guest')) localStorage.setItem(k+'_guest', old);
- });
- localStorage.setItem('migrated_v32','1');
-}
-updateUserUI(); renderLedger(); renderInv(); renderInvoicesList(); renderOrders(); updateReports(); refreshCur();
+renderAll();
 });
 </script>
 </body>
