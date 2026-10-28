@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pi Merchant OS v2.2 - Full Translate</title>
+<title>Pi Merchant OS v4.0 - Full ERP</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,18 +14,17 @@
 </head>
 <body>
 <div class="container">
-<div style="display:flex;justify-content:space-between"><div>👋 <span id="t-app">Pi Merchant OS v2.2</span></div><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="ru">Русский</option></select></div>
+<div style="display:flex;justify-content:space-between"><div>👋 <span id="t-app">Pi Merchant OS v4.0</span></div><select id="lang-picker" style="width:auto"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="ru">Русский</option></select></div>
 <h2 id="main-title" style="text-align:center;color:var(--p)">نظام التاجر الذكي</h2>
 <div class="tabs">
 <div class="tab active" data-tab="entry" id="lb-entry">قيد</div><div class="tab" data-tab="invoice" id="lb-inv">فاتورة</div><div class="tab" data-tab="inventory" id="lb-stock">مخزون</div><div class="tab" data-tab="partners" id="lb-part">عملاء</div><div class="tab" data-tab="reports" id="lb-rep">تقارير</div><div class="tab" data-tab="pay" id="lb-pay">Pi</div>
 </div>
 <div id="entry" class="tab-content active"><div class="card"><h3 id="h-entry">إضافة قيد</h3><form id="form-entry"><select id="e-type"><option value="income" id="op-inc">إيراد</option><option value="expense" id="op-exp">مصروف</option><option value="asset" id="op-ast">أصل</option></select><input id="e-amount" type="number" step="0.0001" placeholder="المبلغ π" required><input id="e-desc" placeholder="الوصف" required><button class="btn btn-pi" type="submit" id="btn-save-entry">حفظ</button></form></div><div class="card"><table><thead><tr><th id="th-date">التاريخ</th><th id="th-desc">الوصف</th><th id="th-type">النوع</th><th id="th-amt">المبلغ</th></tr></thead><tbody id="ledger-body"></tbody></table></div></div>
 <div id="invoice" class="tab-content"><div class="card"><h3 id="h-inv">إنشاء فاتورة</h3><input id="inv-customer" placeholder="Customer"><select id="inv-product"></select><input id="inv-qty" type="number" value="1"><button class="btn btn-pi" type="button" id="btn-add-inv">إضافة</button><div id="inv-items"></div><h4><span id="lb-total">الإجمالي</span>: <span id="inv-total">0</span> π</h4><button class="btn btn-s" type="button" id="btn-pdf">PDF</button><button class="btn btn-w" type="button" id="btn-wa">WhatsApp</button><button class="btn btn-pi" type="button" id="btn-save-inv">حفظ وخصم</button></div></div>
-<div id="inventory" class="tab-content"><div class="card"><h3 id="h-stock">إدارة المخزون</h3><form id="form-inv"><input id="p-name" placeholder="اسم المنتج" required><input id="p-qty" type="number" placeholder="الكمية" required><input id="p-price" type="number" step="0.0001" placeholder="سعر البيع" required><input id="p-cost" type="number" step="0.0001" placeholder="التكلفة"><button class="btn btn-pi" type="submit" id="btn-add-prod">إضافة منتج</button></form></div><div class="card"><table><thead><tr><th id="th-pname">Product</th><th id="th-pqty">Qty</th><th id="th-pprice">Price</th><th>Barcode</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
+                                                                                                                                                                                                                                                                                                                                                     <div id="inventory" class="tab-content"><div class="card"><h3 id="h-stock">إدارة المخزون</h3><form id="form-inv"><input id="p-name" placeholder="اسم المنتج" required><input id="p-qty" type="number" placeholder="الكمية" required><input id="p-price" type="number" step="0.0001" placeholder="سعر البيع" required><input id="p-cost" type="number" step="0.0001" placeholder="التكلفة"><button class="btn btn-pi" type="submit" id="btn-add-prod">إضافة منتج</button></form></div><div class="card"><table><thead><tr><th id="th-pname">Product</th><th id="th-pqty">Qty</th><th id="th-pprice">Price</th><th>Barcode</th><th></th></tr></thead><tbody id="inv-body"></tbody></table></div></div>
 <div id="partners" class="tab-content"><div class="card"><h3 id="h-part">العملاء</h3><form id="form-part"><input id="pt-name" placeholder="الاسم" required><select id="pt-type"><option value="customer" id="op-cust">عميل</option><option value="supplier" id="op-sup">مورد</option></select><input id="pt-phone" placeholder="967..."><button class="btn btn-pi" type="submit" id="btn-save-part">حفظ</button></form></div><div class="card"><table><tbody id="pt-body"></tbody></table></div></div>
 <div id="reports" class="tab-content"><div class="card"><h3 id="h-rep">التقارير</h3><select id="rep-period"><option value="all" id="op-all">الكل</option><option value="today" id="op-today">اليوم</option><option value="week" id="op-week">أسبوع</option><option value="month" id="op-month">شهر</option></select><p><span id="lb-inc">إيراد</span>: <span id="r-inc">0</span> | <span id="lb-exp">مصروف</span>: <span id="r-exp">0</span> | <b id="lb-net">صافي</b>: <b id="r-net">0</b></p><div style="background:#fff;padding:8px;border-radius:8px"><canvas id="financeChart"></canvas></div><button class="btn btn-s" type="button" id="btn-excel">Excel</button><button class="btn btn-s" type="button" id="btn-report-pdf">PDF</button></div></div>
 <div id="pay" class="tab-content"><div class="card"><h3 id="h-pay">دفع Pi</h3><input id="pay_amount" type="number" value="1"><button class="btn btn-pi" type="button" id="btn-pi-pay">Pay with Pi</button><div id="pi-status"></div></div></div>
-                                                                                                                                                                 <!-- موديول الرواد والاشتراكات المدمج مع الترجمة -->
 <div class="card" style="margin-top: 20px; border: 2px solid var(--p); background: rgba(46, 0, 74, 0.03);">
     <h3 id="h-founder-hub" style="color: var(--s);">🛡️ لوحة تحكم الرواد والاشتراكات</h3>
     <p id="p-founder-desc" style="font-size: 12px; color: #555;">هذا القسم مخصص للرواد لإدارة المتاجر، أول 50 عملية مجانية ثم اشتراك 0.1 Pi سنوياً.</p>
@@ -65,20 +64,60 @@
     <div id="sub-status-msg" style="font-size: 11px; margin-top: 5px; color: #666;"></div>
 </div>
 
-         </div><script>
+<div class="card" style="margin-top: 20px; border: 2px solid var(--s); background: rgba(106, 27, 154, 0.03);">
+    <h3 id="h-coa-system" style="color: var(--s);">🌳 شجرة الحسابات وتهيئة النظام</h3>
+    <p id="p-coa-desc" style="font-size: 12px; color: #555;">إدارة الدليل المحاسبي وتهيئة إعدادات المتجر.</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px;">
+        <input type="text" id="setup-store-name" placeholder="اسم المتجر / الشركة...">
+        <input type="text" id="setup-currency" value="Pi (π)" readonly style="background:#eee;">
+    </div>
+    <button class="btn btn-pi" type="button" id="btn-save-setup"><span id="txt-save-setup">حفظ الإعدادات</span></button>
+
+    <div style="margin-top: 15px;">
+        <h4 id="h-coa-list" style="color: var(--p); font-size: 14px;">الدليل المحاسبي الرئيسي</h4>
+        <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+            <input type="text" id="coa-account-name" placeholder="اسم الحساب الجديد..." style="flex: 2;">
+            <select id="coa-account-type" style="flex: 1;">
+                <option value="Asset" id="opt-coa-asset">أصل</option>
+                <option value="Liability" id="opt-coa-liability">التزام</option>
+                <option value="Equity" id="opt-coa-equity">حقوق ملكية</option>
+                <option value="Revenue" id="opt-coa-revenue">إيراد</option>
+                <option value="Expense" id="opt-coa-expense">مصروف</option>
+            </select>
+            <button class="btn btn-s" type="button" id="btn-add-coa"><span id="txt-add-coa">إضافة حساب</span></button>
+        </div>
+        <div style="max-height: 150px; overflow-y: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th id="th-coa-code">رمز الحساب</th>
+                        <th id="th-coa-name">اسم الحساب</th>
+                        <th id="th-coa-type">التصنيف</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="coa-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+<script>
 document.addEventListener('DOMContentLoaded', function(){
 const T={
-ar:{main:'نظام التاجر الذكي',app:'Pi Merchant OS v2.2',e:'قيد',inv:'فاتورة',stock:'مخزون',part:'عملاء',rep:'تقارير',pay:'Pi',hE:'إضافة قيد',hI:'إنشاء فاتورة',hSt:'إدارة المخزون',hPa:'العملاء والموردين',hRe:'التقارير المالية',hPay:'دفع Pi',save:'حفظ',inc:'إيراد',exp:'مصروف',ast:'أصل',cust:'عميل',sup:'مورد',total:'الإجمالي',addInv:'إضافة للفاتورة',addProd:'إضافة منتج',savePart:'حفظ العميل',income:'إيراد',expense:'مصروف',net:'صافي',phAmt:'المبلغ π',phDesc:'الوصف',phPName:'اسم المنتج',phQty:'الكمية',phPrice:'سعر البيع',phCost:'التكلفة',phCust:'اسم العميل',phPhone:'رقم الهاتف 967...',phInvQty:'الكمية',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'حفظ وخصم المخزون',btnEx:'تصدير Excel',btnRePdf:'تقرير PDF',btnPi:'ادفع بـ Pi',thDate:'التاريخ',thDesc:'الوصف',thType:'النوع',thAmt:'المبلغ',thPname:'المنتج',thPqty:'الكمية',thPprice:'السعر',opAll:'الكل',opToday:'اليوم',opWeek:'أسبوع',opMonth:'شهر',hFounder:'🛡️ لوحة تحكم الرواد والاشتراكات',pFounderDesc:'هذا القسم مخصص للرواد لإدارة المتاجر، أول 50 عملية مجانية ثم اشتراك 0.1 Pi سنوياً.',btnPiLogin:'تسجيل الدخول بـ Pi Network',phNewStore:'اسم رائد الأعمال أو المتجر الجديد...',txtCreateStore:'إنشاء متجر',lbSelectStore:'اختر المتجر النشط:',optDefaultStore:'التاجر الافتراضي (الأساسي)',lbEquity:'إجمالي أصول ورواتب المتجر الحالي',lbPartnersCount:'عدد الشركاء/العملاء المسجلين',lbOpsUsed:'العمليات المستخدمة',lbFreeTier:'المجانية',lbSubStatusLabel:'حالة الاشتراك',btnPaySub:'اشترك الآن بـ 0.1 Pi / سنة',btnExport:'تصدير بيانات المتجر (Backup)',btnImport:'استعادة بيانات'},
-en:{main:'Smart Merchant System',app:'Pi Merchant OS v2.2',e:'Entry',inv:'Invoice',stock:'Stock',part:'Partners',rep:'Reports',pay:'Pi',hE:'Add Entry',hI:'Create Invoice',hSt:'Stock Management',hPa:'Customers & Suppliers',hRe:'Financial Reports',hPay:'Pi Payment',save:'Save',inc:'Income',exp:'Expense',ast:'Asset',cust:'Customer',sup:'Supplier',total:'Total',addInv:'Add to Invoice',addProd:'Add Product',savePart:'Save Partner',income:'Income',expense:'Expense',net:'Net',phAmt:'Amount π',phDesc:'Description',phPName:'Product Name',phQty:'Quantity',phPrice:'Selling Price',phCost:'Cost',phCust:'Customer Name',phPhone:'Phone 967...',phInvQty:'Quantity',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Save & Deduct Stock',btnEx:'Export Excel',btnRePdf:'Report PDF',btnPi:'Pay with Pi',thDate:'Date',thDesc:'Description',thType:'Type',thAmt:'Amount',thPname:'Product',thPqty:'Qty',thPprice:'Price',opAll:'All',opToday:'Today',opWeek:'Week',opMonth:'Month',hFounder:'🛡️ Pioneer & Subscription Hub',pFounderDesc:'Manage your stores, first 50 operations are free, then annual subscription of 0.1 Pi.',btnPiLogin:'Login with Pi Network',phNewStore:'New store or founder name...',txtCreateStore:'Create Store',lbSelectStore:'Select Active Store:',optDefaultStore:'Default Merchant',lbEquity:'Total Store Equity',lbPartnersCount:'Registered Partners',lbOpsUsed:'Operations Used',lbFreeTier:'Free',lbSubStatusLabel:'Subscription Status',btnPaySub:'Subscribe Now (0.1 Pi / Year)',btnExport:'Export Backup',btnImport:'Import Data'},
-tr:{main:'Akıllı Tüccar Sistemi',app:'Pi Merchant OS v2.2',e:'Kayıt',inv:'Fatura',stock:'Stok',part:'Ortaklar',rep:'Raporlar',pay:'Pi',hE:'Kayıt Ekle',hI:'Fatura Oluştur',hSt:'Stok Yönetimi',hPa:'Müşteriler ve Tedarikçiler',hRe:'Finansal Raporlar',hPay:'Pi Ödeme',save:'Kaydet',inc:'Gelir',exp:'Gider',ast:'Varlık',cust:'Müşteri',sup:'Tedarikçi',total:'Toplam',addInv:'Faturaya Ekle',addProd:'Ürün Ekle',savePart:'Ortağı Kaydet',income:'Gelir',expense:'Gider',net:'Net',phAmt:'Tutar π',phDesc:'Açıklama',phPName:'Ürün Adı',phQty:'Miktar',phPrice:'Satış Fiyatı',phCost:'Maliyet',phCust:'Müşteri Adı',phPhone:'Telefon 967...',phInvQty:'Miktar',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Kaydet ve Stoktan Düş',btnEx:'Excel Dışa Aktar',btnRePdf:'Rapor PDF',btnPi:'Pi ile Öde',thDate:'Tarih',thDesc:'Açıklama',thType:'Tür',thAmt:'Tutar',thPname:'Ürün',thPqty:'Miktar',thPprice:'Fiyat',opAll:'Tümü',opToday:'Bugün',opWeek:'Hafta',opMonth:'Ay',hFounder:'🛡️ Öncü ve Abonelik Merkezi',pFounderDesc:'Mağazalarınızı yönetin, ilk 50 işlem ücretsiz, ardından yıllık 0.1 Pi abonelik.',btnPiLogin:'Pi Network ile Giriş Yap',phNewStore:'Yeni mağaza veya kurucu adı...',txtCreateStore:'Mağaza Oluştur',lbSelectStore:'Aktif Mağazayı Seç:',optDefaultStore:'Varsayılan Tüccar',lbEquity:'Toplam Mağaza Sermayesi',lbPartnersCount:'Kayıtlı Ortaklar',lbOpsUsed:'Kullanılan İşlemler',lbFreeTier:'Ücretsiz',lbSubStatusLabel:'Abonelik Durumu',btnPaySub:'Şimdi Abone Ol (0.1 Pi / Yıl)',btnExport:'Yedekle',btnImport:'Veri İçe Aktar'},
-de:{main:'Intelligentes Händlersystem',app:'Pi Merchant OS v2.2',e:'Buchung',inv:'Rechnung',stock:'Lager',part:'Partner',rep:'Berichte',pay:'Pi',hE:'Buchung Hinzufügen',hI:'Rechnung Erstellen',hSt:'Lagerverwaltung',hPa:'Kunden & Lieferanten',hRe:'Finanzberichte',hPay:'Pi Zahlung',save:'Speichern',inc:'Einnahme',exp:'Ausgabe',ast:'Anlage',cust:'Kunde',sup:'Lieferant',total:'Gesamt',addInv:'Zur Rechnung',addProd:'Produkt Hinzufügen',savePart:'Partner Speichern',income:'Einnahme',expense:'Ausgabe',net:'Netto',phAmt:'Betrag π',phDesc:'Beschreibung',phPName:'Produktname',phQty:'Menge',phPrice:'Verkaufspreis',phCost:'Kosten',phCust:'Kundenname',phPhone:'Telefon 967...',phInvQty:'Menge',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Speichern & Abziehen',btnEx:'Excel Export',btnRePdf:'Bericht PDF',btnPi:'Mit Pi Bezahlen',thDate:'Datum',thDesc:'Beschreibung',thType:'Typ',thAmt:'Betrag',thPname:'Produkt',thPqty:'Menge',thPprice:'Preis',opAll:'Alle',opToday:'Heute',opWeek:'Woche',opMonth:'Monat',hFounder:'🛡️ Pioneer & Abonnement-Hub',pFounderDesc:'Verwalten Sie Ihre Geschäfte, erste 50 Operationen kostenlos, dann 0.1 Pi jährlich.',btnPiLogin:'Mit Pi Network anmelden',phNewStore:'Neuer Shop oder Gründername...',txtCreateStore:'Shop erstellen',lbSelectStore:'Aktiven Shop wählen:',optDefaultStore:'Standard-Händler',lbEquity:'Gesamtkapital',lbPartnersCount:'Registrierte Partner',lbOpsUsed:'Verwendete Operationen',lbFreeTier:'Kostenlos',lbSubStatusLabel:'Abonnementstatus',btnPaySub:'Jetzt abonnieren (0.1 Pi / Jahr)',btnExport:'Backup exportieren',btnImport:'Daten importieren'},
-fr:{main:'Système Marchand Intelligent',app:'Pi Merchant OS v2.2',e:'Écriture',inv:'Facture',stock:'Stock',part:'Partenaires',rep:'Rapports',pay:'Pi',hE:'Ajouter Écriture',hI:'Créer Facture',hSt:'Gestion Stock',hPa:'Clients & Fournisseurs',hRe:'Rapports Financiers',hPay:'Paiement Pi',save:'Enregistrer',inc:'Revenu',exp:'Dépense',ast:'Actif',cust:'Client',sup:'Fournisseur',total:'Total',addInv:'Ajouter Facture',addProd:'Ajouter Produit',savePart:'Enregistrer Partenaire',income:'Revenu',expense:'Dépense',net:'Net',phAmt:'Montant π',phDesc:'Description',phPName:'Nom Produit',phQty:'Quantité',phPrice:'Prix Vente',phCost:'Coût',phCust:'Nom Client',phPhone:'Tél 967...',phInvQty:'Quantité',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Enregistrer & Déduire',btnEx:'Exporter Excel',btnRePdf:'Rapport PDF',btnPi:'Payer avec Pi',thDate:'Date',thDesc:'Description',thType:'Type',thAmt:'Montant',thPname:'Produit',thPqty:'Qté',thPprice:'Prix',opAll:'Tout',opToday:"Aujourd'hui",opWeek:'Semaine',opMonth:'Mois',hFounder:'🛡️ Centre Pionnier & Abonnement',pFounderDesc:'Gérez vos magasins, 50 opérations gratuites puis abonnement de 0.1 Pi/an.',btnPiLogin:'Connexion Pi Network',phNewStore:'Nouveau nom de magasin...',txtCreateStore:'Créer un magasin',lbSelectStore:'Sélectionner le magasin :',optDefaultStore:'Marchand par défaut',lbEquity:'Actif total',lbPartnersCount:'Partenaires enregistrés',lbOpsUsed:'Opérations utilisées',lbFreeTier:'Gratuit',lbSubStatusLabel:"Statut d'abonnement",btnPaySub:"S'abonner (0.1 Pi / An)",btnExport:'Exporter',btnImport:'Importer'},
-es:{main:'Sistema Comerciante Inteligente',app:'Pi Merchant OS v2.2',e:'Asiento',inv:'Factura',stock:'Inventario',part:'Socios',rep:'Informes',pay:'Pi',hE:'Añadir Asiento',hI:'Crear Factura',hSt:'Gestión Inventario',hPa:'Clientes y Proveedores',hRe:'Informes Financieros',hPay:'Pago Pi',save:'Guardar',inc:'Ingreso',exp:'Gasto',ast:'Activo',cust:'Cliente',sup:'Proveedor',total:'Total',addInv:'Añadir Factura',addProd:'Añadir Producto',savePart:'Guardar Socio',income:'Ingreso',expense:'Gasto',net:'Neto',phAmt:'Monto π',phDesc:'Descripción',phPName:'Nombre Producto',phQty:'Cantidad',phPrice:'Precio Venta',phCost:'Costo',phCust:'Nombre Cliente',phPhone:'Tel 967...',phInvQty:'Cantidad',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Guardar y Descontar',btnEx:'Exportar Excel',btnRePdf:'Informe PDF',btnPi:'Pagar con Pi',thDate:'Fecha',thDesc:'Descripción',thType:'Tipo',thAmt:'Monto',thPname:'Producto',thPqty:'Cant',thPprice:'Precio',opAll:'Todo',opToday:'Hoy',opWeek:'Semana',opMonth:'Mes',hFounder:'🛡️ Centro de Pioneros y Suscripción',pFounderDesc:'Gestiona tus tiendas, primeras 50 operaciones gratis, luego 0.1 Pi al año.',btnPiLogin:'Iniciar sesión con Pi Network',phNewStore:'Nombre de nueva tienda...',txtCreateStore:'Crear tienda',lbSelectStore:'Seleccionar tienda activa:',optDefaultStore:'Comerciante predeterminado',lbEquity:'Capital total',lbPartnersCount:'Socios registrados',lbOpsUsed:'Operaciones usadas',lbFreeTier:'Gratis',lbSubStatusLabel:'Estado de suscripción',btnPaySub:'Suscribirse (0.1 Pi / Año)',btnExport:'Exportar',btnImport:'Importar'},
-zh:{main:'智能商家系统',app:'Pi Merchant OS v2.2',e:'分录',inv:'发票',stock:'库存',part:'合作伙伴',rep:'报告',pay:'Pi',hE:'添加分录',hI:'创建发票',hSt:'库存管理',hPa:'客户与供应商',hRe:'财务报告',hPay:'Pi支付',save:'保存',inc:'收入',exp:'支出',ast:'资产',cust:'客户',sup:'供应商',total:'总计',addInv:'添加到发票',addProd:'添加产品',savePart:'保存伙伴',income:'收入',expense:'支出',net:'净额',phAmt:'金额 π',phDesc:'描述',phPName:'产品名称',phQty:'数量',phPrice:'售价',phCost:'成本',phCust:'客户姓名',phPhone:'电话 967...',phInvQty:'数量',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'保存并扣减',btnEx:'导出Excel',btnRePdf:'报告PDF',btnPi:'用Pi支付',thDate:'日期',thDesc:'描述',thType:'类型',thAmt:'金额',thPname:'产品',thPqty:'数量',thPprice:'价格',opAll:'全部',opToday:'今天',opWeek:'周',opMonth:'月',hFounder:'🛡️ 先锋与订阅中心',pFounderDesc:'管理您的商店，前50次操作免费，之后每年订阅 0.1 Pi。',btnPiLogin:'使用Pi Network登录',phNewStore:'新商店或创始人名称...',txtCreateStore:'创建商店',lbSelectStore:'选择活动商店：',optDefaultStore:'默认商家',lbEquity:'商店总资产',lbPartnersCount:'注册伙伴',lbOpsUsed:'已用操作',lbFreeTier:'免费',lbSubStatusLabel:'订阅状态',btnPaySub:'立即订阅 (0.1 Pi/年)',btnExport:'导出备份',btnImport:'导入数据'},
-ja:{main:'スマートマーチャント',app:'Pi Merchant OS v2.2',e:'仕訳',inv:'請求書',stock:'在庫',part:'パートナー',rep:'レポート',pay:'Pi',hE:'仕訳追加',hI:'請求書作成',hSt:'在庫管理',hPa:'顧客と仕入先',hRe:'財務レポート',hPay:'Pi支払い',save:'保存',inc:'収入',exp:'経費',ast:'資産',cust:'顧客',sup:'仕入先',total:'合計',addInv:'請求書に追加',addProd:'商品追加',savePart:'パートナー保存',income:'収入',expense:'経費',net:'純利益',phAmt:'金額 π',phDesc:'説明',phPName:'商品名',phQty:'数量',phPrice:'販売価格',phCost:'原価',phCust:'顧客名',phPhone:'電話 967...',phInvQty:'数量',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'保存して差し引く',btnEx:'Excel出力',btnRePdf:'レポートPDF',btnPi:'Piで支払う',thDate:'日付',thDesc:'説明',thType:'タイプ',thAmt:'金額',thPname:'商品',thPqty:'数量',thPprice:'価格',opAll:'すべて',opToday:'今日',opWeek:'週',opMonth:'月',hFounder:'🛡️ パイオニア＆サブスクリプションハブ',pFounderDesc:'店舗を管理します。最初の50回は無料、その後年間0.1 Pi。',btnPiLogin:'Pi Networkでログイン',phNewStore:'新しい店舗名...',txtCreateStore:'店舗作成',lbSelectStore:'アクティブ店舗を選択:',optDefaultStore:'デフォルト商人',lbEquity:'総資本',lbPartnersCount:'登録パートナー',lbOpsUsed:'使用済み操作',lbFreeTier:'無料',lbSubStatusLabel:'サブスクリプション状態',btnPaySub:'今すぐ登録 (0.1 Pi / 年)',btnExport:'エクスポート',btnImport:'インポート'},
-vi:{main:'Hệ thống Thông minh',app:'Pi Merchant OS v2.2',e:'Bút toán',inv:'Hóa đơn',stock:'Kho',part:'Đối tác',rep:'Báo cáo',pay:'Pi',hE:'Thêm Bút toán',hI:'Tạo Hóa đơn',hSt:'Quản lý Kho',hPa:'KH & NCC',hRe:'Báo cáo Tài chính',hPay:'Thanh toán Pi',save:'Lưu',inc:'Thu nhập',exp:'Chi phí',ast:'Tài sản',cust:'Khách hàng',sup:'NCC',total:'Tổng',addInv:'Thêm vào HĐ',addProd:'Thêm SP',savePart:'Lưu Đối tác',income:'Thu nhập',expense:'Chi phí',net:'Ròng',phAmt:'Số tiền π',phDesc:'Mô tả',phPName:'Tên SP',phQty:'Số lượng',phPrice:'Giá bán',phCost:'Giá vốn',phCust:'Tên KH',phPhone:'SĐT 967...',phInvQty:'SL',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Lưu & Trừ Kho',btnEx:'Xuất Excel',btnRePdf:'Báo cáo PDF',btnPi:'Thanh toán Pi',thDate:'Ngày',thDesc:'Mô tả',thType:'Loại',thAmt:'Tiền',thPname:'SP',thPqty:'SL',thPprice:'Giá',opAll:'Tất cả',opToday:'Hôm nay',opWeek:'Tuần',opMonth:'Tháng',hFounder:'🛡️ Trung tâm Tiên phong & Đăng ký',pFounderDesc:'Quản lý cửa hàng, 50 giao dịch đầu miễn phí, sau đó 0.1 Pi/năm.',btnPiLogin:'Đăng nhập Pi Network',phNewStore:'Tên cửa hàng mới...',txtCreateStore:'Tạo cửa hàng',lbSelectStore:'Chọn cửa hàng:',optDefaultStore:'Mặc định',lbEquity:'Vốn tổng',lbPartnersCount:'Đối tác',lbOpsUsed:'Đã dùng',lbFreeTier:'Miễn phí',lbSubStatusLabel:'Trạng thái',btnPaySub:'Đăng ký (0.1 Pi/Năm)',btnExport:'Xuất',btnImport:'Nhập'},
-ru:{main:'Умная Система',app:'Pi Merchant OS v2.2',e:'Проводка',inv:'Счет',stock:'Склад',part:'Партнеры',rep:'Отчеты',pay:'Pi',hE:'Добавить Проводку',hI:'Создать Счет',hSt:'Управление Складом',hPa:'Клиенты и Поставщики',hRe:'Финотчеты',hPay:'Оплата Pi',save:'Сохранить',inc:'Доход',exp:'Расход',ast:'Актив',cust:'Клиент',sup:'Поставщик',total:'Итого',addInv:'Добавить в Счет',addProd:'Добавить Товар',savePart:'Сохранить Партнера',income:'Доход',expense:'Расход',net:'Нетто',phAmt:'Сумма π',phDesc:'Описание',phPName:'Название',phQty:'Кол-во',phPrice:'Цена',phCost:'Себест',phCust:'Имя Клиента',phPhone:'Тел 967...',phInvQty:'Кол',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Сохранить и Списать',btnEx:'Экспорт Excel',btnRePdf:'Отчет PDF',btnPi:'Оплатить Pi',thDate:'Дата',thDesc:'Опис',thType:'Тип',thAmt:'Сумма',thPname:'Товар',thPqty:'Кол',thPprice:'Цена',opAll:'Все',opToday:'Сегодня',opWeek:'Неделя',opMonth:'Месяц',hFounder:'🛡️ Центр Пионеров и Подписок',pFounderDesc:'Управляйте магазинами, первые 50 операций бесплатно, затем 0.1 Pi в год.',btnPiLogin:'Войти через Pi Network',phNewStore:'Имя нового магазина...',txtCreateStore:'Создать магазин',lbSelectStore:'Выбрать магазин:',optDefaultStore:'По умолчанию',lbEquity:'Общий капитал',lbPartnersCount:'Партнеры',lbOpsUsed:'Использовано',lbFreeTier:'Бесплатно',lbSubStatusLabel:'Статус',btnPaySub:'Подписаться (0.1 Pi / Год)',btnExport:'Экспорт',btnImport:'Импорт'}
+ar:{main:'نظام التاجر الذكي',app:'Pi Merchant OS v4.0',e:'قيد',inv:'فاتورة',stock:'مخزون',part:'عملاء',rep:'تقارير',pay:'Pi',hE:'إضافة قيد',hI:'إنشاء فاتورة',hSt:'إدارة المخزون',hPa:'العملاء والموردين',hRe:'التقارير المالية',hPay:'دفع Pi',save:'حفظ',inc:'إيراد',exp:'مصروف',ast:'أصل',cust:'عميل',sup:'مورد',total:'الإجمالي',addInv:'إضافة للفاتورة',addProd:'إضافة منتج',savePart:'حفظ العميل',income:'إيراد',expense:'مصروف',net:'صافي',phAmt:'المبلغ π',phDesc:'الوصف',phPName:'اسم المنتج',phQty:'الكمية',phPrice:'سعر البيع',phCost:'التكلفة',phCust:'اسم العميل',phPhone:'رقم الهاتف 967...',phInvQty:'الكمية',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'حفظ وخصم المخزون',btnEx:'تصدير Excel',btnRePdf:'تقرير PDF',btnPi:'ادفع بـ Pi',thDate:'التاريخ',thDesc:'الوصف',thType:'النوع',thAmt:'المبلغ',thPname:'المنتج',thPqty:'الكمية',thPprice:'السعر',opAll:'الكل',opToday:'اليوم',opWeek:'أسبوع',opMonth:'شهر',hFounder:'🛡️ لوحة تحكم الرواد والاشتراكات',pFounderDesc:'هذا القسم مخصص للرواد لإدارة المتاجر، أول 50 عملية مجانية ثم اشتراك 0.1 Pi سنوياً.',btnPiLogin:'تسجيل الدخول بـ Pi Network',phNewStore:'اسم رائد الأعمال أو المتجر الجديد...',txtCreateStore:'إنشاء متجر',lbSelectStore:'اختر المتجر النشط:',optDefaultStore:'التاجر الافتراضي (الأساسي)',lbEquity:'إجمالي أصول ورواتب المتجر الحالي',lbPartnersCount:'عدد الشركاء/العملاء المسجلين',lbOpsUsed:'العمليات المستخدمة',lbFreeTier:'المجانية',lbSubStatusLabel:'حالة الاشتراك',btnPaySub:'اشترك الآن بـ 0.1 Pi / سنة',btnExport:'تصدير بيانات المتجر (Backup)',btnImport:'استعادة بيانات',hCoaSystem:'🌳 شجرة الحسابات وتهيئة النظام',pCoaDesc:'إدارة الدليل المحاسبي وتهيئة إعدادات المتجر.',phStoreName:'اسم المتجر / الشركة...',txtSaveSetup:'حفظ الإعدادات',hCoaList:'الدليل المحاسبي الرئيسي',phCoaName:'اسم الحساب الجديد...',optCoaAsset:'أصل',optCoaLiab:'التزام',optCoaEquity:'حقوق ملكية',optCoaRev:'إيراد',optCoaExp:'مصروف',txtAddCoa:'إضافة حساب',thCoaCode:'رمز الحساب',thCoaName:'اسم الحساب',thCoaType:'التصنيف'},
+en:{main:'Smart Merchant System',app:'Pi Merchant OS v4.0',e:'Entry',inv:'Invoice',stock:'Stock',part:'Partners',rep:'Reports',pay:'Pi',hE:'Add Entry',hI:'Create Invoice',hSt:'Stock Management',hPa:'Customers & Suppliers',hRe:'Financial Reports',hPay:'Pi Payment',save:'Save',inc:'Income',exp:'Expense',ast:'Asset',cust:'Customer',sup:'Supplier',total:'Total',addInv:'Add to Invoice',addProd:'Add Product',savePart:'Save Partner',income:'Income',expense:'Expense',net:'Net',phAmt:'Amount π',phDesc:'Description',phPName:'Product Name',phQty:'Quantity',phPrice:'Selling Price',phCost:'Cost',phCust:'Customer Name',phPhone:'Phone 967...',phInvQty:'Quantity',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Save & Deduct Stock',btnEx:'Export Excel',btnRePdf:'Report PDF',btnPi:'Pay with Pi',thDate:'Date',thDesc:'Description',thType:'Type',thAmt:'Amount',thPname:'Product',thPqty:'Qty',thPprice:'Price',opAll:'All',opToday:'Today',opWeek:'Week',opMonth:'Month',hFounder:'🛡️ Pioneer & Subscription Hub',pFounderDesc:'Manage your stores, first 50 operations are free, then annual subscription of 0.1 Pi.',btnPiLogin:'Login with Pi Network',phNewStore:'New store or founder name...',txtCreateStore:'Create Store',lbSelectStore:'Select Active Store:',optDefaultStore:'Default Merchant',lbEquity:'Total Store Equity',lbPartnersCount:'Registered Partners',lbOpsUsed:'Operations Used',lbFreeTier:'Free',lbSubStatusLabel:'Subscription Status',btnPaySub:'Subscribe Now (0.1 Pi / Year)',btnExport:'Export Backup',btnImport:'Import Data',hCoaSystem:'🌳 Chart of Accounts & Setup',pCoaDesc:'Manage accounting ledger and store settings.',phStoreName:'Store / Company Name...',txtSaveSetup:'Save Setup',hCoaList:'Chart of Accounts',phCoaName:'New account name...',optCoaAsset:'Asset',optCoaLiab:'Liability',optCoaEquity:'Equity',optCoaRev:'Revenue',optCoaExp:'Expense',txtAddCoa:'Add Account',thCoaCode:'Code',thCoaName:'Account Name',thCoaType:'Type'},
+tr:{main:'Akıllı Tüccar Sistemi',app:'Pi Merchant OS v4.0',e:'Kayıt',inv:'Fatura',stock:'Stok',part:'Ortaklar',rep:'Raporlar',pay:'Pi',hE:'Kayıt Ekle',hI:'Fatura Oluştur',hSt:'Stok Yönetimi',hPa:'Müşteriler',hRe:'Finansal Raporlar',hPay:'Pi Ödeme',save:'Kaydet',inc:'Gelir',exp:'Gider',ast:'Varlık',cust:'Müşteri',sup:'Tedarikçi',total:'Toplam',addInv:'Faturaya Ekle',addProd:'Ürün Ekle',savePart:'Kaydet',income:'Gelir',expense:'Gider',net:'Net',phAmt:'Tutar π',phDesc:'Açıklama',phPName:'Ürün Adı',phQty:'Miktar',phPrice:'Fiyat',phCost:'Maliyet',phCust:'Müşteri',phPhone:'Telefon',phInvQty:'Miktar',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Kaydet ve Düş',btnEx:'Excel',btnRePdf:'PDF',btnPi:'Pi ile Öde',thDate:'Tarih',thDesc:'Açıklama',thType:'Tür',thAmt:'Tutar',thPname:'Ürün',thPqty:'Miktar',thPprice:'Fiyat',opAll:'Tümü',opToday:'Bugün',opWeek:'Hafta',opMonth:'Ay',hFounder:'🛡️ Öncü Merkezi',pFounderDesc:'İlk 50 işlem ücretsiz.',btnPiLogin:'Pi ile Giriş',phNewStore:'Mağaza adı...',txtCreateStore:'Mağaza Oluştur',lbSelectStore:'Mağaza Seç:',optDefaultStore:'Varsayılan',lbEquity:'Sermaye',lbPartnersCount:'Ortaklar',lbOpsUsed:'İşlemler',lbFreeTier:'Ücretsiz',lbSubStatusLabel:'Durum',btnPaySub:'Abone Ol (0.1 Pi)',btnExport:'Yedekle',btnImport:'İçe Aktar',hCoaSystem:'🌳 Hesap Planı',pCoaDesc:'Hesap planı yönetimi.',phStoreName:'Mağaza adı...',txtSaveSetup:'Kaydet',hCoaList:'Hesap Planı',phCoaName:'Yeni hesap...',optCoaAsset:'Varlık',optCoaLiab:'Borç',optCoaEquity:'Özkaynak',optCoaRev:'Gelir',optCoaExp:'Gider',txtAddCoa:'Hesap Ekle',thCoaCode:'Kod',thCoaName:'Hesap Adı',thCoaType:'Tür'},
+de:{main:'Intelligentes Händlersystem',app:'Pi Merchant OS v4.0',e:'Buchung',inv:'Rechnung',stock:'Lager',part:'Partner',rep:'Berichte',pay:'Pi',hE:'Buchung Hinzufügen',hI:'Rechnung Erstellen',hSt:'Lager',hPa:'Kunden',hRe:'Berichte',hPay:'Pi Zahlung',save:'Speichern',inc:'Einnahme',exp:'Ausgabe',ast:'Anlage',cust:'Kunde',sup:'Lieferant',total:'Gesamt',addInv:'Zur Rechnung',addProd:'Produkt Hinzufügen',savePart:'Speichern',income:'Einnahme',expense:'Ausgabe',net:'Netto',phAmt:'Betrag π',phDesc:'Beschreibung',phPName:'Produktname',phQty:'Menge',phPrice:'Preis',phCost:'Kosten',phCust:'Kunde',phPhone:'Telefon',phInvQty:'Menge',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Speichern',btnEx:'Excel',btnRePdf:'PDF',btnPi:'Bezahlen',thDate:'Datum',thDesc:'Beschreibung',thType:'Typ',thAmt:'Betrag',thPname:'Produkt',thPqty:'Menge',thPprice:'Preis',opAll:'Alle',opToday:'Heute',opWeek:'Woche',opMonth:'Monat',hFounder:'🛡️ Pioneer Hub',pFounderDesc:'Erste 50 Operationen frei.',btnPiLogin:'Anmelden',phNewStore:'Shop-Name...',txtCreateStore:'Shop erstellen',lbSelectStore:'Shop wählen:',optDefaultStore:'Standard',lbEquity:'Kapital',lbPartnersCount:'Partner',lbOpsUsed:'Operationen',lbFreeTier:'Kostenlos',lbSubStatusLabel:'Status',btnPaySub:'Abonnieren',btnExport:'Backup',btnImport:'Import',hCoaSystem:'🌳 Kontenplan',pCoaDesc:'Kontenplanverwaltung.',phStoreName:'Shop-Name...',txtSaveSetup:'Speichern',hCoaList:'Kontenplan',phCoaName:'Neues Konto...',optCoaAsset:'Asset',optCoaLiab:'Passiv',optCoaEquity:'Eigenkapital',optCoaRev:'Einnahme',optCoaExp:'Ausgabe',txtAddCoa:'Konto hinzufügen',thCoaCode:'Code',thCoaName:'Konto',thPprice:'Typ'},
+fr:{main:'Système Marchand Intelligent',app:'Pi Merchant OS v4.0',e:'Écriture',inv:'Facture',stock:'Stock',part:'Partenaires',rep:'Rapports',pay:'Pi',hE:'Ajouter',hI:'Facture',hSt:'Stock',hPa:'Clients',hRe:'Rapports',hPay:'Pi',save:'Enregistrer',inc:'Revenu',exp:'Dépense',ast:'Actif',cust:'Client',sup:'Fournisseur',total:'Total',addInv:'Ajouter',addProd:'Produit',savePart:'Enregistrer',income:'Revenu',expense:'Dépense',net:'Net',phAmt:'Montant π',phDesc:'Description',phPName:'Nom',phQty:'Quantité',phPrice:'Prix',phCost:'Coût',phCust:'Client',phPhone:'Tél',phInvQty:'Qté',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Enregistrer',btnEx:'Excel',btnRePdf:'PDF',btnPi:'Payer',thDate:'Date',thDesc:'Description',thType:'Type',thAmt:'Montant',thPname:'Produit',thPqty:'Qté',thPprice:'Prix',opAll:'Tout',opToday:"Aujourd'hui",opWeek:'Semaine',opMonth:'Mois',hFounder:'🛡️ Centre Pionnier',pFounderDesc:'50 opérations gratuites.',btnPiLogin:'Connexion',phNewStore:'Nom...',txtCreateStore:'Créer',lbSelectStore:'Sélectionner:',optDefaultStore:'Défaut',lbEquity:'Capital',lbPartnersCount:'Partenaires',lbOpsUsed:'Utilisé',lbFreeTier:'Gratuit',lbSubStatusLabel:'Statut',btnPaySub:'S\'abonner',btnExport:'Exporter',btnImport:'Importer',hCoaSystem:'🌳 Plan comptable',pCoaDesc:'Gestion.',phStoreName:'Nom...',txtSaveSetup:'Enregistrer',hCoaList:'Plan',phCoaName:'Compte...',optCoaAsset:'Actif',optCoaLiab:'Passif',optCoaEquity:'Capitaux',optCoaRev:'Revenu',optCoaExp:'Dépense',txtAddCoa:'Ajouter',thCoaCode:'Code',thCoaName:'Nom',thCoaType:'Type'},
+es:{main:'Sistema Comerciante Inteligente',app:'Pi Merchant OS v4.0',e:'Asiento',inv:'Factura',stock:'Inventario',part:'Socios',rep:'Informes',pay:'Pi',hE:'Añadir',hI:'Factura',hSt:'Inventario',hPa:'Clientes',hRe:'Informes',hPay:'Pi',save:'Guardar',inc:'Ingreso',exp:'Gasto',ast:'Activo',cust:'Cliente',sup:'Proveedor',total:'Total',addInv:'Añadir',addProd:'Producto',savePart:'Guardar',income:'Ingreso',expense:'Gasto',net:'Neto',phAmt:'Monto π',phDesc:'Descripción',phPName:'Nombre',phQty:'Cantidad',phPrice:'Precio',phCost:'Costo',phCust:'Cliente',phPhone:'Tel',phInvQty:'Cant',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Guardar',btnEx:'Excel',btnRePdf:'PDF',btnPi:'Pagar',thDate:'Fecha',thDesc:'Descripción',thType:'Tipo',thAmt:'Monto',thPname:'Producto',thPqty:'Cant',thPprice:'Precio',opAll:'Todo',opToday:'Hoy',opWeek:'Semana',opMonth:'Mes',hFounder:'🛡️ Pionero',pFounderDesc:'50 operaciones gratis.',btnPiLogin:'Entrar',phNewStore:'Tienda...',txtCreateStore:'Crear',lbSelectStore:'Seleccionar:',optDefaultStore:'Por defecto',lbEquity:'Capital',lbPartnersCount:'Socios',lbOpsUsed:'Usado',lbFreeTier:'Gratis',lbSubStatusLabel:'Estado',btnPaySub:'Suscribirse',btnExport:'Exportar',btnImport:'Importar',hCoaSystem:'🌳 Plan de cuentas',pCoaDesc:'Gestión.',phStoreName:'Tienda...',txtSaveSetup:'Guardar',hCoaList:'Cuentas',phCoaName:'Cuenta...',optCoaAsset:'Activo',optCoaLiab:'Pasivo',optCoaEquity:'Capital',optCoaRev:'Ingreso',optCoaExp:'Gasto',txtAddCoa:'Añadir',thCoaCode:'Código',thCoaName:'Nombre',thCoaType:'Tipo'},
+zh:{main:'智能商家系统',app:'Pi Merchant OS v4.0',e:'分录',inv:'发票',stock:'库存',part:'合作伙伴',rep:'报告',pay:'Pi',hE:'添加',hI:'发票',hSt:'库存',hPa:'客户',hRe:'报告',hPay:'Pi',save:'保存',inc:'收入',exp:'支出',ast:'资产',cust:'客户',sup:'供应商',total:'总计',addInv:'添加',addProd:'产品',savePart:'保存',income:'收入',expense:'支出',net:'净额',phAmt:'金额 π',phDesc:'描述',phPName:'名称',phQty:'数量',phPrice:'价格',phCost:'成本',phCust:'客户',phPhone:'电话',phInvQty:'数量',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'保存',btnEx:'Excel',btnRePdf:'PDF',btnPi:'支付',thDate:'日期',thDesc:'描述',thType:'类型',thAmt:'金额',thPname:'产品',thPqty:'数量',thPprice:'价格',opAll:'全部',opToday:'今天',opWeek:'周',opMonth:'月',hFounder:'🛡️ 先锋中心',pFounderDesc:'前50次免费。',btnPiLogin:'登录',phNewStore:'商店名称...',txtCreateStore:'创建商店',lbSelectStore:'选择商店：',optDefaultStore:'默认',lbEquity:'资产',lbPartnersCount:'伙伴',lbOpsUsed:'已用',lbFreeTier:'免费',lbSubStatusLabel:'状态',btnPaySub:'订阅',btnExport:'导出',btnImport:'导入',hCoaSystem:'🌳 会计科目表',pCoaDesc:'管理科目。',phStoreName:'商店名称...',txtSaveSetup:'保存',hCoaList:'科目表',phCoaName:'新账户...',optCoaAsset:'资产',optCoaLiab:'负债',optCoaEquity:'所有者权益',optCoaRev:'收入',optCoaExp:'支出',txtAddCoa:'添加账户',thCoaCode:'代码',thCoaName:'名称',thCoaType:'类型'},
+ja:{main:'スマートマーチャント',app:'Pi Merchant OS v4.0',e:'仕訳',inv:'請求書',stock:'在庫',part:'パートナー',rep:'レポート',pay:'Pi',hE:'追加',hI:'請求書',hSt:'在庫',hPa:'顧客',hRe:'レポート',hPay:'Pi',save:'保存',inc:'収入',exp:'経費',ast:'資産',cust:'顧客',sup:'仕入先',total:'合計',addInv:'追加',addProd:'商品',savePart:'保存',income:'収入',expense:'経費',net:'純利益',phAmt:'金額 π',phDesc:'説明',phPName:'名前',phQty:'数量',phPrice:'価格',phCost:'原価',phCust:'顧客',phPhone:'電話',phInvQty:'数量',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'保存',btnEx:'Excel',btnRePdf:'PDF',btnPi:'支払う',thDate:'日付',thDesc:'説明',thType:'タイプ',thAmt:'金額',thPname:'商品',thPqty:'数量',thPprice:'価格',opAll:'すべて',opToday:'今日',opWeek:'週',opMonth:'月',hFounder:'🛡️ パイオニアハブ',pFounderDesc:'最初の50回は無料。',btnPiLogin:'ログイン',phNewStore:'店舗名...',txtCreateStore:'作成',lbSelectStore:'店舗選択:',optDefaultStore:'デフォルト',lbEquity:'資本',lbPartnersCount:'パートナー',lbOpsUsed:'使用済み',lbFreeTier:'無料',lbSubStatusLabel:'状態',btnPaySub:'登録',btnExport:'エクスポート',btnImport:'インポート',hCoaSystem:'🌳 勘定科目表',pCoaDesc:'管理。',phStoreName:'店舗名...',txtSaveSetup:'保存',hCoaList:'勘定科目',phCoaName:'口座...',optCoaAsset:'資産',optCoaLiab:'負債',optCoaEquity:'資本',optCoaRev:'収入',optCoaExp:'経費',txtAddCoa:'追加',thCoaCode:'コード',thCoaName:'名前',thCoaType:'タイプ'},
+vi:{main:'Hệ thống Thông minh',app:'Pi Merchant OS v4.0',e:'Bút toán',inv:'Hóa đơn',stock:'Kho',part:'Đối tác',rep:'Báo cáo',pay:'Pi',hE:'Thêm',hI:'Hóa đơn',hSt:'Kho',hPa:'Khách',hRe:'Báo cáo',hPay:'Pi',save:'Lưu',inc:'Thu nhập',exp:'Chi phí',ast:'Tài sản',cust:'Khách',sup:'NCC',total:'Tổng',addInv:'Thêm',addProd:'SP',savePart:'Lưu',income:'Thu nhập',expense:'Chi phí',net:'Ròng',phAmt:'Số tiền π',phDesc:'Mô tả',phPName:'Tên',phQty:'SL',phPrice:'Giá',phCost:'Vốn',phCust:'Khách',phPhone:'SĐT',phInvQty:'SL',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Lưu',btnEx:'Excel',btnRePdf:'PDF',btnPi:'Thanh toán',thDate:'Ngày',thDesc:'Mô tả',thType:'Loại',thAmt:'Tiền',thPname:'SP',thPqty:'SL',thPprice:'Giá',opAll:'Tất cả',opToday:'Hôm nay',opWeek:'Tuần',opMonth:'Tháng',hFounder:'🛡️ Trung tâm Tiên phong',pFounderDesc:'50 giao dịch đầu miễn phí.',btnPiLogin:'Đăng nhập',phNewStore:'Tên...',txtCreateStore:'Tạo',lbSelectStore:'Chọn:',optDefaultStore:'Mặc định',lbEquity:'Vốn',lbPartnersCount:'Đối tác',lbOpsUsed:'Đã dùng',lbFreeTier:'Miễn phí',lbSubStatusLabel:'Trạng thái',btnPaySub:'Đăng ký',btnExport:'Xuất',btnImport:'Nhập',hCoaSystem:'🌳 Hệ thống tài khoản',pCoaDesc:'Quản lý.',phStoreName:'Tên...',txtSaveSetup:'Lưu',hCoaList:'Tài khoản',phCoaName:'Tên...',optCoaAsset:'Tài sản',optCoaLiab:'Nợ',optCoaEquity:'Vốn chủ',optCoaRev:'Thu',optCoaExp:'Chi',txtAddCoa:'Thêm',thCoaCode:'Mã',thCoaName:'Tên',thCoaType:'Loại'},
+ru:{main:'Умная Система',app:'Pi Merchant OS v4.0',e:'Проводка',inv:'Счет',stock:'Склад',part:'Партнеры',rep:'Отчеты',pay:'Pi',hE:'Добавить',hI:'Счет',hSt:'Склад',hPa:'Клиенты',hRe:'Отчеты',hPay:'Pi',save:'Сохранить',inc:'Доход',exp:'Расход',ast:'Актив',cust:'Клиент',sup:'Поставщик',total:'Итого',addInv:'Добавить',addProd:'Товар',savePart:'Сохранить',income:'Доход',expense:'Расход',net:'Нетто',phAmt:'Сумма π',phDesc:'Описание',phPName:'Название',phQty:'Кол',phPrice:'Цена',phCost:'Себест',phCust:'Клиент',phPhone:'Тел',phInvQty:'Кол',btnPdf:'PDF',btnWa:'WhatsApp',btnSaveInv:'Сохранить',btnЭкспорт:'Экспорт',btnRePdf:'Отчет',btnPi:'Оплатить',thDate:'Дата',thDesc:'Опис',thType:'Тип',thAmt:'Сумма',thPname:'Товар',thPqty:'Кол',thPprice:'Цена',opAll:'Все',opToday:'Сегодня',opWeek:'Неделя',opMonth:'Месяц',hFounder:'🛡️ Центр Пионеров',pFounderDesc:'Первые 50 бесплатно.',btnPiLogin:'Войти',phNewStore:'Магазин...',txtCreateStore:'Создать',lbSelectStore:'Выбрать:',optDefaultStore:'По умолчанию',lbEquity:'Капитал',lbPartnersCount:'Партнеры',lbOpsUsed:'Использовано',lbFreeTier:'Бесплатно',lbSubStatusLabel:'Статус',btnPaySub:'Подписаться',btnExport:'Экспорт',btnImport:'Импорт',hCoaSystem:'🌳 План счетов',pCoaDesc:'Управление.',phStoreName:'Магазин...',txtSaveSetup:'Сохранить',hCoaList:'Счета',phCoaName:'Счет...',optCoaAsset:'Актив',optCoaLiab:'Обязательство',optCoaEquity:'Капитал',optCoaRev:'Доход',optCoaExp:'Расход',txtAddCoa:'Добавить',thCoaCode:'Код',thCoaName:'Название',thCoaType:'Тип'}
 };
+
 function applyLang(l){
  var t=T[l]||T.en;
  document.documentElement.lang=l;
@@ -156,39 +195,39 @@ function applyLang(l){
  document.getElementById('btn-export-backup').textContent=t.btnExport;
  document.getElementById('btn-import-trigger').textContent=t.btnImport;
 
- localStorage.setItem('erp_lang',l);
- if(typeof renderLedger==='function') renderLedger();
- if(typeof renderInv==='function') renderInv();
- if(typeof renderPartners==='function') renderPartners();
-}
- 
-  var picker=document.getElementById('lang-picker');
+ document.getElementById('h-coa-system'   
+                        var picker=document.getElementById('lang-picker');
 var saved=localStorage.getItem('erp_lang')||'ar';
 picker.value=saved;
 var ledger=JSON.parse(localStorage.getItem('ledger')||'[]');
 var inv=JSON.parse(localStorage.getItem('inv2')||'[]');
 var partners=JSON.parse(localStorage.getItem('partners2')||'[]');
 var curInv=[];var invTotal=0;var chart=null;
+
 document.querySelectorAll('.tab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active')});tab.classList.add('active');document.getElementById(tab.dataset.tab).classList.add('active');});});
+
 function renderLedger(){var cl=localStorage.getItem('erp_lang')||'ar';var tt=T[cl]||T.en;document.getElementById('ledger-body').innerHTML=ledger.slice(-20).reverse().map(function(l){var tp=l.type;if(tp==='income')tp=tt.income;if(tp==='expense')tp=tt.expense;if(tp==='asset')tp=tt.ast;return '<tr><td>'+l.date+'</td><td>'+l.desc+'</td><td>'+tp+'</td><td>'+l.amount+'</td></tr>';}).join('');}
 function renderInv(){document.getElementById('inv-body').innerHTML=inv.map(function(p,i){return '<tr><td>'+p.name+'</td><td>'+p.qty+'</td><td>'+p.price+'</td><td><svg id="bc'+i+'"></svg></td><td><button type="button" onclick="window.delInv('+i+')">x</button></td></tr>';}).join('');document.getElementById('inv-product').innerHTML=inv.map(function(p,i){return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi</option>';}).join('');setTimeout(function(){inv.forEach(function(p,i){try{JsBarcode('#bc'+i,p.name.substring(0,8)+i,{width:1,height:18,displayValue:false});}catch(e){}});},200);}
 function renderPartners(){var cl=localStorage.getItem('erp_lang')||'ar';var tt=T[cl]||T.en;document.getElementById('pt-body').innerHTML=partners.map(function(p){var tp=p.type==='customer'? tt.cust : tt.sup;return '<tr><td>'+p.name+'</td><td>'+tp+'</td><td>'+p.phone+'</td><td><a class="btn btn-w" target="_blank" href="https://wa.me/'+p.phone+'">WA</a></td></tr>';}).join('');}
 window.delInv=function(i){inv.splice(i,1);localStorage.setItem('inv2',JSON.stringify(inv));renderInv();};
+
 function updateReports(){var inc=ledger.filter(function(x){return x.type==='income'}).reduce(function(s,x){return s+x.amount},0);var exp=ledger.filter(function(x){return x.type==='expense'}).reduce(function(s,x){return s+x.amount},0);document.getElementById('r-inc').textContent=inc.toFixed(2);document.getElementById('r-exp').textContent=exp.toFixed(2);document.getElementById('r-net').textContent=(inc-exp).toFixed(2);var c=document.getElementById('financeChart');if(chart)chart.destroy();chart=new Chart(c,{type:'bar',data:{labels:['Income','Expense','Net'],datasets:[{label:'Pi',data:[inc,exp,inc-exp],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true}});}
 picker.addEventListener('change',function(){applyLang(this.value);});
 applyLang(saved);
+
 document.getElementById('form-entry').addEventListener('submit',function(e){e.preventDefault();if(window.checkPioneerAccess && !window.checkPioneerAccess()) return; ledger.push({date:new Date().toLocaleDateString(),type:document.getElementById('e-type').value,amount:parseFloat(document.getElementById('e-amount').value),desc:document.getElementById('e-desc').value});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateReports();e.target.reset();});
 document.getElementById('form-inv').addEventListener('submit',function(e){e.preventDefault();if(window.checkPioneerAccess && !window.checkPioneerAccess()) return; inv.push({name:document.getElementById('p-name').value,qty:parseInt(document.getElementById('p-qty').value),price:parseFloat(document.getElementById('p-price').value),cost:parseFloat(document.getElementById('p-cost').value||0)});localStorage.setItem('inv2',JSON.stringify(inv));renderInv();e.target.reset();});
 document.getElementById('form-part').addEventListener('submit',function(e){e.preventDefault();partners.push({name:document.getElementById('pt-name').value,type:document.getElementById('pt-type').value,phone:document.getElementById('pt-phone').value});localStorage.setItem('partners2',JSON.stringify(partners));renderPartners();e.target.reset();});
+
 document.getElementById('btn-add-inv').addEventListener('click',function(){var idx=document.getElementById('inv-product').value;var q=parseInt(document.getElementById('inv-qty').value||1);if(idx==='')return;var prod=inv[idx];curInv.push({name:prod.name,price:prod.price,qty:q});invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0);document.getElementById('inv-items').innerHTML=curInv.map(function(it){return it.name+' x'+it.qty+'<br>';}).join('');document.getElementById('inv-total').textContent=invTotal.toFixed(3);});
 document.getElementById('btn-save-inv').addEventListener('click',function(){if(!curInv.length)return;if(window.checkPioneerAccess && !window.checkPioneerAccess()) return; ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:invTotal,desc:'Invoice '+document.getElementById('inv-customer').value});curInv.forEach(function(ci){var p=inv.find(function(x){return x.name===ci.name});if(p)p.qty-=ci.qty;});localStorage.setItem('ledger',JSON.stringify(ledger));localStorage.setItem('inv2',JSON.stringify(inv));renderInv();renderLedger();updateReports();curInv=[];invTotal=0;document.getElementById('inv-items').innerHTML='';document.getElementById('inv-total').textContent='0';alert('Saved');});
+
 document.getElementById('btn-pdf').addEventListener('click',function(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF();doc.text('Invoice',10,10);var y=20;curInv.forEach(function(it){doc.text(it.name+' x'+it.qty+' = '+it.price*it.qty+' Pi',10,y);y+=7;});doc.text('Total '+invTotal+' Pi',10,y+10);doc.save('invoice.pdf');});
 document.getElementById('btn-report-pdf').addEventListener('click',function(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF();doc.text('Report',10,10);doc.text('Income '+document.getElementById('r-inc').textContent,10,20);doc.text('Expense '+document.getElementById('r-exp').textContent,10,30);doc.save('report.pdf');});
 document.getElementById('btn-excel').addEventListener('click',function(){var ws=XLSX.utils.json_to_sheet(ledger);var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Ledger');XLSX.writeFile(wb,'ledger.xlsx');});
 document.getElementById('btn-wa').addEventListener('click',function(){var text='*Invoice*%0A'+curInv.map(function(i){return i.name+' x'+i.qty+' = '+i.price*i.qty+' Pi'}).join('%0A')+'%0ATotal '+invTotal+' Pi';window.open('https://wa.me/?text='+text,'_blank');});
 document.getElementById('btn-pi-pay').addEventListener('click',function(){var amt=parseFloat(document.getElementById('pay_amount').value||1);if(typeof Pi==='undefined'){alert('Open in Pi Browser');return;}Pi.createPayment({amount:amt,memo:'Pi Merchant Pay',metadata:{type:'merchant'}},{onReadyForServerApproval:function(id){document.getElementById('pi-status').textContent='Approving '+id;},onReadyForServerCompletion:function(id,tx){document.getElementById('pi-status').textContent='Completed '+tx;ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:amt,desc:'Pi Payment '+tx});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateReports();},onCancel:function(){document.getElementById('pi-status').textContent='Cancelled';},onError:function(e){document.getElementById('pi-status').textContent='Error '+e;}});});
 
-// المنطق البرمجي للرواد والاشتراكات
 let merchants=JSON.parse(localStorage.getItem('pi_merchants_list')||'["التاجر الافتراضي"]');
 let currentMerchant=localStorage.getItem('pi_current_merchant')||merchants[0];
 let pioneerUser=localStorage.getItem('pi_pioneer_username')||null;
@@ -300,8 +339,59 @@ window.checkPioneerAccess=function(){
     return false;
 };
 
+let coaList=JSON.parse(localStorage.getItem('pi_coa_list')||JSON.stringify([
+    {code:'101',name:'الصندوق الرئيسي / الخزينة',type:'Asset'},
+    {code:'102',name:'حساب بنك Pi',type:'Asset'},
+    {code:'201',name:'دائنون / موردون',type:'Liability'},
+    {code:'301',name:'رأس المال',type:'Equity'},
+    {code:'401',name:'مبيعات وإيرادات عامة',type:'Revenue'},
+    {code:'501',name:'مصروفات تشغيلية',type:'Expense'}
+]));
+
+function renderCoa(){
+    const tbody=document.getElementById('coa-table-body');
+    if(!tbody) return;
+    tbody.innerHTML=coaList.map((acc,index)=>`
+        <tr>
+            <td>${acc.code}</td>
+            <td>${acc.name}</td>
+            <td>${acc.type}</td>
+            <td><button type="button" class="btn" style="background:#f44336;color:#fff;padding:2px 6px;font-size:11px;" onclick="window.delCoa(${index})">x</button></td>
+        </tr>
+    `).join('');
+}
+
+window.delCoa=function(index){
+    coaList.splice(index,1);
+    localStorage.setItem('pi_coa_list',JSON.stringify(coaList));
+    renderCoa();
+};
+
+document.getElementById('btn-add-coa').addEventListener('click',function(){
+    const name=document.getElementById('coa-account-name').value.trim();
+    const type=document.getElementById('coa-account-type').value;
+    if(!name){alert('الرجاء إدخال اسم الحساب');return;}
+    const newCode=(parseInt(coaList[coaList.length-1]?.code||'100')+1).toString();
+    coaList.push({code:newCode,name:name,type:type});
+    localStorage.setItem('pi_coa_list',JSON.stringify(coaList));
+    document.getElementById('coa-account-name').value='';
+    renderCoa();
+});
+
+document.getElementById('btn-save-setup').addEventListener('click',function(){
+    const storeName=document.getElementById('setup-store-name').value.trim();
+    if(!storeName){alert('الرجاء إدخال اسم المتجر');return;}
+    localStorage.setItem('pi_setup_store_name',storeName);
+    alert('تم حفظ إعدادات التهيئة بنجاح!');
+});
+
+const savedStoreName=localStorage.getItem('pi_setup_store_name');
+if(savedStoreName && document.getElementById('setup-store-name')){
+    document.getElementById('setup-store-name').value=savedStoreName;
+}
+
 document.getElementById('btn-export-backup').addEventListener('click',function(){
-    const data={merchant:currentMerchant,ledger:localStorage.getItem('ledger'),inventory:localStorage.getItem('inv2'),partners:localStorage.getItem('partners2')};
+    const data={merchant:currentMerchant,ledger:localStorage.getItem('ledger'),inventory:localStorage.getItem('inv2'),partners:localStorage.getItem('partners2'),coa:localStorage.getItem('pi_coa_list')};
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`backup_${currentMerchant}_${Date.now()}.json`;a.click();
 });
@@ -316,6 +406,7 @@ document.getElementById('import-file-input').addEventListener('change',function(
             if(parsed.ledger)localStorage.setItem('ledger',parsed.ledger);
             if(parsed.inventory)localStorage.setItem('inv2',parsed.inventory);
             if(parsed.partners)localStorage.setItem('partners2',parsed.partners);
+            if(parsed.coa)localStorage.setItem('pi_coa_list',parsed.coa);
             alert('تمت الاستعادة بنجاح! جاري تحديث الصفحة.');
             location.reload();
         }catch(err){alert('ملف تالف');}
@@ -324,133 +415,10 @@ document.getElementById('import-file-input').addEventListener('change',function(
 });
 
 try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready';}}catch(e){}
-renderLedger();renderInv();renderPartners();updateReports();updatePioneerUI();
+
+renderLedger();renderInv();renderPartners();updateReports();updatePioneerUI();renderCoa();
 });
-</script>// تحديث مصفوفة الترجمات T لإضافة شجرة الحسابات والتهيئة بكافة اللغات
-if(typeof T !== 'undefined') {
-    Object.assign(T.ar, {
-        hCoaSystem: '🌳 شجرة الحسابات وتهيئة النظام',
-        pCoaDesc: 'إدارة الدليل المحاسبي (الأصول، الخصوم، الإيرادات، المصروفات) وتهيئة إعدادات المتجر.',
-        phStoreName: 'اسم المتجر / الشركة...',
-        txtSaveSetup: 'حفظ الإعدادات',
-        hCoaList: 'الدليل المحاسبي الرئيسي (Chart of Accounts)',
-        phCoaName: 'اسم الحساب الجديد (مثال: البنك، الصندوق)...',
-        optCoaAsset: 'أصل',
-        optCoaLiab: 'التزام',
-        optCoaEquity: 'حقوق ملكية',
-        optCoaRev: 'إيراد',
-        optCoaExp: 'مصروف',
-        txtAddCoa: 'إضافة حساب',
-        thCoaCode: 'رمز الحساب',
-        thCoaName: 'اسم الحساب',
-        thCoaType: 'التصنيف'
-    });
-    Object.assign(T.en, {
-        hCoaSystem: '🌳 Chart of Accounts & Setup',
-        pCoaDesc: 'Manage accounting ledger (Assets, Liabilities, Revenues, Expenses) and store settings.',
-        phStoreName: 'Store / Company Name...',
-        txtSaveSetup: 'Save Setup',
-        hCoaList: 'Chart of Accounts',
-        phCoaName: 'New account name (e.g. Bank, Cash)...',
-        optCoaAsset: 'Asset',
-        optCoaLiab: 'Liability',
-        optCoaEquity: 'Equity',
-        optCoaRev: 'Revenue',
-        optCoaExp: 'Expense',
-        txtAddCoa: 'Add Account',
-        thCoaCode: 'Code',
-        thCoaName: 'Account Name',
-        thCoaType: 'Type'
-    });
-    // وباقي اللغات تتبع نفس النسق التلقائي...
-}
-
-// دالة تحديث نصوص شجرة الحسابات والتهيئة لحظياً عند تغير اللغة
-window.updateCoaTranslations = function() {
-    var cl = localStorage.getItem('erp_lang') || 'ar';
-    var tt = T[cl] || T.en;
-    if(document.getElementById('h-coa-system')) document.getElementById('h-coa-system').textContent = tt.hCoaSystem || '';
-    if(document.getElementById('p-coa-desc')) document.getElementById('p-coa-desc').textContent = tt.pCoaDesc || '';
-    if(document.getElementById('setup-store-name')) document.getElementById('setup-store-name').placeholder = tt.phStoreName || '';
-    if(document.getElementById('txt-save-setup')) document.getElementById('txt-save-setup').textContent = tt.txtSaveSetup || '';
-    if(document.getElementById('h-coa-list')) document.getElementById('h-coa-list').textContent = tt.hCoaList || '';
-    if(document.getElementById('coa-account-name')) document.getElementById('coa-account-name').placeholder = tt.phCoaName || '';
-    if(document.getElementById('opt-coa-asset')) document.getElementById('opt-coa-asset').textContent = tt.optCoaAsset || '';
-    if(document.getElementById('opt-coa-liability')) document.getElementById('opt-coa-liability').textContent = tt.optCoaLiab || '';
-    if(document.getElementById('opt-coa-equity')) document.getElementById('opt-coa-equity').textContent = tt.optCoaEquity || '';
-    if(document.getElementById('opt-coa-revenue')) document.getElementById('opt-coa-revenue').textContent = tt.optCoaRev || '';
-    if(document.getElementById('opt-coa-expense')) document.getElementById('opt-coa-expense').textContent = tt.optCoaExp || '';
-    if(document.getElementById('txt-add-coa')) document.getElementById('txt-add-coa').textContent = tt.txtAddCoa || '';
-    if(document.getElementById('th-coa-code')) document.getElementById('th-coa-code').textContent = tt.thCoaCode || '';
-    if(document.getElementById('th-coa-name')) document.getElementById('th-coa-name').textContent = tt.thCoaName || '';
-    if(document.getElementById('th-coa-type')) document.getElementById('th-coa-type').textContent = tt.thCoaType || '';
-};
-
-// المنطق البرمجي لحفظ الإعدادات وشجرة الحسابات وإدارتها
-document.addEventListener('DOMContentLoaded', function(){
-    let coaList = JSON.parse(localStorage.getItem('pi_coa_list') || JSON.stringify([
-        {code: '101', name: 'الصندوق الرئيسي / الخزينة', type: 'Asset'},
-        {code: '102', name: 'حساب بنك Pi', type: 'Asset'},
-        {code: '201', name: 'دائنون / موردون', type: 'Liability'},
-        {code: '301', name: 'رأس المال', type: 'Equity'},
-        {code: '401', name: 'مبيعات وإيرادات عامة', type: 'Revenue'},
-        {code: '501', name: 'مصروفات تشغيلية', type: 'Expense'}
-    ]));
-
-    function renderCoa() {
-        const tbody = document.getElementById('coa-table-body');
-        if(!tbody) return;
-        tbody.innerHTML = coaList.map((acc, index) => `
-            <tr>
-                <td>${acc.code}</td>
-                <td>${acc.name}</td>
-                <td>${acc.type}</td>
-                <td><button type="button" class="btn" style="background:#f44336;color:#fff;padding:2px 6px;font-size:11px;" onclick="window.delCoa(${index})">x</button></td>
-            </tr>
-        `).join('');
-    }
-
-    window.delCoa = function(index) {
-        coaList.splice(index, 1);
-        localStorage.setItem('pi_coa_list', JSON.stringify(coaList));
-        renderCoa();
-    };
-
-    // زر إضافة حساب جديد لشجرة الحسابات
-    const addCoaBtn = document.getElementById('btn-add-coa');
-    if(addCoaBtn) {
-        addCoaBtn.addEventListener('click', function(){
-            const name = document.getElementById('coa-account-name').value.trim();
-            const type = document.getElementById('coa-account-type').value;
-            if(!name) { alert('الرجاء إدخال اسم الحساب'); return; }
-            const newCode = (parseInt(coaList[coaList.length - 1]?.code || '100') + 1).toString();
-            coaList.push({code: newCode, name: name, type: type});
-            localStorage.setItem('pi_coa_list', JSON.stringify(coaList));
-            document.getElementById('coa-account-name').value = '';
-            renderCoa();
-        });
-    }
-
-    // زر حفظ إعدادات التهيئة الأساسية للمتجر
-    const saveSetupBtn = document.getElementById('btn-save-setup');
-    if(saveSetupBtn) {
-        saveSetupBtn.addEventListener('click', function(){
-            const storeName = document.getElementById('setup-store-name').value.trim();
-            if(!storeName) { alert('الرجاء إدخال اسم المتجر'); return; }
-            localStorage.setItem('pi_setup_store_name', storeName);
-            alert('تم حفظ إعدادات التهيئة بنجاح!');
-        });
-    }
-
-    // استرجاع اسم المتجر المحفوظ مسبقاً
-    const savedStoreName = localStorage.getItem('pi_setup_store_name');
-    if(savedStoreName && document.getElementById('setup-store-name')) {
-        document.getElementById('setup-store-name').value = savedStoreName;
-    }
-
-    // استدعاء دالة الترجمة وتحديث الجدول عند التحميل
-    if(typeof window.updateCoaTranslations === 'function') window.updateCoaTranslations();
-    renderCoa();
-});
+</script>
 </body>
 </html>
+  
