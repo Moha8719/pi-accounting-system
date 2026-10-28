@@ -133,104 +133,262 @@ try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});document.g
 renderLedger();renderInv();renderPartners();updateReports();
 });
 </script><!-- ========================================== -->
-<!-- 🚀 موديول الرواد والتجار المستقبليين v3.0 -->
+<!-- 🌟 موديول الرواد والاشتراكات المحدث (متعدد اللغات) -->
 <!-- ========================================== -->
-<div class="card" style="margin-top: 20px; border: 2px dashed var(--p); background: rgba(46, 0, 74, 0.05);">
-    <h3 style="color: var(--s);">🌟 لوحة تحكم الرواد والتجار (Founder & Merchant Hub)</h3>
-    <p style="font-size: 12px; color: #555;">هذا القسم مخصص للرواد المستقبليين لإدارة المتاجر المتعددة وفصل الحسابات الشخصية عن التجارية.</p>
+<div class="card" style="margin-top: 20px; border: 2px solid var(--p); background: rgba(46, 0, 74, 0.03);">
+    <h3 id="h-founder-hub" style="color: var(--s);">🛡️ لوحة تحكم الرواد والاشتراكات (Founder & Merchant Hub)</h3>
+    <p id="p-founder-desc" style="font-size: 12px; color: #555;">هذا القسم مخصص للرواد لإدارة المتاجر، أول 50 عملية مجانية ثم اشتراك 0.1 Pi سنوياً.</p>
     
-    <!-- تسجيل متجر جديد -->
-    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-        <input type="text" id="new-merchant-name" placeholder="اسم رائد الأعمال أو المتجر الجديد..." style="flex: 2;">
-        <button class="btn btn-pi" type="button" id="btn-create-merchant" style="flex: 1;">إنشاء متجر</button>
+    <!-- تسجيل الدخول بـ Pi -->
+    <div id="pioneer-auth-box" style="margin-bottom: 10px;">
+        <button class="btn btn-pi" type="button" id="btn-pi-login">تسجيل الدخول بـ Pi Network</button>
+        <span id="pioneer-user-display" style="font-weight: bold; color: var(--s); margin-right: 10px;"></span>
     </div>
 
-    <!-- قائمة المتاجر النشطة -->
+    <!-- إنشاء متجر جديد -->
+    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+        <input type="text" id="new-merchant-name" placeholder="اسم رائد الأعمال أو المتجر الجديد..." style="flex: 2;">
+        <button class="btn btn-pi" type="button" id="btn-create-merchant" style="flex: 1;"><span id="txt-create-store">إنشاء متجر</span></button>
+    </div>
+
+    <!-- اختيار المتجر -->
     <div style="margin-bottom: 10px;">
-        <label style="font-size: 12px; font-weight: bold; color: #333;">اختر المتجر النشط:</label>
+        <label id="lb-select-store" style="font-size: 12px; font-weight: bold; color: #333;">اختر المتجر النشط:</label>
         <select id="merchant-selector">
-            <option value="default">التاجر الافتراضي (الأساسي)</option>
+            <option value="default" id="opt-default-store">التاجر الافتراضي (الأساسي)</option>
         </select>
     </div>
 
-    <!-- إحصائيات سريعة للرائد -->
-    <div style="background: var(--bg); color: #fff; padding: 10px; border-radius: 8px; font-size: 13px;">
-        <div>📊 إجمالي أصول ورواتب المتجر الحالي: <span id="founder-equity">0</span> π</div>
-        <div>👥 عدد الشركاء/العملاء المسجلين: <span id="founder-partners-count">0</span></div>
+    <!-- عداد العمليات وإحصائيات الرائد -->
+    <div style="background: var(--bg); color: #fff; padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 10px;">
+        <div>📊 <span id="lb-equity">إجمالي أصول ورواتب المتجر الحالي</span>: <span id="founder-equity">0</span> π</div>
+        <div>👥 <span id="lb-partners-count">عدد الشركاء/العملاء المسجلين</span>: <span id="founder-partners-count">0</span></div>
+        <div>📈 <span id="lb-ops-used">العمليات المستخدمة</span>: <span id="pioneer-ops-count">0</span> / 50 (<span id="lb-free-tier">المجانية</span>)</div>
+        <div>💼 <span id="lb-sub-status-label">حالة الاشتراك</span>: <span id="pioneer-sub-status" style="color: var(--p);">مجاني</span></div>
+        <div id="subscription-action-area" style="margin-top: 8px; display: none;">
+            <button class="btn btn-pi" type="button" id="btn-pay-subscription">اشترك الآن بـ 0.1 Pi / سنة</button>
+        </div>
     </div>
 
-    <!-- أدوات النسخ الاحتياطي السحابي/المحلي للرائد -->
+    <!-- أزرار النسخ الاحتياطي -->
     <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
         <button class="btn btn-s" type="button" id="btn-export-backup" style="font-size: 11px;">تصدير بيانات المتجر (Backup)</button>
         <button class="btn btn-w" type="button" id="btn-import-trigger" style="font-size: 11px;">استعادة بيانات</button>
         <input type="file" id="import-file-input" style="display: none;" accept=".json">
     </div>
+    <div id="sub-status-msg" style="font-size: 11px; margin-top: 5px; color: #666;"></div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    // نظام إدارة المتاجر المتعددة للرواد
+    // 1. إضافة الترجمات الجديدة لكافة اللغات لضمان التوافق التام
+    if(typeof T !== 'undefined') {
+        Object.assign(T.ar, {
+            hFounder: '🛡️ لوحة تحكم الرواد والاشتراكات',
+            pFounderDesc: 'هذا القسم مخصص للرواد لإدارة المتاجر، أول 50 عملية مجانية ثم اشتراك 0.1 Pi سنوياً.',
+            btnPiLogin: 'تسجيل الدخول بـ Pi Network',
+            phNewStore: 'اسم رائد الأعمال أو المتجر الجديد...',
+            txtCreateStore: 'إنشاء متجر',
+            lbSelectStore: 'اختر المتجر النشط:',
+            optDefaultStore: 'التاجر الافتراضي (الأساسي)',
+            lbEquity: 'إجمالي أصول ورواتب المتجر الحالي',
+            lbPartnersCount: 'عدد الشركاء/العملاء المسجلين',
+            lbOpsUsed: 'العمليات المستخدمة',
+            lbFreeTier: 'المجانية',
+            lbSubStatusLabel: 'حالة الاشتراك',
+            btnPaySub: 'اشترك الآن بـ 0.1 Pi / سنة',
+            btnExport: 'تصدير بيانات المتجر (Backup)',
+            btnImport: 'استعادة بيانات'
+        });
+        Object.assign(T.en, {
+            hFounder: '🛡️ Pioneer & Subscription Hub',
+            pFounderDesc: 'Manage your stores, first 50 operations are free, then annual subscription of 0.1 Pi.',
+            btnPiLogin: 'Login with Pi Network',
+            phNewStore: 'New store or founder name...',
+            txtCreateStore: 'Create Store',
+            lbSelectStore: 'Select Active Store:',
+            optDefaultStore: 'Default Merchant',
+            lbEquity: 'Total Store Equity',
+            lbPartnersCount: 'Registered Partners',
+            lbOpsUsed: 'Operations Used',
+            lbFreeTier: 'Free',
+            lbSubStatusLabel: 'Subscription Status',
+            btnPaySub: 'Subscribe Now (0.1 Pi / Year)',
+            btnExport: 'Export Backup',
+            btnImport: 'Import Data'
+        });
+        // (يمكن توسيع الترجمات لبقية اللغات بنفس السياق لتظهر بكل لغة مختارة)
+    }
+
+    // 2. تحديث نصوص الواجهة بناءً على اللغة المختارة حالياً
+    window.updateFounderTranslations = function() {
+        var cl = localStorage.getItem('erp_lang') || 'ar';
+        var tt = T[cl] || T.en;
+        if(document.getElementById('h-founder-hub')) document.getElementById('h-founder-hub').textContent = tt.hFounder || tt.hPay;
+        if(document.getElementById('p-founder-desc')) document.getElementById('p-founder-desc').textContent = tt.pFounderDesc || '';
+        if(document.getElementById('btn-pi-login')) document.getElementById('btn-pi-login').textContent = tt.btnPiLogin || 'Login with Pi';
+        if(document.getElementById('new-merchant-name')) document.getElementById('new-merchant-name').placeholder = tt.phNewStore || 'Store name...';
+        if(document.getElementById('txt-create-store')) document.getElementById('txt-create-store').textContent = tt.txtCreateStore || 'Create';
+        if(document.getElementById('lb-select-store')) document.getElementById('lb-select-store').textContent = tt.lbSelectStore || 'Select Store:';
+        if(document.getElementById('opt-default-store')) document.getElementById('opt-default-store').textContent = tt.optDefaultStore || 'Default';
+        if(document.getElementById('lb-equity')) document.getElementById('lb-equity').textContent = tt.lbEquity || 'Equity';
+        if(document.getElementById('lb-partners-count')) document.getElementById('lb-partners-count').textContent = tt.lbPartnersCount || 'Partners';
+        if(document.getElementById('lb-ops-used')) document.getElementById('lb-ops-used').textContent = tt.lbOpsUsed || 'Operations';
+        if(document.getElementById('lb-free-tier')) document.getElementById('lb-free-tier').textContent = tt.lbFreeTier || 'Free';
+        if(document.getElementById('lb-sub-status-label')) document.getElementById('lb-sub-status-label').textContent = tt.lbSubStatusLabel || 'Status';
+        if(document.getElementById('btn-pay-subscription')) document.getElementById('btn-pay-subscription').textContent = tt.btnPaySub || 'Subscribe 0.1 Pi';
+        if(document.getElementById('btn-export-backup')) document.getElementById('btn-export-backup').textContent = tt.btnExport || 'Export';
+        if(document.getElementById('btn-import-trigger')) document.getElementById('btn-import-trigger').textContent = tt.btnImport || 'Import';
+    };
+
+    // ربط الحدث بتغيير اللغة الأصلي في التطبيق
+    var pickerEl = document.getElementById('lang-picker');
+    if(pickerEl) {
+        pickerEl.addEventListener('change', function(){ window.updateFounderTranslations(); });
+    }
+
+    // 3. المنطق البرمجي للرواد والاشتراكات
     let merchants = JSON.parse(localStorage.getItem('pi_merchants_list') || '["التاجر الافتراضي"]');
     let currentMerchant = localStorage.getItem('pi_current_merchant') || merchants[0];
+    let pioneerUser = localStorage.getItem('pi_pioneer_username') || null;
+    let opsCount = parseInt(localStorage.getItem('pi_pioneer_ops') || '0');
+    let isSubscribed = localStorage.getItem('pi_pioneer_subscribed') === 'true';
+    let subExpiry = parseInt(localStorage.getItem('pi_pioneer_expiry') || '0');
 
-    function updateMerchantUI() {
+    function updatePioneerUI() {
+        document.getElementById('pioneer-ops-count').textContent = opsCount;
+        const subStatus = document.getElementById('pioneer-sub-status');
+        const subActionArea = document.getElementById('subscription-action-area');
+        
+        if(isSubscribed && Date.now() < subExpiry) {
+            subStatus.textContent = (localStorage.getItem('erp_lang')==='en') ? 'Active (Annual)' : 'نشط (مدفوع سنويّاً)';
+            subStatus.style.color = '#4caf50';
+            subActionArea.style.display = 'none';
+        } else {
+            isSubscribed = false;
+            localStorage.setItem('pi_pioneer_subscribed', 'false');
+            if(opsCount > 50) {
+                subStatus.textContent = (localStorage.getItem('erp_lang')==='en') ? 'Expired / Limit Reached' : 'منتهي / تجاوزت الحد المجاني';
+                subStatus.style.color = '#f44336';
+                subActionArea.style.display = 'block';
+            } else {
+                let rem = 50 - opsCount;
+                subStatus.textContent = (localStorage.getItem('erp_lang')==='en') ? ('Free (' + rem + ' left)') : ('مجاني (باقي ' + rem + ' عملية)');
+                subStatus.style.color = 'var(--p)';
+                subActionArea.style.display = 'none';
+            }
+        }
+
+        const loginBtn = document.getElementById('btn-pi-login');
+        const userDisplay = document.getElementById('pioneer-user-display');
+        if(pioneerUser) {
+            loginBtn.style.display = 'none';
+            userDisplay.textContent = '👤 ' + pioneerUser;
+        } else {
+            loginBtn.style.display = 'inline-block';
+            userDisplay.textContent = '';
+        }
+
         const selector = document.getElementById('merchant-selector');
         selector.innerHTML = merchants.map(m => `<option value="${m}" ${m === currentMerchant ? 'selected' : ''}>${m}</option>`).join('');
         
-        // حساب Equity مبسط للرائد
-        let totalLedger = JSON.parse(localStorage.getItem('ledger_' + currentMerchant) || localStorage.getItem('ledger') || '[]');
+        let totalLedger = JSON.parse(localStorage.getItem('ledger') || '[]');
         let inc = totalLedger.filter(x => x.type === 'income').reduce((s, x) => s + x.amount, 0);
         let exp = totalLedger.filter(x => x.type === 'expense').reduce((s, x) => s + x.amount, 0);
         document.getElementById('founder-equity').textContent = (inc - exp).toFixed(2);
         
-        let pList = JSON.parse(localStorage.getItem('partners2_' + currentMerchant) || localStorage.getItem('partners2') || '[]');
+        let pList = JSON.parse(localStorage.getItem('partners2') || '[]');
         document.getElementById('founder-partners-count').textContent = pList.length;
     }
 
-    // إنشاء متجر جديد للرائد
     document.getElementById('btn-create-merchant').addEventListener('click', function(){
         const name = document.getElementById('new-merchant-name').value.trim();
-        if(!name) { alert('الرجاء إدخال اسم المتجر أو رائد الأعمال'); return; }
-        if(merchants.includes(name)) { alert('هذا المتجر موجود مسبقاً'); return; }
-        
+        if(!name) { alert('الرجاء إدخال اسم المتجر'); return; }
+        if(merchants.includes(name)) { alert('المتجر موجود مسبقاً'); return; }
         merchants.push(name);
         localStorage.setItem('pi_merchants_list', JSON.stringify(merchants));
         currentMerchant = name;
         localStorage.setItem('pi_current_merchant', currentMerchant);
         document.getElementById('new-merchant-name').value = '';
-        updateMerchantUI();
-        alert('تم إنشاء متجر الرائد بنجاح: ' + name);
+        updatePioneerUI();
+        alert('تم إنشاء المتجر بنجاح');
     });
 
-    // تبديل المتجر
     document.getElementById('merchant-selector').addEventListener('change', function(){
         currentMerchant = this.value;
         localStorage.setItem('pi_current_merchant', currentMerchant);
-        updateMerchantUI();
+        updatePioneerUI();
     });
 
-    // تصدير البيانات للرائد
+    document.getElementById('btn-pi-login').addEventListener('click', function(){
+        if(typeof Pi === 'undefined') {
+            let username = prompt('أدخل اسم المستخدم على Pi Network (Username):');
+            if(username) {
+                pioneerUser = username.trim();
+                localStorage.setItem('pi_pioneer_username', pioneerUser);
+                updatePioneerUI();
+                alert('تم تسجيل الدخول: ' + pioneerUser);
+            }
+            return;
+        }
+        Pi.authenticate(['username', 'payments'], function(auth) {
+            pioneerUser = auth.user.username;
+            localStorage.setItem('pi_pioneer_username', pioneerUser);
+            updatePioneerUI();
+        }, function(error) { alert('فشل الدخول: ' + error); });
+    });
+
+    document.getElementById('btn-pay-subscription').addEventListener('click', function(){
+        if(!pioneerUser) { alert('الرجاء تسجيل الدخول بـ Pi أولاً'); return; }
+        if(typeof Pi === 'undefined') {
+            alert('[محاكاة] تم دفع 0.1 Pi وتفعيل الاشتراك السنوي بنجاح!');
+            activateSubscription();
+            return;
+        }
+        Pi.createPayment({
+            amount: 0.1,
+            memo: 'Pi Merchant OS - Annual Subscription',
+            metadata: { type: 'subscription', username: pioneerUser }
+        }, {
+            onReadyForServerApproval: function(id) { document.getElementById('sub-status-msg').textContent = 'Approving...'; },
+            onReadyForServerCompletion: function(id, txid) { activateSubscription(); },
+            onCancel: function() { document.getElementById('sub-status-msg').textContent = 'Cancelled'; },
+            onError: function(error) { document.getElementById('sub-status-msg').textContent = 'Error: ' + error; }
+        });
+    });
+
+    function activateSubscription() {
+        isSubscribed = true;
+        localStorage.setItem('pi_pioneer_subscribed', 'true');
+        subExpiry = Date.now() + (365 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('pi_pioneer_expiry', subExpiry.toString());
+        updatePioneerUI();
+        alert('🎉 تم تفعيل الاشتراك السنوي بنجاح!');
+    }
+
+    window.checkPioneerAccess = function() {
+        if(isSubscribed && Date.now() < subExpiry) return true;
+        if(opsCount < 50) {
+            opsCount++;
+            localStorage.setItem('pi_pioneer_ops', opsCount.toString());
+            updatePioneerUI();
+            return true;
+        }
+        alert('⚠️ عذراً، تجاوزت الـ 50 عملية المجانية. يرجى الاشتراك السنوي (0.1 Pi).');
+        updatePioneerUI();
+        return false;
+    };
+
     document.getElementById('btn-export-backup').addEventListener('click', function(){
-        const data = {
-            merchant: currentMerchant,
-            ledger: localStorage.getItem('ledger'),
-            inventory: localStorage.getItem('inv2'),
-            partners: localStorage.getItem('partners2'),
-            date: new Date().toISOString()
-        };
+        const data = { merchant: currentMerchant, ledger: localStorage.getItem('ledger'), inventory: localStorage.getItem('inv2'), partners: localStorage.getItem('partners2') };
         const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
+        a.href = URL.createObjectURL(blob);
         a.download = `backup_${currentMerchant}_${Date.now()}.json`;
         a.click();
     });
 
-    // استعادة البيانات
-    document.getElementById('btn-import-trigger').addEventListener('click', function(){
-        document.getElementById('import-file-input').click();
-    });
-
+    document.getElementById('btn-import-trigger').addEventListener('click', function(){ document.getElementById('import-file-input').click(); });
     document.getElementById('import-file-input').addEventListener('change', function(e){
         const file = e.target.files[0];
         if(!file) return;
@@ -241,172 +399,14 @@ document.addEventListener('DOMContentLoaded', function(){
                 if(parsed.ledger) localStorage.setItem('ledger', parsed.ledger);
                 if(parsed.inventory) localStorage.setItem('inv2', parsed.inventory);
                 if(parsed.partners) localStorage.setItem('partners2', parsed.partners);
-                alert('تمت استعادة البيانات بنجاح! يرجى تحديث الصفحة.');
+                alert('تمت الاستعادة بنجاح! جاري تحديث الصفحة.');
                 location.reload();
-            } catch(err) {
-                alert('ملف النسخ الاحتياطي غير صالح');
-            }
+            } catch(err) { alert('ملف تالف'); }
         };
         reader.readAsText(file);
     });
 
-    updateMerchantUI();
-});
-</script><!-- ========================================== -->
-<!-- 🔐 موديول تسجيل دخول الرواد ونظام الاشتراكات v3.1 -->
-<!-- ========================================== -->
-<div class="card" style="margin-top: 20px; border: 2px solid var(--p); background: rgba(46, 0, 74, 0.03);">
-    <h3 style="color: var(--s);">🛡️ بوابة رواد Pi (Pi Pioneer Login & Subscription)</h3>
-    <p style="font-size: 12px; color: #555;">سجل الدخول بحساب Pi الخاص بك. أول 50 عملية مجانية، وبعدها يلزم اشتراك سنوي بقيمة 0.1 Pi.</p>
-    
-    <!-- حالة المستخدم -->
-    <div id="pioneer-auth-box" style="margin-bottom: 10px;">
-        <button class="btn btn-pi" type="button" id="btn-pi-login">تسجيل الدخول بـ Pi Network</button>
-        <span id="pioneer-user-display" style="font-weight: bold; color: var(--s); margin-right: 10px;"></span>
-    </div>
-
-    <!-- عداد العمليات والاشتراك -->
-    <div style="background: var(--bg); color: #fff; padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 10px;">
-        <div>📊 العمليات المستخدمة: <span id="pioneer-ops-count">0</span> / 50 (المجانية)</div>
-        <div>💼 حالة الاشتراك: <span id="pioneer-sub-status" style="color: var(--p);">مجاني (Free Tier)</span></div>
-        <div id="subscription-action-area" style="margin-top: 8px; display: none;">
-            <button class="btn btn-pi" type="button" id="btn-pay-subscription">اشترك الآن بـ 0.1 Pi / سنة</button>
-        </div>
-    </div>
-    <div id="sub-status-msg" style="font-size: 11px; margin-top: 5px; color: #666;"></div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-    // إدارة بيانات الرواد والاشتراكات
-    let pioneerUser = localStorage.getItem('pi_pioneer_username') || null;
-    let opsCount = parseInt(localStorage.getItem('pi_pioneer_ops') || '0');
-    let isSubscribed = localStorage.getItem('pi_pioneer_subscribed') === 'true';
-    let subExpiry = parseInt(localStorage.getItem('pi_pioneer_expiry') || '0');
-
-    const userDisplay = document.getElementById('pioneer-user-display');
-    const loginBtn = document.getElementById('btn-pi-login');
-    const opsSpan = document.getElementById('pioneer-ops-count');
-    const subStatus = document.getElementById('pioneer-sub-status');
-    const subActionArea = document.getElementById('subscription-action-area');
-    const subMsg = document.getElementById('sub-status-msg');
-
-    function updatePioneerUI() {
-        opsSpan.textContent = opsCount;
-        
-        // التحقق من صلاحية الاشتراك السنوي
-        if(isSubscribed && Date.now() < subExpiry) {
-            subStatus.textContent = 'نشط (مدفوع سنويّاً)';
-            subStatus.style.color = '#4caf50';
-            subActionArea.style.display = 'none';
-        } else {
-            isSubscribed = false;
-            localStorage.setItem('pi_pioneer_subscribed', 'false');
-            if(opsCount > 50) {
-                subStatus.textContent = 'منتهي / تجاوزت الحد المجاني';
-                subStatus.style.color = '#f44336';
-                subActionArea.style.display = 'block';
-            } else {
-                subStatus.textContent = 'مجاني (باقي ' + (50 - opsCount) + ' عملية)';
-                subStatus.style.color = 'var(--p)';
-                subActionArea.style.display = 'none';
-            }
-        }
-
-        if(pioneerUser) {
-            loginBtn.style.display = 'none';
-            userDisplay.textContent = '👤 مرحباً، ' + pioneerUser;
-        } else {
-            loginBtn.style.display = 'inline-block';
-            userDisplay.textContent = '';
-        }
-    }
-
-    // محاكاة تسجيل الدخول عبر Pi SDK
-    loginBtn.addEventListener('click', function(){
-        if(typeof Pi === 'undefined') {
-            // محاكاة للتطوير خارج متصفح Pi
-            let username = prompt('أدخل اسم المستخدم الخاص بك على Pi Network (Username):');
-            if(username) {
-                pioneerUser = username.trim();
-                localStorage.setItem('pi_pioneer_username', pioneerUser);
-                updatePioneerUI();
-                alert('تم تسجيل الدخول بنجاح كـ رائد: ' + pioneerUser);
-            }
-            return;
-        }
-
-        // المصادقة الحقيقية عبر Pi SDK
-        const scopes = ['username', 'payments'];
-        Pi.authenticate(scopes, function(auth) {
-            pioneerUser = auth.user.username;
-            localStorage.setItem('pi_pioneer_username', pioneerUser);
-            updatePioneerUI();
-            alert('تم المصادقة بنجاح عبر شبكة Pi: ' + pioneerUser);
-        }, function(error) {
-            alert('فشل تسجيل الدخول: ' + error);
-        });
-    });
-
-    // دفع اشتراك 0.1 Pi السنوي
-    document.getElementById('btn-pay-subscription').addEventListener('click', function(){
-        if(!pioneerUser) {
-            alert('الرجاء تسجيل الدخول بـ Pi أولاً');
-            return;
-        }
-
-        if(typeof Pi === 'undefined') {
-            alert('[وضع محاكاة] تم دفع 0.1 Pi بنجاح وتم تفعيل الاشتراك السنوي!');
-            activateSubscription();
-            return;
-        }
-
-        Pi.createPayment({
-            amount: 0.1,
-            memo: 'Pi Merchant OS - Annual Subscription (0.1 Pi)',
-            metadata: { type: 'subscription', username: pioneerUser }
-        }, {
-            onReadyForServerApproval: function(id) {
-                subMsg.textContent = 'جارٍ الموافقة على الدفع... ID: ' + id;
-            },
-            onReadyForServerCompletion: function(id, txid) {
-                subMsg.textContent = 'تم إتمام الدفع بنجاح! TX: ' + txid;
-                activateSubscription();
-            },
-            onCancel: function() {
-                subMsg.textContent = 'تم إلغاء عملية الدفع.';
-            },
-            onError: function(error) {
-                subMsg.textContent = 'حدث خطأ في الدفع: ' + error;
-            }
-        });
-    });
-
-    function activateSubscription() {
-        isSubscribed = true;
-        localStorage.setItem('pi_pioneer_subscribed', 'true');
-        // إضافة سنة كاملة (365 يوم بالميلي ثانية)
-        let oneYearMs = 365 * 24 * 60 * 60 * 1000;
-        subExpiry = Date.now() + oneYearMs;
-        localStorage.setItem('pi_pioneer_expiry', subExpiry.toString());
-        updatePioneerUI();
-        alert('🎉 مبروك! تم تفعيل اشتراكك السنوي بنجاح.');
-    }
-
-    // دالة للتحقق من السماح بإجراء العمليات (تُستدعى عند حفظ قيود أو فواتير جديدة)
-    window.checkPioneerAccess = function() {
-        if(isSubscribed && Date.now() < subExpiry) return true;
-        if(opsCount < 50) {
-            opsCount++;
-            localStorage.setItem('pi_pioneer_ops', opsCount.toString());
-            updatePioneerUI();
-            return true;
-        }
-        alert('⚠️ عذراً، لقد استهلكت الـ 50 عملية المجانية. يرجى الاشتراك السنوي (0.1 Pi) لمتابعة العمل بسلاسة.');
-        updatePioneerUI();
-        return false;
-    };
-
+    window.updateFounderTranslations();
     updatePioneerUI();
 });
  </script>
