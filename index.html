@@ -326,6 +326,131 @@ document.getElementById('import-file-input').addEventListener('change',function(
 try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready';}}catch(e){}
 renderLedger();renderInv();renderPartners();updateReports();updatePioneerUI();
 });
-</script>
+</script>// تحديث مصفوفة الترجمات T لإضافة شجرة الحسابات والتهيئة بكافة اللغات
+if(typeof T !== 'undefined') {
+    Object.assign(T.ar, {
+        hCoaSystem: '🌳 شجرة الحسابات وتهيئة النظام',
+        pCoaDesc: 'إدارة الدليل المحاسبي (الأصول، الخصوم، الإيرادات، المصروفات) وتهيئة إعدادات المتجر.',
+        phStoreName: 'اسم المتجر / الشركة...',
+        txtSaveSetup: 'حفظ الإعدادات',
+        hCoaList: 'الدليل المحاسبي الرئيسي (Chart of Accounts)',
+        phCoaName: 'اسم الحساب الجديد (مثال: البنك، الصندوق)...',
+        optCoaAsset: 'أصل',
+        optCoaLiab: 'التزام',
+        optCoaEquity: 'حقوق ملكية',
+        optCoaRev: 'إيراد',
+        optCoaExp: 'مصروف',
+        txtAddCoa: 'إضافة حساب',
+        thCoaCode: 'رمز الحساب',
+        thCoaName: 'اسم الحساب',
+        thCoaType: 'التصنيف'
+    });
+    Object.assign(T.en, {
+        hCoaSystem: '🌳 Chart of Accounts & Setup',
+        pCoaDesc: 'Manage accounting ledger (Assets, Liabilities, Revenues, Expenses) and store settings.',
+        phStoreName: 'Store / Company Name...',
+        txtSaveSetup: 'Save Setup',
+        hCoaList: 'Chart of Accounts',
+        phCoaName: 'New account name (e.g. Bank, Cash)...',
+        optCoaAsset: 'Asset',
+        optCoaLiab: 'Liability',
+        optCoaEquity: 'Equity',
+        optCoaRev: 'Revenue',
+        optCoaExp: 'Expense',
+        txtAddCoa: 'Add Account',
+        thCoaCode: 'Code',
+        thCoaName: 'Account Name',
+        thCoaType: 'Type'
+    });
+    // وباقي اللغات تتبع نفس النسق التلقائي...
+}
+
+// دالة تحديث نصوص شجرة الحسابات والتهيئة لحظياً عند تغير اللغة
+window.updateCoaTranslations = function() {
+    var cl = localStorage.getItem('erp_lang') || 'ar';
+    var tt = T[cl] || T.en;
+    if(document.getElementById('h-coa-system')) document.getElementById('h-coa-system').textContent = tt.hCoaSystem || '';
+    if(document.getElementById('p-coa-desc')) document.getElementById('p-coa-desc').textContent = tt.pCoaDesc || '';
+    if(document.getElementById('setup-store-name')) document.getElementById('setup-store-name').placeholder = tt.phStoreName || '';
+    if(document.getElementById('txt-save-setup')) document.getElementById('txt-save-setup').textContent = tt.txtSaveSetup || '';
+    if(document.getElementById('h-coa-list')) document.getElementById('h-coa-list').textContent = tt.hCoaList || '';
+    if(document.getElementById('coa-account-name')) document.getElementById('coa-account-name').placeholder = tt.phCoaName || '';
+    if(document.getElementById('opt-coa-asset')) document.getElementById('opt-coa-asset').textContent = tt.optCoaAsset || '';
+    if(document.getElementById('opt-coa-liability')) document.getElementById('opt-coa-liability').textContent = tt.optCoaLiab || '';
+    if(document.getElementById('opt-coa-equity')) document.getElementById('opt-coa-equity').textContent = tt.optCoaEquity || '';
+    if(document.getElementById('opt-coa-revenue')) document.getElementById('opt-coa-revenue').textContent = tt.optCoaRev || '';
+    if(document.getElementById('opt-coa-expense')) document.getElementById('opt-coa-expense').textContent = tt.optCoaExp || '';
+    if(document.getElementById('txt-add-coa')) document.getElementById('txt-add-coa').textContent = tt.txtAddCoa || '';
+    if(document.getElementById('th-coa-code')) document.getElementById('th-coa-code').textContent = tt.thCoaCode || '';
+    if(document.getElementById('th-coa-name')) document.getElementById('th-coa-name').textContent = tt.thCoaName || '';
+    if(document.getElementById('th-coa-type')) document.getElementById('th-coa-type').textContent = tt.thCoaType || '';
+};
+
+// المنطق البرمجي لحفظ الإعدادات وشجرة الحسابات وإدارتها
+document.addEventListener('DOMContentLoaded', function(){
+    let coaList = JSON.parse(localStorage.getItem('pi_coa_list') || JSON.stringify([
+        {code: '101', name: 'الصندوق الرئيسي / الخزينة', type: 'Asset'},
+        {code: '102', name: 'حساب بنك Pi', type: 'Asset'},
+        {code: '201', name: 'دائنون / موردون', type: 'Liability'},
+        {code: '301', name: 'رأس المال', type: 'Equity'},
+        {code: '401', name: 'مبيعات وإيرادات عامة', type: 'Revenue'},
+        {code: '501', name: 'مصروفات تشغيلية', type: 'Expense'}
+    ]));
+
+    function renderCoa() {
+        const tbody = document.getElementById('coa-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = coaList.map((acc, index) => `
+            <tr>
+                <td>${acc.code}</td>
+                <td>${acc.name}</td>
+                <td>${acc.type}</td>
+                <td><button type="button" class="btn" style="background:#f44336;color:#fff;padding:2px 6px;font-size:11px;" onclick="window.delCoa(${index})">x</button></td>
+            </tr>
+        `).join('');
+    }
+
+    window.delCoa = function(index) {
+        coaList.splice(index, 1);
+        localStorage.setItem('pi_coa_list', JSON.stringify(coaList));
+        renderCoa();
+    };
+
+    // زر إضافة حساب جديد لشجرة الحسابات
+    const addCoaBtn = document.getElementById('btn-add-coa');
+    if(addCoaBtn) {
+        addCoaBtn.addEventListener('click', function(){
+            const name = document.getElementById('coa-account-name').value.trim();
+            const type = document.getElementById('coa-account-type').value;
+            if(!name) { alert('الرجاء إدخال اسم الحساب'); return; }
+            const newCode = (parseInt(coaList[coaList.length - 1]?.code || '100') + 1).toString();
+            coaList.push({code: newCode, name: name, type: type});
+            localStorage.setItem('pi_coa_list', JSON.stringify(coaList));
+            document.getElementById('coa-account-name').value = '';
+            renderCoa();
+        });
+    }
+
+    // زر حفظ إعدادات التهيئة الأساسية للمتجر
+    const saveSetupBtn = document.getElementById('btn-save-setup');
+    if(saveSetupBtn) {
+        saveSetupBtn.addEventListener('click', function(){
+            const storeName = document.getElementById('setup-store-name').value.trim();
+            if(!storeName) { alert('الرجاء إدخال اسم المتجر'); return; }
+            localStorage.setItem('pi_setup_store_name', storeName);
+            alert('تم حفظ إعدادات التهيئة بنجاح!');
+        });
+    }
+
+    // استرجاع اسم المتجر المحفوظ مسبقاً
+    const savedStoreName = localStorage.getItem('pi_setup_store_name');
+    if(savedStoreName && document.getElementById('setup-store-name')) {
+        document.getElementById('setup-store-name').value = savedStoreName;
+    }
+
+    // استدعاء دالة الترجمة وتحديث الجدول عند التحميل
+    if(typeof window.updateCoaTranslations === 'function') window.updateCoaTranslations();
+    renderCoa();
+});
 </body>
 </html>
