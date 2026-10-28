@@ -252,6 +252,163 @@ document.addEventListener('DOMContentLoaded', function(){
 
     updateMerchantUI();
 });
-</script>
+</script><!-- ========================================== -->
+<!-- 🔐 موديول تسجيل دخول الرواد ونظام الاشتراكات v3.1 -->
+<!-- ========================================== -->
+<div class="card" style="margin-top: 20px; border: 2px solid var(--p); background: rgba(46, 0, 74, 0.03);">
+    <h3 style="color: var(--s);">🛡️ بوابة رواد Pi (Pi Pioneer Login & Subscription)</h3>
+    <p style="font-size: 12px; color: #555;">سجل الدخول بحساب Pi الخاص بك. أول 50 عملية مجانية، وبعدها يلزم اشتراك سنوي بقيمة 0.1 Pi.</p>
+    
+    <!-- حالة المستخدم -->
+    <div id="pioneer-auth-box" style="margin-bottom: 10px;">
+        <button class="btn btn-pi" type="button" id="btn-pi-login">تسجيل الدخول بـ Pi Network</button>
+        <span id="pioneer-user-display" style="font-weight: bold; color: var(--s); margin-right: 10px;"></span>
+    </div>
+
+    <!-- عداد العمليات والاشتراك -->
+    <div style="background: var(--bg); color: #fff; padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 10px;">
+        <div>📊 العمليات المستخدمة: <span id="pioneer-ops-count">0</span> / 50 (المجانية)</div>
+        <div>💼 حالة الاشتراك: <span id="pioneer-sub-status" style="color: var(--p);">مجاني (Free Tier)</span></div>
+        <div id="subscription-action-area" style="margin-top: 8px; display: none;">
+            <button class="btn btn-pi" type="button" id="btn-pay-subscription">اشترك الآن بـ 0.1 Pi / سنة</button>
+        </div>
+    </div>
+    <div id="sub-status-msg" style="font-size: 11px; margin-top: 5px; color: #666;"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    // إدارة بيانات الرواد والاشتراكات
+    let pioneerUser = localStorage.getItem('pi_pioneer_username') || null;
+    let opsCount = parseInt(localStorage.getItem('pi_pioneer_ops') || '0');
+    let isSubscribed = localStorage.getItem('pi_pioneer_subscribed') === 'true';
+    let subExpiry = parseInt(localStorage.getItem('pi_pioneer_expiry') || '0');
+
+    const userDisplay = document.getElementById('pioneer-user-display');
+    const loginBtn = document.getElementById('btn-pi-login');
+    const opsSpan = document.getElementById('pioneer-ops-count');
+    const subStatus = document.getElementById('pioneer-sub-status');
+    const subActionArea = document.getElementById('subscription-action-area');
+    const subMsg = document.getElementById('sub-status-msg');
+
+    function updatePioneerUI() {
+        opsSpan.textContent = opsCount;
+        
+        // التحقق من صلاحية الاشتراك السنوي
+        if(isSubscribed && Date.now() < subExpiry) {
+            subStatus.textContent = 'نشط (مدفوع سنويّاً)';
+            subStatus.style.color = '#4caf50';
+            subActionArea.style.display = 'none';
+        } else {
+            isSubscribed = false;
+            localStorage.setItem('pi_pioneer_subscribed', 'false');
+            if(opsCount > 50) {
+                subStatus.textContent = 'منتهي / تجاوزت الحد المجاني';
+                subStatus.style.color = '#f44336';
+                subActionArea.style.display = 'block';
+            } else {
+                subStatus.textContent = 'مجاني (باقي ' + (50 - opsCount) + ' عملية)';
+                subStatus.style.color = 'var(--p)';
+                subActionArea.style.display = 'none';
+            }
+        }
+
+        if(pioneerUser) {
+            loginBtn.style.display = 'none';
+            userDisplay.textContent = '👤 مرحباً، ' + pioneerUser;
+        } else {
+            loginBtn.style.display = 'inline-block';
+            userDisplay.textContent = '';
+        }
+    }
+
+    // محاكاة تسجيل الدخول عبر Pi SDK
+    loginBtn.addEventListener('click', function(){
+        if(typeof Pi === 'undefined') {
+            // محاكاة للتطوير خارج متصفح Pi
+            let username = prompt('أدخل اسم المستخدم الخاص بك على Pi Network (Username):');
+            if(username) {
+                pioneerUser = username.trim();
+                localStorage.setItem('pi_pioneer_username', pioneerUser);
+                updatePioneerUI();
+                alert('تم تسجيل الدخول بنجاح كـ رائد: ' + pioneerUser);
+            }
+            return;
+        }
+
+        // المصادقة الحقيقية عبر Pi SDK
+        const scopes = ['username', 'payments'];
+        Pi.authenticate(scopes, function(auth) {
+            pioneerUser = auth.user.username;
+            localStorage.setItem('pi_pioneer_username', pioneerUser);
+            updatePioneerUI();
+            alert('تم المصادقة بنجاح عبر شبكة Pi: ' + pioneerUser);
+        }, function(error) {
+            alert('فشل تسجيل الدخول: ' + error);
+        });
+    });
+
+    // دفع اشتراك 0.1 Pi السنوي
+    document.getElementById('btn-pay-subscription').addEventListener('click', function(){
+        if(!pioneerUser) {
+            alert('الرجاء تسجيل الدخول بـ Pi أولاً');
+            return;
+        }
+
+        if(typeof Pi === 'undefined') {
+            alert('[وضع محاكاة] تم دفع 0.1 Pi بنجاح وتم تفعيل الاشتراك السنوي!');
+            activateSubscription();
+            return;
+        }
+
+        Pi.createPayment({
+            amount: 0.1,
+            memo: 'Pi Merchant OS - Annual Subscription (0.1 Pi)',
+            metadata: { type: 'subscription', username: pioneerUser }
+        }, {
+            onReadyForServerApproval: function(id) {
+                subMsg.textContent = 'جارٍ الموافقة على الدفع... ID: ' + id;
+            },
+            onReadyForServerCompletion: function(id, txid) {
+                subMsg.textContent = 'تم إتمام الدفع بنجاح! TX: ' + txid;
+                activateSubscription();
+            },
+            onCancel: function() {
+                subMsg.textContent = 'تم إلغاء عملية الدفع.';
+            },
+            onError: function(error) {
+                subMsg.textContent = 'حدث خطأ في الدفع: ' + error;
+            }
+        });
+    });
+
+    function activateSubscription() {
+        isSubscribed = true;
+        localStorage.setItem('pi_pioneer_subscribed', 'true');
+        // إضافة سنة كاملة (365 يوم بالميلي ثانية)
+        let oneYearMs = 365 * 24 * 60 * 60 * 1000;
+        subExpiry = Date.now() + oneYearMs;
+        localStorage.setItem('pi_pioneer_expiry', subExpiry.toString());
+        updatePioneerUI();
+        alert('🎉 مبروك! تم تفعيل اشتراكك السنوي بنجاح.');
+    }
+
+    // دالة للتحقق من السماح بإجراء العمليات (تُستدعى عند حفظ قيود أو فواتير جديدة)
+    window.checkPioneerAccess = function() {
+        if(isSubscribed && Date.now() < subExpiry) return true;
+        if(opsCount < 50) {
+            opsCount++;
+            localStorage.setItem('pi_pioneer_ops', opsCount.toString());
+            updatePioneerUI();
+            return true;
+        }
+        alert('⚠️ عذراً، لقد استهلكت الـ 50 عملية المجانية. يرجى الاشتراك السنوي (0.1 Pi) لمتابعة العمل بسلاسة.');
+        updatePioneerUI();
+        return false;
+    };
+
+    updatePioneerUI();
+});
+ </script>
 </body>
 </html>
