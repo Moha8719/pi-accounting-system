@@ -132,6 +132,126 @@ document.getElementById('btn-pi-pay').addEventListener('click',function(){var am
 try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});document.getElementById('pi-status').textContent='Pi SDK Ready';}}catch(e){}
 renderLedger();renderInv();renderPartners();updateReports();
 });
+</script><!-- ========================================== -->
+<!-- 🚀 موديول الرواد والتجار المستقبليين v3.0 -->
+<!-- ========================================== -->
+<div class="card" style="margin-top: 20px; border: 2px dashed var(--p); background: rgba(46, 0, 74, 0.05);">
+    <h3 style="color: var(--s);">🌟 لوحة تحكم الرواد والتجار (Founder & Merchant Hub)</h3>
+    <p style="font-size: 12px; color: #555;">هذا القسم مخصص للرواد المستقبليين لإدارة المتاجر المتعددة وفصل الحسابات الشخصية عن التجارية.</p>
+    
+    <!-- تسجيل متجر جديد -->
+    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+        <input type="text" id="new-merchant-name" placeholder="اسم رائد الأعمال أو المتجر الجديد..." style="flex: 2;">
+        <button class="btn btn-pi" type="button" id="btn-create-merchant" style="flex: 1;">إنشاء متجر</button>
+    </div>
+
+    <!-- قائمة المتاجر النشطة -->
+    <div style="margin-bottom: 10px;">
+        <label style="font-size: 12px; font-weight: bold; color: #333;">اختر المتجر النشط:</label>
+        <select id="merchant-selector">
+            <option value="default">التاجر الافتراضي (الأساسي)</option>
+        </select>
+    </div>
+
+    <!-- إحصائيات سريعة للرائد -->
+    <div style="background: var(--bg); color: #fff; padding: 10px; border-radius: 8px; font-size: 13px;">
+        <div>📊 إجمالي أصول ورواتب المتجر الحالي: <span id="founder-equity">0</span> π</div>
+        <div>👥 عدد الشركاء/العملاء المسجلين: <span id="founder-partners-count">0</span></div>
+    </div>
+
+    <!-- أدوات النسخ الاحتياطي السحابي/المحلي للرائد -->
+    <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+        <button class="btn btn-s" type="button" id="btn-export-backup" style="font-size: 11px;">تصدير بيانات المتجر (Backup)</button>
+        <button class="btn btn-w" type="button" id="btn-import-trigger" style="font-size: 11px;">استعادة بيانات</button>
+        <input type="file" id="import-file-input" style="display: none;" accept=".json">
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    // نظام إدارة المتاجر المتعددة للرواد
+    let merchants = JSON.parse(localStorage.getItem('pi_merchants_list') || '["التاجر الافتراضي"]');
+    let currentMerchant = localStorage.getItem('pi_current_merchant') || merchants[0];
+
+    function updateMerchantUI() {
+        const selector = document.getElementById('merchant-selector');
+        selector.innerHTML = merchants.map(m => `<option value="${m}" ${m === currentMerchant ? 'selected' : ''}>${m}</option>`).join('');
+        
+        // حساب Equity مبسط للرائد
+        let totalLedger = JSON.parse(localStorage.getItem('ledger_' + currentMerchant) || localStorage.getItem('ledger') || '[]');
+        let inc = totalLedger.filter(x => x.type === 'income').reduce((s, x) => s + x.amount, 0);
+        let exp = totalLedger.filter(x => x.type === 'expense').reduce((s, x) => s + x.amount, 0);
+        document.getElementById('founder-equity').textContent = (inc - exp).toFixed(2);
+        
+        let pList = JSON.parse(localStorage.getItem('partners2_' + currentMerchant) || localStorage.getItem('partners2') || '[]');
+        document.getElementById('founder-partners-count').textContent = pList.length;
+    }
+
+    // إنشاء متجر جديد للرائد
+    document.getElementById('btn-create-merchant').addEventListener('click', function(){
+        const name = document.getElementById('new-merchant-name').value.trim();
+        if(!name) { alert('الرجاء إدخال اسم المتجر أو رائد الأعمال'); return; }
+        if(merchants.includes(name)) { alert('هذا المتجر موجود مسبقاً'); return; }
+        
+        merchants.push(name);
+        localStorage.setItem('pi_merchants_list', JSON.stringify(merchants));
+        currentMerchant = name;
+        localStorage.setItem('pi_current_merchant', currentMerchant);
+        document.getElementById('new-merchant-name').value = '';
+        updateMerchantUI();
+        alert('تم إنشاء متجر الرائد بنجاح: ' + name);
+    });
+
+    // تبديل المتجر
+    document.getElementById('merchant-selector').addEventListener('change', function(){
+        currentMerchant = this.value;
+        localStorage.setItem('pi_current_merchant', currentMerchant);
+        updateMerchantUI();
+    });
+
+    // تصدير البيانات للرائد
+    document.getElementById('btn-export-backup').addEventListener('click', function(){
+        const data = {
+            merchant: currentMerchant,
+            ledger: localStorage.getItem('ledger'),
+            inventory: localStorage.getItem('inv2'),
+            partners: localStorage.getItem('partners2'),
+            date: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_${currentMerchant}_${Date.now()}.json`;
+        a.click();
+    });
+
+    // استعادة البيانات
+    document.getElementById('btn-import-trigger').addEventListener('click', function(){
+        document.getElementById('import-file-input').click();
+    });
+
+    document.getElementById('import-file-input').addEventListener('change', function(e){
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const parsed = JSON.parse(evt.target.result);
+                if(parsed.ledger) localStorage.setItem('ledger', parsed.ledger);
+                if(parsed.inventory) localStorage.setItem('inv2', parsed.inventory);
+                if(parsed.partners) localStorage.setItem('partners2', parsed.partners);
+                alert('تمت استعادة البيانات بنجاح! يرجى تحديث الصفحة.');
+                location.reload();
+            } catch(err) {
+                alert('ملف النسخ الاحتياطي غير صالح');
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    updateMerchantUI();
+});
 </script>
 </body>
 </html>
