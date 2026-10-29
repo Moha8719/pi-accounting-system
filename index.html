@@ -1,816 +1,205 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pi Merchant OS v4.0 - Modern ERP & Accounting System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pi Merchant OS v5.0</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--p:#ffd700;--s:#6a1b9a;--bg:#2e004a;--card-bg:#ffffff;--text:#222222}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:#fff;margin:0;padding:15px;box-sizing:border-box}
-.container{max-width:1100px;margin:auto;background:rgba(255,255,255,.06);padding:20px;border-radius:20px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-.header-flex{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:15px}
-.app-title{font-size:14px;font-weight:700;color:var(--p)}
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:15px 0}
-.tab{padding:9px 14px;background:rgba(255,255,255,.12);border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;transition:all 0.3s ease}
-.tab:hover{background:rgba(255,255,255,.25)}
-.tab.active{background:var(--p);color:var(--bg);box-shadow:0 4px 12px rgba(255,215,0,0.3)}
+:root{--p:#7c3aed;--s:#10b981;--bg:#f8fafc;--card:#fff;--text:#1e293b;--b:#e2e8f0}
+*{box-sizing:border-box;font-family:system-ui,Tahoma}body{margin:0;background:var(--bg);color:var(--text)}
+.header{background:linear-gradient(135deg,var(--p),#4f46e5);color:#fff;padding:14px;text-align:center}
+.container{max-width:1100px;margin:auto;padding:10px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;background:var(--card);padding:6px;border-radius:10px;box-shadow:0 1px 3px #0001;position:sticky;top:0;z-index:10}
+.tab-btn{border:0;background:#f1f5f9;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+.tab-btn.active{background:var(--p);color:#fff}
 .tab-content{display:none}.tab-content.active{display:block}
-.card{background:var(--card-bg);color:var(--text);padding:16px;border-radius:14px;margin:12px 0;box-shadow:0 4px 15px rgba(0,0,0,0.05)}
-.btn{padding:10px 16px;border:none;border-radius:25px;font-weight:700;cursor:pointer;margin:4px 2px;transition:opacity 0.2s}
-.btn:hover{opacity:0.9}
-.btn-pi{background:var(--p);color:var(--bg)}
-.btn-s{background:var(--s);color:#fff}
-.btn-w{background:#25D366;color:#fff}
-.btn-danger{background:#f44336;color:#fff}
-input,select{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #ddd;margin:6px 0;box-sizing:border-box;font-size:13px;transition:border-color 0.2s}
-input:focus,select:focus{border-color:var(--s);outline:none}
-table{width:100%;border-collapse:collapse;margin-top:8px}
-th,td{padding:9px;border-bottom:1px solid #eee;font-size:13px;text-align:right}
-th{background:var(--s);color:#fff;border-radius:4px}
-.pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px}
-.pos-item-btn{background:#f3e5f5;color:var(--s);border:1.5px solid var(--s);padding:12px;border-radius:10px;cursor:pointer;font-weight:bold;text-align:center;transition:all 0.2s}
-.pos-item-btn:hover{background:var(--s);color:#fff}
+.card{background:var(--card);border-radius:12px;padding:14px;margin-top:10px;box-shadow:0 1px 3px #0001}
+.btn{border:0;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+.btn-pi{background:var(--p);color:#fff}.btn-s{background:var(--s);color:#fff}.btn-w{background:#f59e0b;color:#fff}.btn-danger{background:#ef4444;color:#fff}
+input,select{padding:8px;border:1px solid var(--b);border-radius:8px;width:100%;margin:4px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:6px;border-bottom:1px solid #f1f5f9;text-align:right}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}}
+.pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px}
+.pos-item{background:#f8fafc;border:1px solid var(--b);border-radius:8px;padding:8px;text-align:center;cursor:pointer}
 </style>
 </head>
 <body>
+<div class="header"><h2 style="margin:0">Pi Merchant OS v5.0</h2><small>Offline ERP for Pi Network</small></div>
 <div class="container">
-<div class="header-flex">
-  <div class="app-title">👋 <span id="t-app">Pi Merchant OS v4.0</span></div>
-  <select id="lang-picker" style="width:auto;padding:6px 10px"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="ru">Русский</option></select>
-</div>
-<h2 id="main-title" style="text-align:center;color:var(--p);margin-top:5px">نظام التاجر الذكي المتكامل</h2>
-                                                                                                                                                                                                 <!-- التبويبات الحديثة -->
 <div class="tabs">
-  <div class="tab active" data-tab="entry" id="lb-entry">القيود</div>
-  <div class="tab" data-tab="pos" id="lb-pos">نقاط البيع POS</div>
-  <div class="tab" data-tab="invoice" id="lb-inv">الفواتير</div>
-  <div class="tab" data-tab="inventory" id="lb-stock">المخزون</div>
-  <div class="tab" data-tab="partners" id="lb-part">العملاء والديون</div>
-  <div class="tab" data-tab="vouchers" id="lb-vouch">السندات والقيد</div>
-  <div class="tab" data-tab="reports" id="lb-rep">التقارير الشاملة</div>
-  <div class="tab" data-tab="settings" id="lb-set">التهيئة والرواد</div>
+<button class="tab-btn active" data-tab="entry">📝 قيود</button>
+<button class="tab-btn" data-tab="pos">🛒 POS</button>
+<button class="tab-btn" data-tab="invoice">🧾 فواتير</button>
+<button class="tab-btn" data-tab="inventory">📦 مخزون</button>
+<button class="tab-btn" data-tab="partners">👥 عملاء</button>
+<button class="tab-btn" data-tab="bonds">📑 سندات</button>
+<button class="tab-btn" data-tab="reports">📈 تقارير</button>
+<button class="tab-btn" data-tab="financial">📊 قوائم</button>
+<button class="tab-btn" data-tab="settings">⚙️ إعدادات</button>
 </div>
 
-<!-- 1. القيود اليومية -->
-<div id="entry" class="tab-content active">
-  <div class="card">
-    <h3 id="h-entry" style="color:var(--s);margin-top:0">إضافة قيد يومي</h3>
-    <form id="form-entry">
-      <select id="e-type"><option value="income" id="op-inc">إيراد</option><option value="expense" id="op-exp">مصروف</option><option value="asset" id="op-ast">أصل</option></select>
-      <input id="e-amount" type="number" step="0.0001" placeholder="المبلغ π" required>
-      <input id="e-desc" placeholder="الوصف أو البيان" required>
-      <button class="btn btn-pi" type="submit" id="btn-save-entry">حفظ القيد</button>
-    </form>
-  </div>
-  <div class="card">
-    <table><thead><tr><th id="th-date">التاريخ</th><th id="th-desc">الوصف</th><th id="th-type">النوع</th><th id="th-amt">المبلغ</th></tr></thead><tbody id="ledger-body"></tbody></table>
-  </div>
+<div id="entry" class="tab-content active"><div class="card">
+<h3 data-i="daily">القيود اليومية</h3>
+<div class="grid3">
+<select id="e-type"><option value="income">إيراد</option><option value="expense">مصروف</option><option value="asset">أصل</option></select>
+<input id="e-amount" type="number" placeholder="المبلغ π">
+<input id="e-desc" placeholder="البيان">
 </div>
-<!-- 2. نقاط البيع السريع POS -->
-<div id="pos" class="tab-content">
-  <div class="card">
-    <h3 id="h-pos" style="color:var(--s);margin-top:0">⚡ نظام نقاط البيع السريع (POS)</h3>
-    <p id="p-pos-desc" style="font-size:12px;color:#666">اضغط على أي منتج أدناه لإضافته لفاتورة البيع السريع فوراً:</p>
-    <div id="pos-products-grid" class="pos-grid"></div>
-    <hr style="border:0;border-top:1px solid #eee;margin:12px 0">
-    <h4 id="h-pos-cart" style="font-size:13px;color:#333">سلة المبيعات الحالية:</h4>
-    <div id="pos-cart-items" style="font-size:13px;background:#f9f9f9;padding:10px;border-radius:8px;margin-bottom:8px">فارغة</div>
-    <div style="font-weight:bold;margin-bottom:10px"><span id="lb-pos-total">الإجمالي</span>: <span id="pos-total-val">0</span> π</div>
-    <button class="btn btn-pi" type="button" id="btn-pos-checkout">إتمام البيع وترحيل الفاتورة</button>
-  </div>
+<button class="btn btn-pi" onclick="addEntry()" data-i="save">💾 حفظ القيد</button>
+<table><thead><tr><th>التاريخ</th><th>البيان</th><th>النوع</th><th>المبلغ</th><th>إجراء</th></tr></thead><tbody id="ledger-body"></tbody></table>
+</div></div>
+
+<div id="pos" class="tab-content"><div class="card">
+<h3 data-i="pos">نقاط البيع السريع</h3>
+<div id="pos-products" class="pos-grid"></div><hr>
+<div id="pos-cart"></div>
+<div style="display:flex;gap:6px;margin-top:8px"><input id="pos-customer" placeholder="العميل"><button class="btn btn-s" onclick="checkoutPOS()">✅ دفع</button><button class="btn btn-w" onclick="clearPOS()">مسح</button></div>
+</div></div>
+
+<div id="invoice" class="tab-content"><div class="card">
+<h3 data-i="inv">الفواتير</h3>
+<div class="grid3">
+<select id="inv-customer"></select>
+<select id="inv-product"></select>
+<input id="inv-qty" type="number" value="1" placeholder="الكمية">
 </div>
+<button class="btn btn-pi" onclick="addToInvoice()">+ إضافة</button>
+<div id="inv-items" style="margin-top:8px"></div>
+<h4>الإجمالي: <span id="inv-total">0</span> π</h4>
+<button class="btn btn-s" onclick="saveInvoice()">💾 حفظ فاتورة</button>
+<button class="btn btn-w" onclick="printInvoice()">🖨️ PDF</button>
+<button class="btn btn-pi" onclick="payInvoiceWithPi()">💳 دفع بـ Pi</button>
+<button class="btn" style="background:#25D366;color:#fff" onclick="shareWhatsApp()">WhatsApp</button>
+</div></div>
 
-<!-- 3. الفواتير -->
-<div id="invoice" class="tab-content">
-  <div class="card">
-    <h3 id="h-inv" style="color:var(--s);margin-top:0">إدارة الفواتير</h3>
-    <input id="inv-customer" placeholder="اسم العميل...">
-    <select id="inv-product"></select>
-    <input id="inv-qty" type="number" value="1" placeholder="الكمية">
-    <button class="btn btn-pi" type="button" id="btn-add-inv">إضافة للفاتورة</button>
-    <div id="inv-items" style="margin:8px 0;font-size:13px"></div>
-    <h4><span id="lb-total">الإجمالي</span>: <span id="inv-total">0</span> π</h4>
-    <button class="btn btn-s" type="button" id="btn-pdf">طباعة PDF</button>
-    <button class="btn btn-w" type="button" id="btn-wa">مشاركة WhatsApp</button>
-    <button class="btn btn-pi" type="button" id="btn-save-inv">حفظ وخصم المخزون</button>
-  </div>
-                                                                                                </div>
-                                   <!-- 4. المخزون -->
-<div id="inventory" class="tab-content">
-  <div class="card">
-    <h3 id="h-stock" style="color:var(--s);margin-top:0">إدارة المخزون والأصناف</h3>
-    <form id="form-inv">
-      <input id="p-name" placeholder="اسم المنتج" required>
-      <input id="p-qty" type="number" placeholder="الكمية المتوفرة" required>
-      <input id="p-price" type="number" step="0.0001" placeholder="سعر البيع (Pi)" required>
-      <input id="p-cost" type="number" step="0.0001" placeholder="سعر التكلفة (Pi)">
-      <button class="btn btn-pi" type="submit" id="btn-add-prod">إضافة المنتج</button>
-    </form>
-  </div>
-  <div class="card">
-    <table><thead><tr><th id="th-pname">المنتج</th><th id="th-pqty">الكمية</th><th id="th-pprice">السعر</th><th>باركود</th><th></th></tr></thead><tbody id="inv-body"></tbody></table>
-  </div>
+<div id="inventory" class="tab-content"><div class="card">
+<h3 data-i="stock">المخزون</h3>
+<div class="grid3">
+<input id="p-name" placeholder="اسم المنتج">
+<input id="p-qty" type="number" placeholder="الكمية">
+<input id="p-price" type="number" placeholder="سعر البيع π">
+<input id="p-cost" type="number" placeholder="سعر التكلفة π">
 </div>
+<button class="btn btn-pi" onclick="addProduct()">+ إضافة منتج</button>
+<table><thead><tr><th>المنتج</th><th>كمية</th><th>بيع</th><th>تكلفة</th><th>باركود</th></tr></thead><tbody id="inv-body"></tbody></table>
+</div></div>
 
-<!-- 5. العملاء والموردين والديون -->
-<div id="partners" class="tab-content">
-  <div class="card">
-    <h3 id="h-part" style="color:var(--s);margin-top:0">إدارة العملاء، الموردين والذمم</h3>
-    <form id="form-part">
-      <input id="pt-name" placeholder="اسم العميل أو المورد" required>
-      <select id="pt-type"><option value="customer" id="op-cust">عميل (له/عليه ذمة)</option><option value="supplier" id="op-sup">مورد</option></select>
-      <input id="pt-phone" placeholder="رقم الهاتف (مثل 967...)">
-      <input id="pt-debt" type="number" step="0.0001" placeholder="الرصيد الافتتاحي / المديونية (Pi)">
-      <button class="btn btn-pi" type="submit" id="btn-save-part">حفظ الشريك</button>
-    </form>
-  </div>
-  <div class="card">
-    <table><thead><tr><th>الاسم</th><th id="th-ptype">النوع</th><th>الهاتف</th><th>الديون/الذمة</th><th></th></tr></thead><tbody id="pt-body"></tbody></table>
-  </div>
-        </div>
-       <!-- 6. سندات القبض والصرف والقيد المزدوج -->
-<div id="vouchers" class="tab-content">
-  <div class="card">
-    <h3 id="h-vouch-sys" style="color:var(--s);margin-top:0">📝 السندات المحاسبية والقيد المزدوج</h3>
-    <div style="display:flex;gap:6px;margin-bottom:12px">
-      <button class="btn btn-pi" type="button" onclick="switchVChTab('receipt')" id="btn-v-rcpt">سند قبض</button>
-      <button class="btn btn-s" type="button" onclick="switchVChTab('payment')" id="btn-v-pay">سند صرف</button>
-      <button class="btn btn-w" type="button" onclick="switchVChTab('double')" id="btn-v-dbl">قيد مزدوج</button>
-    </div>
-    
-    <div id="v-rcpt-box">
-      <input id="rcpt-from" placeholder="استلمنا من السيد / الجهة...">
-      <input id="rcpt-amount" type="number" step="0.0001" placeholder="المبلغ (Pi)...">
-      <select id="rcpt-account"></select>
-      <input id="rcpt-desc" placeholder="البيان...">
-      <button class="btn btn-pi" type="button" id="btn-save-rcpt">ترحيل سند القبض</button>
-    </div>
-
-    <div id="v-pay-box" style="display:none">
-      <input id="pay-to" placeholder="صرفنا لأمره / المستفيد...">
-      <input id="pay-amount" type="number" step="0.0001" placeholder="المبلغ (Pi)...">
-      <select id="pay-account"></select>
-      <input id="pay-desc" placeholder="البيان...">
-      <button class="btn btn-s" type="button" id="btn-save-pay">ترحيل سند الصرف</button>
-    </div>
-
-    <div id="v-dbl-box" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-        <div><label style="font-size:11px;font-weight:bold" id="lb-deb">الحساب المدين:</label><select id="dbl-debit"></select></div>
-        <div><label style="font-size:11px;font-weight:bold" id="lb-cred">الحساب الدائن:</label><select id="dbl-credit"></select></div>
-      </div>
-      <input id="dbl-amount" type="number" step="0.0001" placeholder="المبلغ المتطابق (Pi)..." style="margin-top:6px">
-      <input id="dbl-desc" placeholder="شرح القيد المحاسبي...">
-      <button class="btn btn-w" type="button" id="btn-save-dbl">ترحيل القيد المزدوج</button>
-    </div>
-  </div>
+<div id="partners" class="tab-content"><div class="card">
+<h3 data-i="partners">العملاء والموردين</h3>
+<div class="grid3">
+<select id="pt-type"><option value="customer">عميل</option><option value="supplier">مورد</option></select>
+<input id="pt-name" placeholder="الاسم"><input id="pt-phone" placeholder="الهاتف"><input id="pt-debt" type="number" placeholder="مديونية">
 </div>
+<button class="btn btn-pi" onclick="addPartner()">+ إضافة</button>
+<table><thead><tr><th>الاسم</th><th>النوع</th><th>هاتف</th><th>دين</th></tr></thead><tbody id="partners-body"></tbody></table>
+</div></div>
 
-<!-- 7. التقارير الشاملة -->
-<div id="reports" class="tab-content">
-  <div class="card">
-    <h3 id="h-rep-head" style="color:var(--s);margin-top:0">📊 التقارير المالية والتحليلية الشاملة</h3>
-    <select id="rep-period" style="margin-bottom:10px"><option value="all" id="op-all">الكل</option><option value="today" id="op-today">اليوم</option><option value="week" id="op-week">أسبوع</option><option value="month" id="op-month">شهر</option></select>
-    
-    <div style="font-size:13px;background:#f7f7f7;padding:12px;border-radius:10px;margin-bottom:10px;color:#333">
-      <div>💰 <span id="lb-rep-inc">إجمالي الإيرادات</span>: <span id="r-inc">0</span> π</div>
-      <div>💸 <span id="lb-rep-exp">إجمالي المصروفات</span>: <span id="r-exp">0</span> π</div>
-      <div>📈 <b id="lb-rep-net">صافي الأرباح</b>: <b id="r-net" style="color:var(--s)">0</b> π</div>
-      <div style="margin-top:6px;font-size:12px;color:#555">💱 مرجع العملات: <span id="curr-usd-ref">0</span> USD ($)</div>
-    </div>
+<div id="bonds" class="tab-content"><div class="card">
+<h3 data-i="bonds">السندات والقيد المزدوج</h3>
+<div class="grid2"><div><b>سند قبض</b><input id="r-from" placeholder="من"><input id="r-amount" type="number" placeholder="المبلغ"><select id="r-acc"></select><input id="r-desc" placeholder="البيان"><button class="btn btn-s" onclick="addReceipt()">حفظ قبض</button></div>
+<div><b>سند صرف</b><input id="py-to" placeholder="إلى"><input id="py-amount" type="number" placeholder="المبلغ"><select id="py-acc"></select><input id="py-desc" placeholder="البيان"><button class="btn btn-danger" onclick="addPayment()">حفظ صرف</button></div>
+</div><hr>
+<b>قيد مزدوج</b><div class="grid3"><select id="j-debit"></select><select id="j-credit"></select><input id="j-amount" type="number" placeholder="المبلغ"><input id="j-desc" placeholder="البيان" style="grid-column:span 2"><button class="btn btn-pi" onclick="addJournal()">حفظ قيد</button></div>
+</div></div>
 
-    <div style="background:#fff;padding:8px;border-radius:8px;margin-bottom:10px"><canvas id="financeChart"></canvas></div>
-    
-    <div style="display:flex;gap:5px;flex-wrap:wrap">
-      <button class="btn btn-s" type="button" id="btn-excel">تصدير Excel</button>
-      <button class="btn btn-s" type="button" id="btn-report-pdf">تقرير PDF تفصيلي</button>
-    </div>
-  </div>
-  </div>
- <!-- 8. التهيئة، شجرة الحسابات، والرواد -->
-<div id="settings" class="tab-content">
-  <div class="card" style="border:2px solid var(--p)">
-    <h3 id="h-founder" style="color:var(--s);margin-top:0">🛡️ لوحة الرواد والاشتراكات</h3>
-    <p id="p-found-desc" style="font-size:12px;color:#555">أول 50 عملية مجانية، ثم اشتراك سنوي بـ 0.1 Pi عبر Pi SDK.</p>
-    <div style="margin-bottom:10px">
-      <button class="btn btn-pi" type="button" id="btn-pi-login">تسجيل الدخول بـ Pi</button>
-      <span id="pioneer-user-display" style="font-weight:bold;color:var(--s);margin-right:10px"></span>
-    </div>
-    <div style="display:flex;gap:5px;margin-bottom:10px">
-      <input type="text" id="new-merchant-name" placeholder="اسم المتجر الجديد..." style="flex:2">
-      <button class="btn btn-pi" type="button" id="btn-create-merchant" style="flex:1"><span id="txt-crt">إنشاء</span></button>
-    </div>
-    <select id="merchant-selector" style="margin-bottom:10px"></select>
-    <div style="background:var(--bg);color:#fff;padding:10px;border-radius:8px;font-size:12px">
-      <div>📊 أصول المتجر: <span id="founder-equity">0</span> π</div>
-      <div>📈 العمليات المستخدمة: <span id="pioneer-ops-count">0</span> / 50 (<span id="lb-free">مجانية</span>)</div>
-      <div>💼 الحالة: <span id="pioneer-sub-status" style="color:var(--p)">مجاني</span></div>
-      <div id="subscription-action-area" style="margin-top:6px;display:none">
-        <button class="btn btn-pi" type="button" id="btn-pay-subscription">اشترك بـ 0.1 Pi / سنة</button>
-      </div>
-    </div>
-    <div style="margin-top:10px;display:flex;gap:5px">
-      <button class="btn btn-s" type="button" id="btn-export-backup" style="font-size:11px">تصدير Backup</button>
-      <button class="btn btn-w" type="button" id="btn-import-trigger" style="font-size:11px">استعادة بيانات</button>
-      <input type="file" id="import-file-input" style="display:none" accept=".json">
-    </div>
-  </div>
+<div id="reports" class="tab-content"><div class="card">
+<h3 data-i="reports">التقارير الشاملة</h3>
+<div class="grid3"><div>إيرادات: <b id="rep-inc">0</b> π</div><div>مصاريف: <b id="rep-exp">0</b> π</div><div>صافي: <b id="rep-net">0</b> π</div></div>
+<div>مرجع USD: <span id="rep-usd">0</span> $ (1π=30$)</div>
+<canvas id="rep-chart" height="120"></canvas>
+<div style="margin-top:8px"><button class="btn btn-w" onclick="exportExcel()">📊 Excel</button><button class="btn btn-s" onclick="exportPDF()">📄 PDF</button></div>
+</div></div>
 
-  <div class="card" style="border:2px solid var(--s)">
-    <h3 id="h-coa" style="color:var(--s);margin-top:0">🌳 شجرة الحسابات وتهيئة النظام</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <input type="text" id="setup-store-name" placeholder="اسم المتجر / الشركة...">
-      <input type="text" id="setup-currency" value="Pi (π)" readonly style="background:#eee">
-    </div>
-    <button class="btn btn-pi" type="button" id="btn-save-setup">حفظ الإعدادات</button>
-    <h4 id="h-coalf" style="color:var(--p);font-size:13px;margin:12px 0 6px">الدليل المحاسبي</h4>
-    <div style="display:flex;gap:5px;margin-bottom:8px">
-      <input type="text" id="coa-account-name" placeholder="اسم الحساب الجديد..." style="flex:2">
-      <select id="coa-account-type" style="flex:1"><option value="Asset">أصل</option><option value="Liability">التزام</option><option value="Equity">حقوق ملكية</option><option value="Revenue">إيراد</option><option value="Expense">مصروف</option></select>
-      <button class="btn btn-s" type="button" id="btn-add-coa">إضافة</button>
-    </div>
-    <div style="max-height:140px;overflow-y:auto"><table><thead><tr><th>الرمز</th><th>الاسم</th><th>التصنيف</th><th></th></tr></thead><tbody id="coa-table-body"></tbody></table></div>
-  </div>
+<div id="financial" class="tab-content"><div class="card">
+<h3 data-i="financial">📊 القوائم المالية</h3>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
+<button class="btn btn-pi" onclick="dailyClosing()" data-i="closeDaily">🔒 إقفال يومي</button>
+<button class="btn btn-s" onclick="monthlyClosing()" data-i="closeMonthly">🔒 إقفال شهري</button>
+<button class="btn btn-w" onclick="showFinancialStatements()">🔄 تحديث</button>
 </div>
+<div id="financial-statements-area"></div>
+</div></div>
+
+<div id="settings" class="tab-content"><div class="card">
+<h3 data-i="settings">الإعدادات والرواد</h3>
+<div class="grid2"><input id="store-name" placeholder="اسم المتجر"><select id="lang-select" onchange="changeLang(this.value)"><option value="ar">العربية</option><option value="en">English</option><option value="tr">Türkçe</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="zh">中文</option><option value="ja">日本語</option><option value="vi">Tiếng Việt</option><option value="ru">Русский</option></select></div>
+<h4>شجرة الحسابات</h4><div class="grid3"><input id="coa-code" placeholder="رمز"><input id="coa-name" placeholder="اسم الحساب"><select id="coa-type"><option value="Asset">Asset</option><option value="Liability">Liability</option><option value="Equity">Equity</option><option value="Revenue">Revenue</option><option value="Expense">Expense</option></select><button class="btn btn-pi" onclick="addCOA()">+ حساب</button></div>
+<table><thead><tr><th>رمز</th><th>اسم</th><th>نوع</th></tr></thead><tbody id="coa-body"></tbody></table><hr>
+<button class="btn btn-pi" onclick="piLogin()">🔑 تسجيل Pi</button><button class="btn btn-s" onclick="piSubscribe()">💎 اشتراك 0.1π</button><span id="sub-status"></span><hr>
+<button class="btn btn-w" onclick="backup()">💾 Backup</button><input type="file" id="restore-file" onchange="restore(event)" style="display:inline;width:auto"><hr>
+<small>Operations: <span id="op-count">0</span>/50 Free - Store: <span id="current-store">Default</span></small>
+</div></div>
 
 </div>
-<!-- 8. التهيئة، شجرة الحسابات، والرواد -->
-<div id="settings" class="tab-content">
-  <div class="card" style="border:2px solid var(--p)">
-    <h3 id="h-founder" style="color:var(--s);margin-top:0">🛡️ لوحة الرواد والاشتراكات</h3>
-    <p id="p-found-desc" style="font-size:12px;color:#555">أول 50 عملية مجانية، ثم اشتراك سنوي بـ 0.1 Pi عبر Pi SDK.</p>
-    <div style="margin-bottom:10px">
-      <button class="btn btn-pi" type="button" id="btn-pi-login">تسجيل الدخول بـ Pi</button>
-      <span id="pioneer-user-display" style="font-weight:bold;color:var(--s);margin-right:10px"></span>
-    </div>
-    <div style="display:flex;gap:5px;margin-bottom:10px">
-      <input type="text" id="new-merchant-name" placeholder="اسم المتجر الجديد..." style="flex:2">
-      <button class="btn btn-pi" type="button" id="btn-create-merchant" style="flex:1"><span id="txt-crt">إنشاء</span></button>
-    </div>
-    <select id="merchant-selector" style="margin-bottom:10px"></select>
-    <div style="background:var(--bg);color:#fff;padding:10px;border-radius:8px;font-size:12px">
-      <div>📊 أصول المتجر: <span id="founder-equity">0</span> π</div>
-      <div>📈 العمليات المستخدمة: <span id="pioneer-ops-count">0</span> / 50 (<span id="lb-free">مجانية</span>)</div>
-      <div>💼 الحالة: <span id="pioneer-sub-status" style="color:var(--p)">مجاني</span></div>
-      <div id="subscription-action-area" style="margin-top:6px;display:none">
-        <button class="btn btn-pi" type="button" id="btn-pay-subscription">اشترك بـ 0.1 Pi / سنة</button>
-      </div>
-    </div>
-    <div style="margin-top:10px;display:flex;gap:5px">
-      <button class="btn btn-s" type="button" id="btn-export-backup" style="font-size:11px">تصدير Backup</button>
-      <button class="btn btn-w" type="button" id="btn-import-trigger" style="font-size:11px">استعادة بيانات</button>
-      <input type="file" id="import-file-input" style="display:none" accept=".json">
-    </div>
-  </div>
-
-  <div class="card" style="border:2px solid var(--s)">
-    <h3 id="h-coa" style="color:var(--s);margin-top:0">🌳 شجرة الحسابات وتهيئة النظام</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <input type="text" id="setup-store-name" placeholder="اسم المتجر / الشركة...">
-      <input type="text" id="setup-currency" value="Pi (π)" readonly style="background:#eee">
-    </div>
-    <button class="btn btn-pi" type="button" id="btn-save-setup">حفظ الإعدادات</button>
-    <h4 id="h-coalf" style="color:var(--p);font-size:13px;margin:12px 0 6px">الدليل المحاسبي</h4>
-    <div style="display:flex;gap:5px;margin-bottom:8px">
-      <input type="text" id="coa-account-name" placeholder="اسم الحساب الجديد..." style="flex:2">
-      <select id="coa-account-type" style="flex:1"><option value="Asset">أصل</option><option value="Liability">التزام</option><option value="Equity">حقوق ملكية</option><option value="Revenue">إيراد</option><option value="Expense">مصروف</option></select>
-      <button class="btn btn-s" type="button" id="btn-add-coa">إضافة</button>
-    </div>
-    <div style="max-height:140px;overflow-y:auto"><table><thead><tr><th>الرمز</th><th>الاسم</th><th>التصنيف</th><th></th></tr></thead><tbody id="coa-table-body"></tbody></table></div>
-  </div>
-</div>
-
-</div>
-  <script>
-document.addEventListener('DOMContentLoaded', function(){
-const T={
-ar:{main:'نظام التاجر الذكي المتكامل',app:'Pi Merchant OS v4.0',e:'القيود',pos:'نقاط البيع POS',inv:'الفواتير',stock:'المخزون',part:'العملاء والديون',vouch:'السندات والقيد',rep:'التقارير الشاملة',set:'التهيئة والرواد',hE:'إضافة قيد يومي',save:'حفظ القيد',inc:'إيراد',exp:'مصروف',ast:'أصل',total:'الإجمالي',addInv:'إضافة للفاتورة',hInv:'إدارة الفواتير',hStock:'المخزون والأصناف',hPart:'العملاء والذمم',opCust:'عميل (له/عليه ذمة)',opSup:'مورد',hCoa:'شجرة الحسابات وتهيئة النظام',hFounder:'لوحة الرواد والاشتراكات',thDate:'التاريخ',thDesc:'الوصف',thType:'النوع',thAmt:'المبلغ'},
-en:{main:'Smart Merchant ERP System',app:'Pi Merchant OS v4.0',e:'Entries',pos:'POS',inv:'Invoices',stock:'Inventory',part:'Debts & Partners',vouch:'Vouchers',rep:'Reports',set:'Settings & Hub',hE:'Add Daily Entry',save:'Save Entry',inc:'Income',exp:'Expense',ast:'Asset',total:'Total',addInv:'Add to Invoice',hInv:'Invoice Management',hStock:'Inventory & Items',hPart:'Customers & Debts',opCust:'Customer',opSup:'Supplier',hCoa:'Chart of Accounts & Setup',hFounder:'Pioneer Hub',thDate:'Date',thDesc:'Description',thType:'Type',thAmt:'Amount'},
-tr:{main:'Akıllı Tüccar ERP Sistemi',app:'Pi Merchant OS v4.0',e:'Kayıtlar',pos:'POS',inv:'Faturalar',stock:'Stok',part:'Müşteriler',vouch:'Fişler',rep:'Raporlar',set:'Ayarlar',hE:'Kayıt Ekle',save:'Kaydet',inc:'Gelir',exp:'Gider',ast:'Varlık',total:'Toplam',addInv:'Ekle',hInv:'Fatura',hStock:'Stok',hPart:'Müşteriler',opCust:'Müşteri',opSup:'Tedarikçi',hCoa:'Hesap Planı',hFounder:'Öncü Merkezi',thDate:'Tarih',thDesc:'Açıklama',thType:'Tür',thAmt:'Tutar'},
-de:{main:'Intelligentes Händler ERP System',app:'Pi Merchant OS v4.0',e:'Einträge',pos:'POS',inv:'Rechnungen',stock:'Lager',part:'Kunden',vouch:'Belege',rep:'Berichte',set:'Einstellungen',hE:'Eintrag Hinzufügen',save:'Speichern',inc:'Einnahme',exp:'Ausgabe',ast:'Anlage',total:'Gesamt',addInv:'Hinzufügen',hInv:'Rechnung',hStock:'Lager',hPart:'Kunden',opCust:'Kunde',opSup:'Lieferant',hCoa:'Kontenplan',hFounder:'Pioneer Hub',thDate:'Datum',thDesc:'Beschreibung',thType:'Typ',thAmt:'Betrag'},
-fr:{main:'Système ERP Marchand Intelligent',app:'Pi Merchant OS v4.0',e:'Écritures',pos:'POS',inv:'Factures',stock:'Stock',part:'Clients',vouch:'Pièces',rep:'Rapports',set:'Paramètres',hE:'Ajouter',save:'Enregistrer',inc:'Revenu',exp:'Dépense',ast:'Actif',total:'Total',addInv:'Ajouter',hInv:'Facture',hStock:'Stock',hPart:'Clients',opCust:'Client',opSup:'Fournisseur',hCoa:'Plan comptable',hFounder:'Centre Pionnier',thDate:'Date',thDesc:'Description',thType:'Type',thAmt:'Montant'},
-es:{main:'Sistema ERP Comerciante Inteligente',app:'Pi Merchant OS v4.0',e:'Asientos',pos:'POS',inv:'Facturas',stock:'Inventario',part:'Clientes',vouch:'Comprobantes',rep:'Informes',set:'Ajustes',hE:'Añadir Asiento',save:'Guardar',inc:'Ingreso',exp:'Gasto',ast:'Activo',total:'Total',addInv:'Añadir',hInv:'Facturas',hStock:'Inventario',hPart:'Clientes',opCust:'Cliente',opSup:'Proveedor',hCoa:'Plan de cuentas',hFounder:'Pionero Hub',thDate:'Fecha',thDesc:'Descripción',thType:'Tipo',thAmt:'Monto'},
-zh:{main:'智能商家ERP系统',app:'Pi Merchant OS v4.0',e:'分录',pos:'POS',inv:'发票',stock:'库存',part:'客户',vouch:'凭证',rep:'报告',set:'设置',hE:'添加分录',save:'保存',inc:'收入',exp:'支出',ast:'资产',total:'总计',addInv:'添加',hInv:'发票管理',hStock:'库存管理',hPart:'客户管理',opCust:'客户',opSup:'供应商',hCoa:'会计科目表',hFounder:'先锋中心',thDate:'日期',thDesc:'描述',thType:'类型',thAmt:'金额'},
-ja:{main:'スマートマーチャントERP',app:'Pi Merchant OS v4.0',e:'仕訳',pos:'POS',inv:'請求書',stock:'在庫',part:'顧客',vouch:'伝票',rep:'レポート',set:'設定',hE:'仕訳追加',save:'保存',inc:'収入',exp:'経費',ast:'資産',total:'合計',addInv:'追加',hInv:'請求書',hStock:'在庫',hPart:'顧客',opCust:'顧客',opSup:'仕入先',hCoa:'勘定科目',hFounder:'パイオニアハブ',thDate:'日付',thDesc:'説明',thType:'タイプ',thAmt:'金額'},
-vi:{main:'Hệ thống ERP Thương mại',app:'Pi Merchant OS v4.0',e:'Bút toán',pos:'POS',inv:'Hóa đơn',stock:'Kho',part:'Khách hàng',vouch:'Phiếu',rep:'Báo cáo',set:'Cài đặt',hE:'Thêm bút toán',save:'Lưu',inc:'Thu nhập',exp:'Chi phí',ast:'Tài sản',total:'Tổng',addInv:'Thêm',hInv:'Hóa đơn',hStock:'Kho',hPart:'Khách hàng',opCust:'Khách hàng',opSup:'NCC',hCoa:'Hệ thống tài khoản',hFounder:'Trung tâm Tiên phong',thDate:'Ngày',thDesc:'Mô tả',thType:'Loại',thAmt:'Số tiền'},
-ru:{main:'Умная Система ERP',app:'Pi Merchant OS v4.0',e:'Проводки',pos:'POS',inv:'Счета',stock:'Склад',part:'Клиенты',vouch:'Ордера',rep:'Отчеты',set:'Настройки',hE:'Добавить проводку',save:'Сохранить',inc:'Доход',exp:'Расход',ast:'Актив',total:'Итого',addInv:'Добавить',hInv:'Счета',hStock:'Склад',hPart:'Клиенты',opCust:'Клиент',opSup:'Поставщик',hCoa:'План счетов',hFounder:'Центр Пионеров',thDate:'Дата',thDesc:'Описание',thType:'Тип',thAmt:'Сумма'}
-};
-
-function applyLang(l){
- var t=T[l]||T.en;
- document.documentElement.lang=l;
- document.documentElement.dir=(l==='ar')?'rtl':'ltr';
- document.body.dir=(l==='ar')?'rtl':'ltr';
- document.getElementById('main-title').textContent=t.main;
- document.getElementById('t-app').textContent=t.app;
- document.getElementById('lb-entry').textContent=t.e;
- document.getElementById('lb-pos').textContent=t.pos;
- document.getElementById('lb-inv').textContent=t.inv;
- document.getElementById('lb-stock').textContent=t.stock;
- document.getElementById('lb-part').textContent=t.part;
- document.getElementById('lb-vouch').textContent=t.vouch;
- document.getElementById('lb-rep').textContent=t.rep;
- document.getElementById('lb-set').textContent=t.set;
- document.getElementById('h-entry').textContent=t.hE;
- document.getElementById('btn-save-entry').textContent=t.save;
- document.getElementById('op-inc').textContent=t.inc;
- document.getElementById('op-exp').textContent=t.exp;
- document.getElementById('op-ast').textContent=t.ast;
- document.getElementById('lb-total').textContent=t.total;
- document.getElementById('btn-add-inv').textContent=t.addInv;
- document.getElementById('h-inv').textContent=t.hInv;
- document.getElementById('h-stock').textContent=t.hStock;
- document.getElementById('h-part').textContent=t.hPart;
- document.getElementById('op-cust').textContent=t.opCust;
- document.getElementById('op-sup').textContent=t.opSup;
- document.getElementById('h-coa').textContent=t.hCoa;
- document.getElementById('h-founder').textContent=t.hFounder;
- document.getElementById('th-date').textContent=t.thDate;
- document.getElementById('th-desc').textContent=t.thDesc;
- document.getElementById('th-type').textContent=t.thType;
- document.getElementById('th-amt').textContent=t.thAmt;
- localStorage.setItem('erp_lang',l);
- if(typeof renderLedger==='function') renderLedger();
- if(typeof renderInv==='function') renderInv();
- if(typeof renderPartners==='function') renderPartners();
-}
-
-var picker=document.getElementById('lang-picker');
-var saved=localStorage.getItem('erp_lang')||'ar';
-picker.value=saved;
-var ledger=JSON.parse(localStorage.getItem('ledger')||'[]');
-var inv=JSON.parse(localStorage.getItem('inv2')||'[]');
-var partners=JSON.parse(localStorage.getItem('partners2')||'[]');
-var curInv=[];var invTotal=0;var chart=null;
-var posCart=[];
-
-document.querySelectorAll('.tab').forEach(function(tab){
-    tab.addEventListener('click',function(){
-        document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
-        document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active')});
-        tab.classList.add('active');
-        var target=document.getElementById(tab.dataset.tab);
-        if(target) target.classList.add('active');
-    });
-});
-
-window.switchVChTab = function(type) {
-    document.getElementById('v-rcpt-box').style.display = (type === 'receipt') ? 'block' : 'none';
-    document.getElementById('v-pay-box').style.display = (type === 'payment') ? 'block' : 'none';
-    document.getElementById('v-dbl-box').style.display = (type === 'double') ? 'block' : 'none';
-};
-
-function renderLedger(){
-    var cl=localStorage.getItem('erp_lang')||'ar';var tt=T[cl]||T.en;
-    document.getElementById('ledger-body').innerHTML=ledger.slice(-25).reverse().map(function(l){
-        var tp=l.type;if(tp==='income')tp=tt.inc;if(tp==='expense')tp=tt.exp;if(tp==='asset')tp=tt.ast;
-        return '<tr><td>'+l.date+'</td><td>'+l.desc+'</td><td>'+tp+'</td><td>'+l.amount+'</td></tr>';
-    }).join('');
-}
-    function renderInv(){
-    document.getElementById('inv-body').innerHTML=inv.map(function(p,i){
-        return '<tr><td>'+p.name+'</td><td>'+p.qty+'</td><td>'+p.price+'</td><td><svg id="bc'+i+'"></svg></td><td><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:11px" onclick="window.delInv('+i+')">x</button></td></tr>';
-    }).join('');
-    document.getElementById('inv-product').innerHTML=inv.map(function(p,i){
-        return '<option value="'+i+'">'+p.name+' - '+p.price+' Pi</option>';
-    }).join('');
-    var posGrid = document.getElementById('pos-products-grid');
-    if(posGrid){
-        posGrid.innerHTML = inv.map(function(p, i){
-            return `<div class="pos-item-btn" onclick="window.addToPOS(${i})">${p.name}<br><span style="font-size:11px;color:#555">${p.price} π</span></div>`;
-        }).join('') || '<div style="font-size:12px;color:#666">لا توجد منتجات في المخزون أضفها أولاً</div>';
-    }
-    setTimeout(function(){
-        inv.forEach(function(p,i){try{JsBarcode('#bc'+i,p.name.substring(0,8)+i,{width:1,height:18,displayValue:false});}catch(e){}});
-    },200);
-}
-window.delInv=function(i){inv.splice(i,1);localStorage.setItem('inv2',JSON.stringify(inv));renderInv();};
-
-window.addToPOS = function(idx){
-    var prod = inv[idx];
-    if(!prod || prod.qty <= 0){alert('المنتج نفد من المخزون');return;}
-    var exist = posCart.find(x => x.name === prod.name);
-    if(exist){exist.qty++;}else{posCart.push({name: prod.name, price: prod.price, qty: 1});}
-    renderPOSCart();
-};
-
-function renderPOSCart(){
-    var cartDiv = document.getElementById('pos-cart-items');
-    var totalVal = posCart.reduce((s,i) => s + (i.price * i.qty), 0);
-    document.getElementById('pos-total-val').textContent = totalVal.toFixed(2);
-    if(posCart.length === 0){cartDiv.innerHTML = 'فارغة';return;}
-    cartDiv.innerHTML = posCart.map((it, idx) => `${it.name} (x${it.qty}) - ${(it.price*it.qty).toFixed(2)} π <button type="button" onclick="window.delPOSItem(${idx})" style="color:red;border:none;background:none;cursor:pointer">حذف</button>`).join('<br>');
-}
-
-window.delPOSItem = function(idx){posCart.splice(idx,1);renderPOSCart();};
-
-document.getElementById('btn-pos-checkout').addEventListener('click', function(){
-    if(posCart.length === 0) return;
-    if(window.checkPioneerAccess && !window.checkPioneerAccess()) return;
-    var totalVal = posCart.reduce((s,i) => s + (i.price * i.qty), 0);
-    ledger.push({date: new Date().toLocaleDateString(), type: 'income', amount: totalVal, desc: '[POS] مبيعات نقطة البيع السريع'});
-    posCart.forEach(ci => {var p = inv.find(x => x.name === ci.name);if(p) p.qty -= ci.qty;});
-    localStorage.setItem('ledger', JSON.stringify(ledger)); localStorage.setItem('inv2', JSON.stringify(inv));
-    renderInv(); renderLedger(); updateReports(); posCart = []; renderPOSCart();
-    alert('✅ تم إتمام عملية البيع السريع وترحيلها بنجاح!');
-});
-
-function renderPartners(){
-    var cl=localStorage.getItem('erp_lang')||'ar';var tt=T[cl]||T.en;
-    document.getElementById('pt-body').innerHTML=partners.map(function(p, idx){
-        var tp=p.type==='customer'? tt.opCust : tt.opSup;
-        return '<tr><td>'+p.name+'</td><td>'+tp+'</td><td>'+p.phone+'</td><td style="color:'+(p.debt>0?'red':'green')+'">'+(p.debt||0)+' π</td><td><button type="button" class="btn btn-danger" style="padding:2px 8px;font-size:11px" onclick="window.delPartner('+idx+')">x</button></td></tr>';
-    }).join('');
-}
-window.delPartner = function(idx){partners.splice(idx,1);localStorage.setItem('partners2',JSON.stringify(partners));renderPartners();};
-
-function updateReports(){
-    var inc=ledger.filter(function(x){return x.type==='income'}).reduce(function(s,x){return s+x.amount},0);
-    var exp=ledger.filter(function(x){return x.type==='expense'}).reduce(function(s,x){return s+x.amount},0);
-    var net = inc - exp;
-    document.getElementById('r-inc').textContent=inc.toFixed(2);
-    document.getElementById('r-exp').textContent=exp.toFixed(2);
-    document.getElementById('r-net').textContent=net.toFixed(2);
-    document.getElementById('curr-usd-ref').textContent = (net * 30).toFixed(2);
-    var c=document.getElementById('financeChart');
-    if(chart)chart.destroy();
-    chart=new Chart(c,{type:'bar',data:{labels:['Income','Expense','Net'],datasets:[{label:'Pi',data:[inc,exp,net],backgroundColor:['#4caf50','#f44336','#ffd700']}]},options:{responsive:true}});
-}
-
-picker.addEventListener('change',function(){applyLang(this.value);});
-applyLang(saved);
-
-document.getElementById('form-entry').addEventListener('submit',function(e){e.preventDefault();if(window.checkPioneerAccess && !window.checkPioneerAccess()) return; ledger.push({date:new Date().toLocaleDateString(),type:document.getElementById('e-type').value,amount:parseFloat(document.getElementById('e-amount').value),desc:document.getElementById('e-desc').value});localStorage.setItem('ledger',JSON.stringify(ledger));renderLedger();updateReports();e.target.reset();});
-document.getElementById('form-inv').addEventListener('submit',function(e){e.preventDefault();if(window.checkPioneerAccess && !window.checkPioneerAccess()) return; inv.push({name:document.getElementById('p-name').value,qty:parseInt(document.getElementById('p-qty').value),price:parseFloat(document.getElementById('p-price').value),cost:parseFloat(document.getElementById('p-cost').value||0)});localStorage.setItem('inv2',JSON.stringify(inv));renderInv();e.target.reset();});
-document.getElementById('form-part').addEventListener('submit',function(e){e.preventDefault();partners.push({name:document.getElementById('pt-name').value,type:document.getElementById('pt-type').value,phone:document.getElementById('pt-phone').value,debt:parseFloat(document.getElementById('pt-debt').value||0)});localStorage.setItem('partners2',JSON.stringify(partners));renderPartners();e.target.reset();});
-document.getElementById('btn-add-inv').addEventListener('click',function(){var idx=document.getElementById('inv-product').value;var q=parseInt(document.getElementById('inv-qty').value||1);if(idx==='')return;var prod=inv[idx];curInv.push({name:prod.name,price:prod.price,qty:q});invTotal=curInv.reduce(function(s,i){return s+i.price*i.qty},0);document.getElementById('inv-items').innerHTML=curInv.map(function(it){return it.name+' x'+it.qty+'<br>';}).join('');document.getElementById('inv-total').textContent=invTotal.toFixed(3);});
-document.getElementById('btn-save-inv').addEventListener('click',function(){if(!curInv.length)return;if(window.checkPioneerAccess && !window.checkPioneerAccess()) return; ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:invTotal,desc:'Invoice '+document.getElementById('inv-customer').value});curInv.forEach(function(ci){var p=inv.find(function(x){return x.name===ci.name});if(p)p.qty-=ci.qty;});localStorage.setItem('ledger',JSON.stringify(ledger));localStorage.setItem('inv2',JSON.stringify(inv));renderInv();renderLedger();updateReports();curInv=[];invTotal=0;document.getElementById('inv-items').innerHTML='';document.getElementById('inv-total').textContent='0';alert('Saved');});
-
-document.getElementById('btn-pdf').addEventListener('click',function(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF();doc.text('Invoice',10,10);var y=20;curInv.forEach(function(it){doc.text(it.name+' x'+it.qty+' = '+it.price*it.qty+' Pi',10,y);y+=7;});doc.text('Total '+invTotal+' Pi',10,y+10);doc.save('invoice.pdf');});
-document.getElementById('btn-report-pdf').addEventListener('click',function(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF();doc.text('Comprehensive Financial Report',10,10);doc.text('Income: '+document.getElementById('r-inc').textContent+' Pi',10,20);doc.text('Expense: '+document.getElementById('r-exp').textContent+' Pi',10,30);doc.text('Net Profit: '+document.getElementById('r-net').textContent+' Pi',10,40);doc.save('comprehensive_report.pdf');});
-document.getElementById('btn-excel').addEventListener('click',function(){var ws=XLSX.utils.json_to_sheet(ledger);var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Ledger');XLSX.writeFile(wb,'comprehensive_report.xlsx');});
-
-let merchants=JSON.parse(localStorage.getItem('pi_merchants_list')||'["التاجر الافتراضي"]');
-let currentMerchant=localStorage.getItem('pi_current_merchant')||merchants[0];
-let pioneerUser=localStorage.getItem('pi_pioneer_username')||null;
-let opsCount=parseInt(localStorage.getItem('pi_pioneer_ops')||'0');
-let isSubscribed=localStorage.getItem('pi_pioneer_subscribed')==='true';
-let subExpiry=parseInt(localStorage.getItem('pi_pioneer_expiry')||'0');
-
-function updatePioneerUI(){
-    document.getElementById('pioneer-ops-count').textContent=opsCount;
-    const subStatus=document.getElementById('pioneer-sub-status');
-    const subActionArea=document.getElementById('subscription-action-area');
-    if(isSubscribed && Date.now()<subExpiry){subStatus.textContent='نشط (مدفوع)';subActionArea.style.display='none';}
-    else{isSubscribed=false;if(opsCount>50){subStatus.textContent='منتهي (تجاوزت الحد)';subActionArea.style.display='block';}else{subStatus.textContent='مجاني ('+(50-opsCount)+' متبقي)';subActionArea.style.display='none';}}
-    const loginBtn=document.getElementById('btn-pi-login');
-    const userDisplay=document.getElementById('pioneer-user-display');
-    if(pioneerUser){loginBtn.style.display='none';userDisplay.textContent='👤 '+pioneerUser;}else{loginBtn.style.display='inline-block';userDisplay.textContent='';}
-    const selector=document.getElementById('merchant-selector');
-    selector.innerHTML=merchants.map(m=>`<option value="${m}" ${m===currentMerchant?'selected':''}>${m}</option>`).join('');
-    let inc=ledger.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
-    let exp=ledger.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
-    document.getElementById('founder-equity').textContent=(inc-exp).toFixed(2);
-}
-
-document.getElementById('btn-create-merchant').addEventListener('click',function(){
-    const name=document.getElementById('new-merchant-name').value.trim();
-    if(!name){alert('الرجاء إدخال اسم المتجر');return;}
-    if(merchants.includes(name)){alert('المتجر موجود مسبقاً');return;}
-    merchants.push(name);localStorage.setItem('pi_merchants_list',JSON.stringify(merchants));
-    currentMerchant=name;localStorage.setItem('pi_current_merchant',currentMerchant);
-    document.getElementById('new-merchant-name').value='';updatePioneerUI();alert('تم إنشاء المتجر بنجاح');
-});
-
-document.getElementById('merchant-selector').addEventListener('change',function(){currentMerchant=this.value;localStorage.setItem('pi_current_merchant',currentMerchant);updatePioneerUI();});
-
-document.getElementById('btn-pi-login').addEventListener('click',function(){
-    if(typeof Pi==='undefined'){let u=prompt('أدخل اسم المستخدم على Pi:');if(u){pioneerUser=u.trim();localStorage.setItem('pi_pioneer_username',pioneerUser);updatePioneerUI();}return;}
-    Pi.authenticate(['username','payments'],function(auth){pioneerUser=auth.user.username;localStorage.setItem('pi_pioneer_username',pioneerUser);updatePioneerUI();},function(err){alert('فشل الدخول');});
-});
-
-document.getElementById('btn-pay-subscription').addEventListener('click',function(){
-    if(!pioneerUser){alert('سجل الدخول بـ Pi أولاً');return;}
-    if(typeof Pi==='undefined'){alert('[محاكاة] تم دفع 0.1 Pi وتفعيل الاشتراك!');activateSub();return;}
-    Pi.createPayment({amount:0.1,memo:'Pi Merchant OS - Annual Subscription',metadata:{type:'subscription'}},{
-        onReadyForServerApproval:function(id){},onReadyForServerCompletion:function(id,txid){activateSub();},onCancel:function(){},onError:function(e){}
-    });
-});
-
-function activateSub(){isSubscribed=true;localStorage.setItem('pi_pioneer_subscribed','true');subExpiry=Date.now()+(365*24*60*60*1000);localStorage.setItem('pi_pioneer_expiry',subExpiry.toString());updatePioneerUI();alert('🎉 تم تفعيل الاشتراك السنوي بنجاح!');}
-
-window.checkPioneerAccess=function(){
-    if(isSubscribed && Date.now()<subExpiry) return true;
-    if(opsCount<50){opsCount++;localStorage.setItem('pi_pioneer_ops',opsCount.toString());updatePioneerUI();return true;}
-    alert('⚠️ تجاوزت الـ 50 عملية المجانية. يرجى الاشتراك بـ 0.1 Pi.');updatePioneerUI();return false;
-};
-
-let coaList=JSON.parse(localStorage.getItem('pi_coa_list')||JSON.stringify([
-    {code:'101',name:'الصندوق الرئيسي / الخزينة',type:'Asset'},{code:'102',name:'حساب بنك Pi',type:'Asset'},
-    {code:'201',name:'دائنون / موردون',type:'Liability'},{code:'301',name:'رأس المال',type:'Equity'},
-    {code:'401',name:'مبيعات وإيرادات عامة',type:'Revenue'},{code:'501',name:'مصروفات تشغيلية',type:'Expense'}
-]));
-
-function renderCoa(){
-    const tbody=document.getElementById('coa-table-body');
-    if(!tbody) return;
-    tbody.innerHTML=coaList.map((acc,index)=>`<tr><td>${acc.code}</td><td>${acc.name}</td><td>${acc.type}</td><td><button type="button" class="btn btn-danger" style="padding:2px 6px;font-size:11px" onclick="window.delCoa(${index})">x</button></td></tr>`).join('');
-}
-
-window.delCoa=function(index){coaList.splice(index,1);localStorage.setItem('pi_coa_list',JSON.stringify(coaList));renderCoa();populateCoaDropdowns();};
-
-document.getElementById('btn-add-coa').addEventListener('click',function(){
-    const name=document.getElementById('coa-account-name').value.trim();
-    const type=document.getElementById('coa-account-type').value;
-    if(!name){alert('أدخل اسم الحساب');return;}
-    const newCode=(parseInt(coaList[coaList.length-1]?.code||'100')+1).toString();
-    coaList.push({code:newCode,name:name,type:type});localStorage.setItem('pi_coa_list',JSON.stringify(coaList));
-    document.getElementById('coa-account-name').value='';renderCoa();populateCoaDropdowns();
-});
-
-document.getElementById('btn-save-setup').addEventListener('click',function(){
-    const sName=document.getElementById('setup-store-name').value.trim();
-    if(!sName){alert('أدخل اسم المتجر');return;}
-    localStorage.setItem('pi_setup_store_name',sName);alert('تم حفظ الإعدادات!');
-});
-const sNameSaved=localStorage.getItem('pi_setup_store_name');
-if(sNameSaved && document.getElementById('setup-store-name')) document.getElementById('setup-store-name').value=sNameSaved;
-
-function populateCoaDropdowns() {
-    let opts = coaList.map(acc => `<option value="${acc.name}">${acc.code} - ${acc.name}</option>`).join('');
-    ['rcpt-account', 'pay-account', 'dbl-debit', 'dbl-credit'].forEach(id => {
-        let el = document.getElementById(id);
-        if(el) el.innerHTML = opts || '<option value="الصندوق">الصندوق الرئيسي</option>';
-    });
-}
-
-document.getElementById('btn-save-rcpt').addEventListener('click', function(){
-    if(window.checkPioneerAccess && !window.checkPioneerAccess()) return;
-    let from = document.getElementById('rcpt-from').value.trim();
-    let amt = parseFloat(document.getElementById('rcpt-amount').value);
-    let acc = document.getElementById('rcpt-account').value;
-    let desc = document.getElementById('rcpt-desc').value.trim();
-    if(!from || isNaN(amt) || amt <= 0){alert('أدخل البيانات والمبلغ صحيح');return;}
-    ledger.push({date:new Date().toLocaleDateString(), type:'income', amount:amt, desc:`[سند قبض] من: ${from} | الحساب: ${acc} | ${desc}`});
-    localStorage.setItem('ledger', JSON.stringify(ledger)); renderLedger(); updateReports();
-    alert('✅ تم ترحيل سند القبض بنجاح!');
-    document.getElementById('rcpt-from').value=''; document.getElementById('rcpt-amount').value=''; document.getElementById('rcpt-desc').value='';
-});
-
-document.getElementById('btn-save-pay').addEventListener('click', function(){
-    if(window.checkPioneerAccess && !window.checkPioneerAccess()) return;
-    let to = document.getElementById('pay-to').value.trim();
-    let amt = parseFloat(document.getElementById('pay-amount').value);
-    let acc = document.getElementById('pay-account').value;
-    let desc = document.getElementById('pay-desc').value.trim();
-    if(!to || isNaN(amt) || amt <= 0){alert('أدخل البيانات والمبلغ صحيح');return;}
-    ledger.push({date:new Date().toLocaleDateString(), type:'expense', amount:amt, desc:`[سند صرف] إلى: ${to} | الحساب: ${acc} | ${desc}`});
-    localStorage.setItem('ledger', JSON.stringify(ledger)); renderLedger(); updateReports();
-    alert('✅ تم ترحيل سند الصرف بنجاح!');
-    document.getElementById('pay-to').value=''; document.getElementById('pay-amount').value=''; document.getElementById('pay-desc').value='';
-});
-
-document.getElementById('btn-save-dbl').addEventListener('click', function(){
-    if(window.checkPioneerAccess && !window.checkPioneerAccess()) return;
-    let deb = document.getElementById('dbl-debit').value;
-    let cred = document.getElementById('dbl-credit').value;
-    let amt = parseFloat(document.getElementById('dbl-amount').value);
-    let desc = document.getElementById('dbl-desc').value.trim();
-    if(deb === cred){alert('لا يمكن أن يكون المدين مطابقاً للدائن');return;}
-    if(isNaN(amt) || amt <= 0){alert('أدخل مبلغ صحيح');return;}
-    ledger.push({date:new Date().toLocaleDateString(), type:'asset', amount:amt, desc:`[قيد مزدوج] مدين: [${deb}] ⬅ دائن: [${cred}] | ${desc}`});
-    localStorage.setItem('ledger', JSON.stringify(ledger)); renderLedger(); updateReports();
-    alert('✅ تم تسجيل وترحيل القيد المزدوج بنجاح!');
-    document.getElementById('dbl-amount').value=''; document.getElementById('dbl-desc').value='';
-});
-
-document.getElementById('btn-export-backup').addEventListener('click',function(){
-    const data={merchant:currentMerchant,ledger:localStorage.getItem('ledger'),inventory:localStorage.getItem('inv2'),partners:localStorage.getItem('partners2'),coa:localStorage.getItem('pi_coa_list')};
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`backup_${currentMerchant}_${Date.now()}.json`;a.click();
-});
-document.getElementById('btn-import-trigger').addEventListener('click',function(){document.getElementById('import-file-input').click();});
-document.getElementById('import-file-input').addEventListener('change',function(e){
-    const file=e.target.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=function(evt){
-        try{
-            const parsed=JSON.parse(evt.target.result);
-            if(parsed.ledger)localStorage.setItem('ledger',parsed.ledger);
-            if(parsed.inventory)localStorage.setItem('inv2',parsed.inventory);
-            if(parsed.partners)localStorage.setItem('partners2',parsed.partners);
-            if(parsed.coa)localStorage.setItem('pi_coa_list',parsed.coa);
-            alert('تمت الاستعادة بنجاح! جاري تحديث الصفحة.');location.reload();
-        }catch(err){alert('ملف تالف');}
-    };
-    reader.readAsText(file);
-});
-
-try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});}}catch(e){}
-
-renderLedger(); renderInv(); renderPartners(); updateReports(); updatePioneerUI(); renderCoa(); populateCoaDropdowns();
-});<!-- ===== Pi Merchant OS v5.0 Addon - الصقه قبل </script> ===== -->
-<div id="v5-reports" style="display:none"></div>
 <script>
-// === 1. تعديل القيد / السند / الفاتورة ===
-window.editEntry = function(i){
- let it = ledger[i];
- document.getElementById('e-type').value = it.type;
- document.getElementById('e-amount').value = it.amount;
- document.getElementById('e-desc').value = it.desc.replace(/\[.*?\]/g,'').trim();
- ledger.splice(i,1); localStorage.setItem('ledger',JSON.stringify(ledger));
- renderLedger(); updateReports();
- document.querySelector('[data-tab="entry"]').click();
-}
-window.delEntry = function(i){
- if(!confirm('حذف القيد؟')) return;
- ledger.splice(i,1); localStorage.setItem('ledger',JSON.stringify(ledger));
- renderLedger(); updateReports();
-}
-
-function renderLedgerV5(){
- let cl=localStorage.getItem('erp_lang')||'ar'; let tt=T[cl]||T.en;
- document.getElementById('ledger-body').innerHTML=ledger.slice(-25).reverse().map((l,idx)=>{
-  let realIdx = ledger.length-1-idx;
-  let tp=l.type; if(tp==='income')tp=tt.inc; if(tp==='expense')tp=tt.exp; if(tp==='asset')tp=tt.ast;
-  return `<tr><td>${l.date}</td><td>${l.desc}</td><td>${tp}</td><td>${l.amount}</td><td><button onclick="editEntry(${realIdx})">✏️</button> <button onclick="delEntry(${realIdx})" style="color:red">🗑️</button></td></tr>`;
- }).join('');
-}
-// استبدال render الأصلي
-window._origRenderLedger = renderLedger;
-renderLedger = function(){ renderLedgerV5(); };
-
-// === 2. الإقفالات اليومية / الشهرية / السنوية ===
-window.dailyClosing = function(){
- let today = new Date().toLocaleDateString();
- let todayRows = ledger.filter(x=>x.date===today && !x.isClosing);
- let inc = todayRows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
- let exp = todayRows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
- let net = inc-exp;
- ledger.push({date:today,type:'asset',amount:Math.abs(net),desc:`[إقفال يومي ${today}] صافي: ${net} π`, isClosing:true, closingType:'daily'});
- localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports();
- alert(`✅ إقفال يومي ${today}: صافي ${net.toFixed(3)} π`);
-}
-window.monthlyClosing = function(){
- let m = new Date().getMonth()+1; let y = new Date().getFullYear();
- let rows = ledger.filter(x=> !x.isClosing);
- let inc = rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
- let exp = rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
- let net = inc-exp;
- ledger.push({date:new Date().toLocaleDateString(),type:'asset',amount:Math.abs(net),desc:`[إقفال شهري ${m}/${y}] صافي: ${net} π`, isClosing:true, closingType:'monthly'});
- localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports();
- alert(`✅ إقفال شهري ${m}/${y}: ${net.toFixed(3)} π`);
-}
-
-// === 3. القوائم المالية ===
-window.showFinancialStatements = function(){
- let inc = ledger.filter(x=>x.type==='income' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
- let exp = ledger.filter(x=>x.type==='expense' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
- let cogs = inv.reduce((s,p)=>s+((p.cost||0)*(p.qty||0)),0);
- let gross = inc - cogs;
- let net = inc - exp;
- let assets = ledger.filter(x=>x.type==='asset').reduce((s,x)=>s+x.amount,0);
- 
- let html = `
- <div class="card">
- <h3 style="color:var(--s)">📊 القوائم المالية</h3>
- <b>1- قائمة الدخل:</b><br>المبيعات: ${inc.toFixed(2)} π<br>تكلفة البضاعة: ${cogs.toFixed(2)} π<br>مجمل الربح: ${gross.toFixed(2)} π<br>المصاريف: ${exp.toFixed(2)} π<br><b>صافي الربح: ${net.toFixed(2)} π</b><hr>
- <b>2- الميزانية:</b><br>الأصول: ${assets.toFixed(2)} π<br>الالتزامات: ${(partners.filter(p=>p.type==='supplier').reduce((s,p)=>s+(p.debt||0),0)).toFixed(2)} π<br>حقوق الملكية: ${(net).toFixed(2)} π<hr>
- <b>3- ميزان المراجعة:</b><br>${coaList.map(a=>`${a.code} - ${a.name}: ${ledger.filter(l=>l.desc.includes(a.name)).reduce((s,x)=>s+x.amount,0).toFixed(2)}`).join('<br>')}
- </div>`;
- document.getElementById('v5-reports').innerHTML=html;
- document.getElementById('v5-reports').style.display='block';
-}
-
-// أضف الأزرار للتقارير
-let repCard = document.querySelector('#reports .card');
-if(repCard){
- let div = document.createElement('div');
- div.innerHTML = `<hr><button class="btn btn-pi" onclick="dailyClosing()">🔒 إقفال يومي</button> <button class="btn btn-s" onclick="monthlyClosing()">🔒 إقفال شهري</button> <button class="btn btn-w" onclick="showFinancialStatements()">📈 القوائم المالية</button><div id="v5-reports"></div>`;
- repCard.appendChild(div);
-}<script>
-// ===== تبويب جديد: القوائم المالية =====
-setTimeout(()=>{
- // 1. إضافة زر التبويب في الشريط العلوي
- let tabs = document.querySelector('.tabs');
- if(tabs && !document.getElementById('tab-financial')){
-  let btn = document.createElement('button');
-  btn.className = 'tab-btn';
-  btn.id = 'tab-financial';
-  btn.setAttribute('data-tab','financial');
-  btn.innerHTML = '📊 القوائم';
-  btn.onclick = function(){ 
-    document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
-    document.getElementById('financial').style.display='block';
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    showFinancialStatements();
-  };
-  tabs.appendChild(btn);
-  // تعديل كل الأزرار القديمة لتخفي التبويب الجديد
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(b=>{
-    if(b.id!=='tab-financial'){
-      let old = b.onclick;
-      b.addEventListener('click',()=>{
-        document.getElementById('financial').style.display='none';
-      });
-    }
-  });
- }
-
- // 2. إضافة محتوى التبويب
- if(!document.getElementById('financial')){
-  let div = document.createElement('div');
-  div.id = 'financial';
-  div.className = 'tab-content';
-  div.style.display='none';
-  div.innerHTML = `
-  <div class="card">
-   <h3 style="color:var(--s)">📊 القوائم المالية والتقارير المحاسبية</h3>
-   <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
-    <button class="btn btn-pi" onclick="dailyClosing()">🔒 إقفال يومي</button>
-    <button class="btn btn-s" onclick="monthlyClosing()">🔒 إقفال شهري</button>
-    <button class="btn btn-w" onclick="showFinancialStatements()">🔄 تحديث القوائم</button>
-   </div>
-   <div id="financial-statements-area" style="margin-top:12px"></div>
-  </div>`;
-  document.querySelector('.container').appendChild(div);
- }
-},600);
-
-window.showFinancialStatements = function(){
- let inc = ledger.filter(x=>x.type==='income' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
- let exp = ledger.filter(x=>x.type==='expense' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
- let cogs = 0; try{ cogs = inv.reduce((s,p)=>s+((p.cost||0)*(p.qty||0)),0);}catch(e){}
- let gross = inc - cogs;
- let net = inc - exp;
- let assets = ledger.filter(x=>x.type==='asset').reduce((s,x)=>s+x.amount,0);
- let supDebt = partners.filter(p=>p.type==='supplier').reduce((s,p)=>s+(parseFloat(p.debt)||0),0);
- let custDebt = partners.filter(p=>p.type==='customer').reduce((s,p)=>s+(parseFloat(p.debt)||0),0);
-
- let html = `
- <div style="display:grid;gap:12px">
-  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
-   <b style="color:var(--s)">1- قائمة الدخل (Income Statement)</b><br>
-   <table style="width:100%;font-size:13px;margin-top:6px">
-    <tr><td>إجمالي المبيعات</td><td style="text-align:left">${inc.toFixed(3)} π</td></tr>
-    <tr><td>تكلفة البضاعة المباعة</td><td style="text-align:left">(${cogs.toFixed(3)}) π</td></tr>
-    <tr style="font-weight:bold;border-top:1px solid #ddd"><td>مجمل الربح</td><td style="text-align:left">${gross.toFixed(3)} π</td></tr>
-    <tr><td>إجمالي المصاريف</td><td style="text-align:left">(${exp.toFixed(3)}) π</td></tr>
-    <tr style="font-weight:bold;background:#f0fdf4"><td>صافي الربح</td><td style="text-align:left;color:green">${net.toFixed(3)} π</td></tr>
-   </table>
-  </div>
-
-  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
-   <b style="color:var(--s)">2- الميزانية العمومية (Balance Sheet)</b><br>
-   <table style="width:100%;font-size:13px;margin-top:6px">
-    <tr><td>الأصول (الخزينة + أصول)</td><td style="text-align:left">${assets.toFixed(3)} π</td></tr>
-    <tr><td>ذمم العملاء (مستحقات لك)</td><td style="text-align:left">${custDebt.toFixed(3)} π</td></tr>
-    <tr><td>ذمم الموردين (التزامات عليك)</td><td style="text-align:left">(${supDebt.toFixed(3)}) π</td></tr>
-    <tr style="font-weight:bold;background:#f0fdf4"><td>حقوق الملكية = الأصول - الالتزامات</td><td style="text-align:left">${(assets + custDebt - supDebt).toFixed(3)} π</td></tr>
-   </table>
-  </div>
-
-  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
-   <b style="color:var(--s)">3- ميزان المراجعة (Trial Balance)</b><br>
-   <table style="width:100%;font-size:12px;margin-top:6px;border-collapse:collapse">
-    <tr style="background:#f3f4f6"><th style="text-align:right;padding:4px">الرمز</th><th style="text-align:right;padding:4px">الحساب</th><th style="text-align:left;padding:4px">الرصيد</th></tr>
-    ${coaList.map(a=>{
-      let bal = ledger.filter(l=> (l.desc && (l.desc.includes(a.name) || l.desc.includes(a.code))) ).reduce((s,x)=>s+x.amount,0);
-      return `<tr style="border-top:1px solid #eee"><td style="padding:4px">${a.code}</td><td style="padding:4px">${a.name}</td><td style="padding:4px;text-align:left">${bal.toFixed(2)} π</td></tr>`;
-    }).join('')}
-   </table>
-  </div>
- </div>`;
- document.getElementById('financial-statements-area').innerHTML = html;
-}
-
-// الإقفالات
-window.dailyClosing = function(){
- let today = new Date().toLocaleDateString();
- let rows = ledger.filter(x=>x.date===today && !x.isClosing);
- if(rows.length===0){ alert('لا توجد عمليات اليوم'); return; }
- let inc = rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
- let exp = rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
- let net = inc-exp;
- ledger.push({date:today,type:'asset',amount:net,desc:`[إقفال يومي ${today}] صافي ${net.toFixed(2)} π`,isClosing:true});
- localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); showFinancialStatements();
- alert(`✅ إقفال يومي: ${net.toFixed(2)} π`);
-}
-window.monthlyClosing = function(){
- let d=new Date(); let m=d.getMonth()+1; let y=d.getFullYear();
- let rows = ledger.filter(x=>!x.isClosing);
- let inc = rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
- let exp = rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
- let net = inc-exp;
- ledger.push({date:d.toLocaleDateString(),type:'asset',amount:net,desc:`[إقفال شهري ${m}/${y}]`,isClosing:true});
- localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); showFinancialStatements();
- alert(`✅ إقفال شهري ${m}/${y}: ${net.toFixed(2)} π`);
-}
+let ledger = JSON.parse(localStorage.getItem('ledger')||'[]');
+let inv = JSON.parse(localStorage.getItem('inv')||'[]');
+let partners = JSON.parse(localStorage.getItem('partners')||'[]');
+let invoices = JSON.parse(localStorage.getItem('invoices')||'[]');
+let coaList = JSON.parse(localStorage.getItem('coaList')||'[{"code":"101","name":"الخزينة","type":"Asset"},{"code":"102","name":"بنك Pi","type":"Asset"},{"code":"201","name":"الموردون","type":"Liability"},{"code":"301","name":"رأس المال","type":"Equity"},{"code":"401","name":"المبيعات","type":"Revenue"},{"code":"501","name":"المصاريف","type":"Expense"}]');
+let posCart = []; let curInvItems = []; let curInvTotal = 0; let chartObj = null;
+const T = {
+ar:{inc:'إيراد',exp:'مصروف',ast:'أصل',daily:'قيود يومية',pos:'نقاط البيع',inv:'فواتير',stock:'مخزون',partners:'عملاء وموردين',bonds:'سندات',reports:'تقارير شاملة',financial:'القوائم المالية',settings:'إعدادات',save:'حفظ',edit:'تعديل',del:'حذف',closeDaily:'إقفال يومي',closeMonthly:'إقفال شهري'},
+en:{inc:'Income',exp:'Expense',ast:'Asset',daily:'Daily Entries',pos:'POS',inv:'Invoices',stock:'Inventory',partners:'Partners',bonds:'Vouchers',reports:'Reports',financial:'Financials',settings:'Settings',save:'Save',edit:'Edit',del:'Delete',closeDaily:'Daily Close',closeMonthly:'Monthly Close'},
+tr:{inc:'Gelir',exp:'Gider',ast:'Varlık',daily:'Günlük',pos:'POS',inv:'Faturalar',stock:'Stok',partners:'Ortaklar',bonds:'Makbuzlar',reports:'Raporlar',financial:'Mali Tablolar',settings:'Ayarlar',save:'Kaydet',edit:'Düzenle',del:'Sil',closeDaily:'Günlük Kapanış',closeMonthly:'Aylık Kapanış'},
+de:{inc:'Einnahme',exp:'Ausgabe',ast:'Anlage',daily:'Täglich',pos:'POS',inv:'Rechnungen',stock:'Lager',partners:'Partner',bonds:'Belege',reports:'Berichte',financial:'Finanzen',settings:'Einstellungen',save:'Speichern',edit:'Bearbeiten',del:'Löschen',closeDaily:'Tagesabschluss',closeMonthly:'Monatsabschluss'},
+fr:{inc:'Revenu',exp:'Dépense',ast:'Actif',daily:'Journalier',pos:'POS',inv:'Factures',stock:'Stock',partners:'Partenaires',bonds:'Bons',reports:'Rapports',financial:'États Financiers',settings:'Paramètres',save:'Enregistrer',edit:'Modifier',del:'Supprimer',closeDaily:'Clôture J.',closeMonthly:'Clôture M.'},
+es:{inc:'Ingreso',exp:'Gasto',ast:'Activo',daily:'Diario',pos:'POS',inv:'Facturas',stock:'Inventario',partners:'Socios',bonds:'Vales',reports:'Informes',financial:'Estados',settings:'Configuración',save:'Guardar',edit:'Editar',del:'Eliminar',closeDaily:'Cierre D.',closeMonthly:'Cierre M.'},
+zh:{inc:'收入',exp:'支出',ast:'资产',daily:'日常',pos:'POS',inv:'发票',stock:'库存',partners:'合作伙伴',bonds:'凭证',reports:'报告',financial:'财务报表',settings:'设置',save:'保存',edit:'编辑',del:'删除',closeDaily:'日结',closeMonthly:'月结'},
+ja:{inc:'収入',exp:'経費',ast:'資産',daily:'日次',pos:'POS',inv:'請求書',stock:'在庫',partners:'パートナー',bonds:'伝票',reports:'レポート',financial:'財務諸表',settings:'設定',save:'保存',edit:'編集',del:'削除',closeDaily:'日次締め',closeMonthly:'月次締め'},
+  vi:{inc:'Thu nhập',exp:'Chi phí',ast:'Tài sản',daily:'Hàng ngày',pos:'POS',inv:'Hóa đơn',stock:'Kho',partners:'Đối tác',bonds:'Chứng từ',reports:'Báo cáo',financial:'Báo cáo TC',settings:'Cài đặt',save:'Lưu',edit:'Sửa',del:'Xóa',closeDaily:'Đóng ngày',closeMonthly:'Đóng tháng'},
+ru:{inc:'Доход',exp:'Расход',ast:'Актив',daily:'Ежедневно',pos:'POS',inv:'Счета',stock:'Склад',partners:'Партнеры',bonds:'Ваучеры',reports:'Отчеты',financial:'Финансы',settings:'Настройки',save:'Сохр.',edit:'Ред.',del:'Удал.',closeDaily:'Дневн. закр.',closeMonthly:'Месяч. закр.'}
+};
+function changeLang(v){localStorage.setItem('erp_lang',v);location.reload();}
+function applyLang(){let l=localStorage.getItem('erp_lang')||'ar'; document.getElementById('lang-select').value=l; document.documentElement.lang=l; document.documentElement.dir=(l==='ar'?'rtl':'ltr'); let tt=T[l]||T.en; document.querySelectorAll('[data-i]').forEach(el=>{let k=el.getAttribute('data-i'); if(tt[k]) el.innerText=tt[k];});}
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.getElementById(b.dataset.tab).classList.add('active'); if(b.dataset.tab==='financial') showFinancialStatements();});});
+function addEntry(){let type=document.getElementById('e-type').value; let amount=parseFloat(document.getElementById('e-amount').value); let desc=document.getElementById('e-desc').value; if(!amount||!desc){alert('أكمل البيانات');return;} ledger.push({date:new Date().toLocaleDateString(),type,amount,desc}); localStorage.setItem('ledger',JSON.stringify(ledger)); incOp(); document.getElementById('e-amount').value='';document.getElementById('e-desc').value=''; renderLedger(); updateReports();}
+function renderLedger(){let lang=localStorage.getItem('erp_lang')||'ar'; let tt=T[lang]||T.en; let body=document.getElementById('ledger-body'); body.innerHTML=ledger.slice(-30).reverse().map((l,idx)=>{let real=ledger.length-1-idx; let tp=l.type; if(tp==='income')tp=tt.inc; if(tp==='expense')tp=tt.exp; if(tp==='asset')tp=tt.ast; return `<tr><td>${l.date}</td><td>${l.desc}</td><td>${tp}</td><td>${l.amount}</td><td><button class="btn btn-s" style="padding:2px 6px" onclick="editEntry(${real})">✏️</button> <button class="btn btn-danger" style="padding:2px 6px" onclick="delEntry(${real})">🗑️</button></td></tr>`;}).join('');}
+window.editEntry=function(i){let it=ledger[i]; document.getElementById('e-type').value=it.type; document.getElementById('e-amount').value=it.amount; document.getElementById('e-desc').value=it.desc.replace(/\[.*?\]/g,'').trim(); ledger.splice(i,1); localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); document.querySelector('[data-tab="entry"]').click();}
+window.delEntry=function(i){if(!confirm('حذف؟'))return; ledger.splice(i,1); localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports();}
+function addProduct(){let name=document.getElementById('p-name').value; let qty=parseFloat(document.getElementById('p-qty').value)||0; let price=parseFloat(document.getElementById('p-price').value)||0; let cost=parseFloat(document.getElementById('p-cost').value)||0; if(!name)return; inv.push({name,qty,price,cost,barcode:Date.now().toString().slice(-8)}); localStorage.setItem('inv',JSON.stringify(inv)); renderInv(); document.getElementById('p-name').value='';document.getElementById('p-qty').value='';document.getElementById('p-price').value='';document.getElementById('p-cost').value='';}
+function renderInv(){document.getElementById('inv-body').innerHTML=inv.map((p,i)=>`<tr><td>${p.name}</td><td>${p.qty}</td><td>${p.price}</td><td>${p.cost}</td><td><svg id="bc${i}"></svg></td></tr>`).join(''); inv.forEach((p,i)=>{try{JsBarcode("#bc"+i,p.barcode,{width:1,height:20,displayValue:false});}catch(e){}}); renderPOSProducts(); renderInvSelect();}
+function renderPOSProducts(){document.getElementById('pos-products').innerHTML=inv.map((p,i)=>`<div class="pos-item" onclick="addToPOS(${i})"><b>${p.name}</b><br>${p.price} π<br><small>${p.qty}</small></div>`).join('');}
+function renderInvSelect(){let sel=document.getElementById('inv-product'); sel.innerHTML=inv.map((p,i)=>`<option value="${i}">${p.name} - ${p.price}π</option>`).join('');}
+function addToPOS(i){let p=inv[i]; if(p.qty<=0){alert('نفد');return;} let ex=posCart.find(x=>x.idx===i); if(ex)ex.q+=1; else posCart.push({idx:i,name:p.name,price:p.price,q:1}); renderPOSCart();}
+function renderPOSCart(){let total=0; let h=posCart.map(c=>{total+=c.price*c.q; return `<div>${c.name} x${c.q} = ${(c.price*c.q).toFixed(2)} π</div>`;}).join(''); h+=`<hr><b>Total: ${total.toFixed(2)} π</b>`; document.getElementById('pos-cart').innerHTML=h;}
+function clearPOS(){posCart=[]; document.getElementById('pos-cart').innerHTML='';}
+function checkoutPOS(){if(posCart.length===0)return; let total=posCart.reduce((s,c)=>s+c.price*c.q,0); posCart.forEach(c=>{inv[c.idx].qty-=c.q;}); localStorage.setItem('inv',JSON.stringify(inv)); ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:total,desc:`[POS] بيع ${posCart.length} أصناف`}); localStorage.setItem('ledger',JSON.stringify(ledger)); incOp(); renderInv(); renderLedger(); updateReports(); clearPOS(); alert('تم البيع '+total.toFixed(2)+' π');}
+let invItems=[]; function addToInvoice(){let pi=document.getElementById('inv-product').value; if(pi==='')return; let qty=parseFloat(document.getElementById('inv-qty').value)||1; let p=inv[pi]; invItems.push({name:p.name,price:p.price,qty,total:p.price*qty}); renderInvoice();}
+function renderInvoice(){let t=0; document.getElementById('inv-items').innerHTML=invItems.map(it=>{t+=it.total; return `<div>${it.name} x${it.qty} = ${it.total.toFixed(2)} π</div>`;}).join(''); document.getElementById('inv-total').innerText=t.toFixed(2); curInvTotal=t;}
+function saveInvoice(){if(invItems.length===0)return; let cust=document.getElementById('inv-customer').value||'عميل'; invoices.push({date:new Date().toLocaleDateString(),customer:cust,items:invItems,total:curInvTotal}); localStorage.setItem('invoices',JSON.stringify(invoices)); invItems.forEach(it=>{let f=inv.find(x=>x.name===it.name); if(f) f.qty-=it.qty;}); localStorage.setItem('inv',JSON.stringify(inv)); ledger.push({date:new Date().toLocaleDateString(),type:'income',amount:curInvTotal,desc:`[فاتورة] ${cust}`}); localStorage.setItem('ledger',JSON.stringify(ledger)); incOp(); renderInv(); renderLedger(); updateReports(); invItems=[]; renderInvoice(); alert('حفظت الفاتورة');}
+function printInvoice(){let {jsPDF}=window.jspdf; let doc=new jsPDF(); doc.text('Invoice Total: '+curInvTotal+' Pi',10,10); doc.save('invoice.pdf');}
+function shareWhatsApp(){let txt=`فاتورة ${curInvTotal} Pi`; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
+function payInvoiceWithPi(){if(curInvTotal<=0){alert('لا يوجد مبلغ');return;} if(!window.Pi){alert('افتح في Pi Browser');return;} Pi.createPayment({amount:curInvTotal,memo:'Invoice Payment',metadata:{invoice:Date.now()}},{onReadyForServerApproval:()=>{},onReadyForServerCompletion:(id,txid)=>{alert('تم الدفع Pi tx:'+txid); saveInvoice();},onCancel:()=>{},onError:(e)=>{alert('خطأ '+e)}});}
+function addPartner(){let type=document.getElementById('pt-type').value; let name=document.getElementById('pt-name').value; let phone=document.getElementById('pt-phone').value; let debt=parseFloat(document.getElementById('pt-debt').value)||0; if(!name)return; partners.push({type,name,phone,debt}); localStorage.setItem('partners',JSON.stringify(partners)); renderPartners();}
+function renderPartners(){document.getElementById('partners-body').innerHTML=partners.map(p=>`<tr style="${p.debt>0?'color:red':''}"><td>${p.name}</td><td>${p.type}</td><td>${p.phone}</td><td>${p.debt}</td></tr>`).join(''); let sel=document.getElementById('inv-customer'); sel.innerHTML='<option value="">اختر عميل</option>'+partners.filter(p=>p.type==='customer').map(p=>`<option>${p.name}</option>`).join('');}
+function addCOA(){let code=document.getElementById('coa-code').value; let name=document.getElementById('coa-name').value; let type=document.getElementById('coa-type').value; if(!code||!name)return; coaList.push({code,name,type}); localStorage.setItem('coaList',JSON.stringify(coaList)); renderCOA();}
+function renderCOA(){document.getElementById('coa-body').innerHTML=coaList.map(c=>`<tr><td>${c.code}</td><td>${c.name}</td><td>${c.type}</td></tr>`).join(''); let opts=coaList.map(c=>`<option value="${c.code}">${c.code}-${c.name}</option>`).join(''); ['r-acc','py-acc','j-debit','j-credit'].forEach(id=>{let el=document.getElementById(id); if(el) el.innerHTML=opts;});}
+function addReceipt(){let from=document.getElementById('r-from').value; let amount=parseFloat(document.getElementById('r-amount').value)||0; let acc=document.getElementById('r-acc').value; let desc=document.getElementById('r-desc').value; if(!amount)return; ledger.push({date:new Date().toLocaleDateString(),type:'asset',amount,desc:`[قبض] من ${from} - ${desc} - ${acc}`}); localStorage.setItem('ledger',JSON.stringify(ledger)); incOp(); renderLedger(); updateReports(); alert('تم القبض');}
+function addPayment(){let to=document.getElementById('py-to').value; let amount=parseFloat(document.getElementById('py-amount').value)||0; let acc=document.getElementById('py-acc').value; let desc=document.getElementById('py-desc').value; if(!amount)return; ledger.push({date:new Date().toLocaleDateString(),type:'expense',amount,desc:`[صرف] إلى ${to} - ${desc} - ${acc}`}); localStorage.setItem('ledger',JSON.stringify(ledger)); incOp(); renderLedger(); updateReports(); alert('تم الصرف');}
+function addJournal(){let debit=document.getElementById('j-debit').value; let credit=document.getElementById('j-credit').value; let amount=parseFloat(document.getElementById('j-amount').value)||0; let desc=document.getElementById('j-desc').value; if(debit===credit){alert('لا يمكن نفس الحساب');return;} if(!amount)return; ledger.push({date:new Date().toLocaleDateString(),type:'asset',amount,desc:`[قيد] مدين ${debit} دائن ${credit} - ${desc}`}); localStorage.setItem('ledger',JSON.stringify(ledger)); incOp(); renderLedger(); updateReports(); alert('تم القيد');}
+function updateReports(){let inc=ledger.filter(x=>x.type==='income'&&!x.isClosing).reduce((s,x)=>s+x.amount,0); let exp=ledger.filter(x=>x.type==='expense'&&!x.isClosing).reduce((s,x)=>s+x.amount,0); let net=inc-exp; document.getElementById('rep-inc').innerText=inc.toFixed(2); document.getElementById('rep-exp').innerText=exp.toFixed(2); document.getElementById('rep-net').innerText=net.toFixed(2); document.getElementById('rep-usd').innerText=(net*30).toFixed(2); drawChart(inc,exp);}
+function drawChart(inc,exp){let ctx=document.getElementById('rep-chart').getContext('2d'); if(chartObj) chartObj.destroy(); chartObj=new Chart(ctx,{type:'bar',data:{labels:['إيراد','مصروف','صافي'],datasets:[{label:'π',data:[inc,exp,inc-exp],backgroundColor:['#10b981','#ef4444','#7c3aed']}]}});}
+function exportExcel(){let ws=XLSX.utils.json_to_sheet(ledger); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ledger'); XLSX.writeFile(wb,'ledger.xlsx');}
+function exportPDF(){let {jsPDF}=window.jspdf; let doc=new jsPDF(); doc.text('Pi Merchant Report',10,10); let y=20; ledger.slice(-20).forEach(l=>{doc.text(`${l.date} ${l.desc} ${l.amount}`,10,y); y+=6;}); doc.save('report.pdf');}
+function showFinancialStatements(){let inc=ledger.filter(x=>x.type==='income'&&!x.isClosing).reduce((s,x)=>s+x.amount,0); let exp=ledger.filter(x=>x.type==='expense'&&!x.isClosing).reduce((s,x)=>s+x.amount,0); let cogs=0; try{cogs=inv.reduce((s,p)=>s+(p.cost||0)*p.qty,0);}catch(e){} let gross=inc-cogs; let net=inc-exp; let assets=ledger.filter(x=>x.type==='asset').reduce((s,x)=>s+x.amount,0); let supDebt=partners.filter(p=>p.type==='supplier').reduce((s,p)=>s+(parseFloat(p.debt)||0),0); let custDebt=partners.filter(p=>p.type==='customer').reduce((s,p)=>s+(parseFloat(p.debt)||0),0); let html=`<div style="display:grid;gap:12px"><div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px"><b style="color:var(--p)">1- قائمة الدخل</b><br><table style="width:100%;font-size:13px"><tr><td>المبيعات</td><td style="text-align:left">${inc.toFixed(3)} π</td></tr><tr><td>تكلفة البضاعة</td><td style="text-align:left">(${cogs.toFixed(3)}) π</td></tr><tr style="font-weight:bold;border-top:1px solid #ddd"><td>مجمل الربح</td><td style="text-align:left">${gross.toFixed(3)} π</td></tr><tr><td>المصاريف</td><td style="text-align:left">(${exp.toFixed(3)}) π</td></tr><tr style="font-weight:bold;background:#f0fdf4"><td>صافي الربح</td><td style="text-align:left;color:green">${net.toFixed(3)} π</td></tr></table></div><div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px"><b style="color:var(--p)">2- الميزانية العمومية</b><br><table style="width:100%;font-size:13px"><tr><td>الأصول</td><td style="text-align:left">${assets.toFixed(3)} π</td></tr><tr><td>ذمم العملاء</td><td style="text-align:left">${custDebt.toFixed(3)} π</td></tr><tr><td>ذمم الموردين</td><td style="text-align:left">(${supDebt.toFixed(3)}) π</td></tr><tr style="font-weight:bold;background:#f0fdf4"><td>حقوق الملكية</td><td style="text-align:left">${(assets+custDebt-supDebt).toFixed(3)} π</td></tr></table></div><div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px"><b style="color:var(--p)">3- ميزان المراجعة</b><br><table style="width:100%;font-size:12px"><tr style="background:#f3f4f6"><th>رمز</th><th>حساب</th><th>رصيد</th></tr>${coaList.map(a=>{let bal=ledger.filter(l=>l.desc&&(l.desc.includes(a.name)||l.desc.includes(a.code))).reduce((s,x)=>s+x.amount,0); return `<tr><td>${a.code}</td><td>${a.name}</td><td>${bal.toFixed(2)} π</td></tr>`;}).join('')}</table></div></div>`; document.getElementById('financial-statements-area').innerHTML=html;}
+function dailyClosing(){let today=new Date().toLocaleDateString(); let rows=ledger.filter(x=>x.date===today&&!x.isClosing); if(rows.length===0){alert('لا توجد عمليات اليوم');return;} let inc=rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0); let exp=rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0); let net=inc-exp; ledger.push({date:today,type:'asset',amount:net,desc:`[إقفال يومي ${today}] صافي ${net.toFixed(2)} π`,isClosing:true}); localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); showFinancialStatements(); alert('✅ إقفال يومي '+net.toFixed(2)+' π');}
+function monthlyClosing(){let d=new Date(); let m=d.getMonth()+1; let y=d.getFullYear(); let rows=ledger.filter(x=>!x.isClosing); let inc=rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0); let exp=rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0); let net=inc-exp; ledger.push({date:d.toLocaleDateString(),type:'asset',amount:net,desc:`[إقفال شهري ${m}/${y}]`,isClosing:true}); localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); showFinancialStatements(); alert('✅ إقفال شهري '+m+'/'+y+' '+net.toFixed(2)+' π');}
+function incOp(){let c=parseInt(localStorage.getItem('opCount')||'0')+1; localStorage.setItem('opCount',c); document.getElementById('op-count').innerText=c; if(c>50&&localStorage.getItem('subscribed')!=='yes'){document.getElementById('sub-status').innerHTML='<span style="color:red">انتهت الفترة المجانية - اشترك</span>';}}
+function piLogin(){if(!window.Pi){alert('افتح في Pi Browser');return;} Pi.init({version:'2.0',sandbox:true}); Pi.authenticate(['username','payments'],(auth)=>{alert('مرحبا '+auth.user.username); localStorage.setItem('pi_user',auth.user.username);});}
+function piSubscribe(){if(!window.Pi){alert('افتح في Pi Browser');return;} Pi.createPayment({amount:0.1,memo:'Pi Merchant Annual',metadata:{type:'sub'}},{onReadyForServerApproval:(id)=>{console.log(id);},onReadyForServerCompletion:(id,txid)=>{localStorage.setItem('subscribed','yes'); document.getElementById('sub-status').innerText='✅ مشترك '+txid; alert('تم الاشتراك');},onCancel:()=>{},onError:(e)=>{alert(e)}});}
+function backup(){let data={ledger,inv,partners,invoices,coaList,opCount:localStorage.getItem('opCount')}; let blob=new Blob([JSON.stringify(data)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='pi-backup.json'; a.click();}
+function restore(e){let file=e.target.files[0]; if(!file)return; let r=new FileReader(); r.onload=function(){let d=JSON.parse(r.result); ledger=d.ledger||[]; inv=d.inv||[]; partners=d.partners||[]; invoices=d.invoices||[]; coaList=d.coaList||coaList; localStorage.setItem('ledger',JSON.stringify(ledger)); localStorage.setItem('inv',JSON.stringify(inv)); localStorage.setItem('partners',JSON.stringify(partners)); localStorage.setItem('invoices',JSON.stringify(invoices)); localStorage.setItem('coaList',JSON.stringify(coaList)); location.reload();}; r.readAsText(file);}
+applyLang(); renderLedger(); renderInv(); renderPartners(); renderCOA(); updateReports();
+document.getElementById('op-count').innerText=localStorage.getItem('opCount')||'0';
+if(localStorage.getItem('subscribed')==='yes') document.getElementById('sub-status').innerText='✅ مشترك';
+if(window.Pi){Pi.init({version:'2.0',sandbox:true});}
 </script>
 </body>
 </html>
