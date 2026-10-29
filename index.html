@@ -692,6 +692,124 @@ if(repCard){
  let div = document.createElement('div');
  div.innerHTML = `<hr><button class="btn btn-pi" onclick="dailyClosing()">🔒 إقفال يومي</button> <button class="btn btn-s" onclick="monthlyClosing()">🔒 إقفال شهري</button> <button class="btn btn-w" onclick="showFinancialStatements()">📈 القوائم المالية</button><div id="v5-reports"></div>`;
  repCard.appendChild(div);
+}<script>
+// ===== تبويب جديد: القوائم المالية =====
+setTimeout(()=>{
+ // 1. إضافة زر التبويب في الشريط العلوي
+ let tabs = document.querySelector('.tabs');
+ if(tabs && !document.getElementById('tab-financial')){
+  let btn = document.createElement('button');
+  btn.className = 'tab-btn';
+  btn.id = 'tab-financial';
+  btn.setAttribute('data-tab','financial');
+  btn.innerHTML = '📊 القوائم';
+  btn.onclick = function(){ 
+    document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
+    document.getElementById('financial').style.display='block';
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    showFinancialStatements();
+  };
+  tabs.appendChild(btn);
+  // تعديل كل الأزرار القديمة لتخفي التبويب الجديد
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(b=>{
+    if(b.id!=='tab-financial'){
+      let old = b.onclick;
+      b.addEventListener('click',()=>{
+        document.getElementById('financial').style.display='none';
+      });
+    }
+  });
+ }
+
+ // 2. إضافة محتوى التبويب
+ if(!document.getElementById('financial')){
+  let div = document.createElement('div');
+  div.id = 'financial';
+  div.className = 'tab-content';
+  div.style.display='none';
+  div.innerHTML = `
+  <div class="card">
+   <h3 style="color:var(--s)">📊 القوائم المالية والتقارير المحاسبية</h3>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
+    <button class="btn btn-pi" onclick="dailyClosing()">🔒 إقفال يومي</button>
+    <button class="btn btn-s" onclick="monthlyClosing()">🔒 إقفال شهري</button>
+    <button class="btn btn-w" onclick="showFinancialStatements()">🔄 تحديث القوائم</button>
+   </div>
+   <div id="financial-statements-area" style="margin-top:12px"></div>
+  </div>`;
+  document.querySelector('.container').appendChild(div);
+ }
+},600);
+
+window.showFinancialStatements = function(){
+ let inc = ledger.filter(x=>x.type==='income' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
+ let exp = ledger.filter(x=>x.type==='expense' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
+ let cogs = 0; try{ cogs = inv.reduce((s,p)=>s+((p.cost||0)*(p.qty||0)),0);}catch(e){}
+ let gross = inc - cogs;
+ let net = inc - exp;
+ let assets = ledger.filter(x=>x.type==='asset').reduce((s,x)=>s+x.amount,0);
+ let supDebt = partners.filter(p=>p.type==='supplier').reduce((s,p)=>s+(parseFloat(p.debt)||0),0);
+ let custDebt = partners.filter(p=>p.type==='customer').reduce((s,p)=>s+(parseFloat(p.debt)||0),0);
+
+ let html = `
+ <div style="display:grid;gap:12px">
+  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
+   <b style="color:var(--s)">1- قائمة الدخل (Income Statement)</b><br>
+   <table style="width:100%;font-size:13px;margin-top:6px">
+    <tr><td>إجمالي المبيعات</td><td style="text-align:left">${inc.toFixed(3)} π</td></tr>
+    <tr><td>تكلفة البضاعة المباعة</td><td style="text-align:left">(${cogs.toFixed(3)}) π</td></tr>
+    <tr style="font-weight:bold;border-top:1px solid #ddd"><td>مجمل الربح</td><td style="text-align:left">${gross.toFixed(3)} π</td></tr>
+    <tr><td>إجمالي المصاريف</td><td style="text-align:left">(${exp.toFixed(3)}) π</td></tr>
+    <tr style="font-weight:bold;background:#f0fdf4"><td>صافي الربح</td><td style="text-align:left;color:green">${net.toFixed(3)} π</td></tr>
+   </table>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
+   <b style="color:var(--s)">2- الميزانية العمومية (Balance Sheet)</b><br>
+   <table style="width:100%;font-size:13px;margin-top:6px">
+    <tr><td>الأصول (الخزينة + أصول)</td><td style="text-align:left">${assets.toFixed(3)} π</td></tr>
+    <tr><td>ذمم العملاء (مستحقات لك)</td><td style="text-align:left">${custDebt.toFixed(3)} π</td></tr>
+    <tr><td>ذمم الموردين (التزامات عليك)</td><td style="text-align:left">(${supDebt.toFixed(3)}) π</td></tr>
+    <tr style="font-weight:bold;background:#f0fdf4"><td>حقوق الملكية = الأصول - الالتزامات</td><td style="text-align:left">${(assets + custDebt - supDebt).toFixed(3)} π</td></tr>
+   </table>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
+   <b style="color:var(--s)">3- ميزان المراجعة (Trial Balance)</b><br>
+   <table style="width:100%;font-size:12px;margin-top:6px;border-collapse:collapse">
+    <tr style="background:#f3f4f6"><th style="text-align:right;padding:4px">الرمز</th><th style="text-align:right;padding:4px">الحساب</th><th style="text-align:left;padding:4px">الرصيد</th></tr>
+    ${coaList.map(a=>{
+      let bal = ledger.filter(l=> (l.desc && (l.desc.includes(a.name) || l.desc.includes(a.code))) ).reduce((s,x)=>s+x.amount,0);
+      return `<tr style="border-top:1px solid #eee"><td style="padding:4px">${a.code}</td><td style="padding:4px">${a.name}</td><td style="padding:4px;text-align:left">${bal.toFixed(2)} π</td></tr>`;
+    }).join('')}
+   </table>
+  </div>
+ </div>`;
+ document.getElementById('financial-statements-area').innerHTML = html;
+}
+
+// الإقفالات
+window.dailyClosing = function(){
+ let today = new Date().toLocaleDateString();
+ let rows = ledger.filter(x=>x.date===today && !x.isClosing);
+ if(rows.length===0){ alert('لا توجد عمليات اليوم'); return; }
+ let inc = rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+ let exp = rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+ let net = inc-exp;
+ ledger.push({date:today,type:'asset',amount:net,desc:`[إقفال يومي ${today}] صافي ${net.toFixed(2)} π`,isClosing:true});
+ localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); showFinancialStatements();
+ alert(`✅ إقفال يومي: ${net.toFixed(2)} π`);
+}
+window.monthlyClosing = function(){
+ let d=new Date(); let m=d.getMonth()+1; let y=d.getFullYear();
+ let rows = ledger.filter(x=>!x.isClosing);
+ let inc = rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+ let exp = rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+ let net = inc-exp;
+ ledger.push({date:d.toLocaleDateString(),type:'asset',amount:net,desc:`[إقفال شهري ${m}/${y}]`,isClosing:true});
+ localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports(); showFinancialStatements();
+ alert(`✅ إقفال شهري ${m}/${y}: ${net.toFixed(2)} π`);
 }
 </script>
 </body>
