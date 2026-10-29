@@ -613,7 +613,86 @@ document.getElementById('import-file-input').addEventListener('change',function(
 try{if(typeof Pi!=='undefined'){Pi.init({version:'2.0',sandbox:true});}}catch(e){}
 
 renderLedger(); renderInv(); renderPartners(); updateReports(); updatePioneerUI(); renderCoa(); populateCoaDropdowns();
-});
+});<!-- ===== Pi Merchant OS v5.0 Addon - الصقه قبل </script> ===== -->
+<div id="v5-reports" style="display:none"></div>
+<script>
+// === 1. تعديل القيد / السند / الفاتورة ===
+window.editEntry = function(i){
+ let it = ledger[i];
+ document.getElementById('e-type').value = it.type;
+ document.getElementById('e-amount').value = it.amount;
+ document.getElementById('e-desc').value = it.desc.replace(/\[.*?\]/g,'').trim();
+ ledger.splice(i,1); localStorage.setItem('ledger',JSON.stringify(ledger));
+ renderLedger(); updateReports();
+ document.querySelector('[data-tab="entry"]').click();
+}
+window.delEntry = function(i){
+ if(!confirm('حذف القيد؟')) return;
+ ledger.splice(i,1); localStorage.setItem('ledger',JSON.stringify(ledger));
+ renderLedger(); updateReports();
+}
+
+function renderLedgerV5(){
+ let cl=localStorage.getItem('erp_lang')||'ar'; let tt=T[cl]||T.en;
+ document.getElementById('ledger-body').innerHTML=ledger.slice(-25).reverse().map((l,idx)=>{
+  let realIdx = ledger.length-1-idx;
+  let tp=l.type; if(tp==='income')tp=tt.inc; if(tp==='expense')tp=tt.exp; if(tp==='asset')tp=tt.ast;
+  return `<tr><td>${l.date}</td><td>${l.desc}</td><td>${tp}</td><td>${l.amount}</td><td><button onclick="editEntry(${realIdx})">✏️</button> <button onclick="delEntry(${realIdx})" style="color:red">🗑️</button></td></tr>`;
+ }).join('');
+}
+// استبدال render الأصلي
+window._origRenderLedger = renderLedger;
+renderLedger = function(){ renderLedgerV5(); };
+
+// === 2. الإقفالات اليومية / الشهرية / السنوية ===
+window.dailyClosing = function(){
+ let today = new Date().toLocaleDateString();
+ let todayRows = ledger.filter(x=>x.date===today && !x.isClosing);
+ let inc = todayRows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+ let exp = todayRows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+ let net = inc-exp;
+ ledger.push({date:today,type:'asset',amount:Math.abs(net),desc:`[إقفال يومي ${today}] صافي: ${net} π`, isClosing:true, closingType:'daily'});
+ localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports();
+ alert(`✅ إقفال يومي ${today}: صافي ${net.toFixed(3)} π`);
+}
+window.monthlyClosing = function(){
+ let m = new Date().getMonth()+1; let y = new Date().getFullYear();
+ let rows = ledger.filter(x=> !x.isClosing);
+ let inc = rows.filter(x=>x.type==='income').reduce((s,x)=>s+x.amount,0);
+ let exp = rows.filter(x=>x.type==='expense').reduce((s,x)=>s+x.amount,0);
+ let net = inc-exp;
+ ledger.push({date:new Date().toLocaleDateString(),type:'asset',amount:Math.abs(net),desc:`[إقفال شهري ${m}/${y}] صافي: ${net} π`, isClosing:true, closingType:'monthly'});
+ localStorage.setItem('ledger',JSON.stringify(ledger)); renderLedger(); updateReports();
+ alert(`✅ إقفال شهري ${m}/${y}: ${net.toFixed(3)} π`);
+}
+
+// === 3. القوائم المالية ===
+window.showFinancialStatements = function(){
+ let inc = ledger.filter(x=>x.type==='income' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
+ let exp = ledger.filter(x=>x.type==='expense' && !x.isClosing).reduce((s,x)=>s+x.amount,0);
+ let cogs = inv.reduce((s,p)=>s+((p.cost||0)*(p.qty||0)),0);
+ let gross = inc - cogs;
+ let net = inc - exp;
+ let assets = ledger.filter(x=>x.type==='asset').reduce((s,x)=>s+x.amount,0);
+ 
+ let html = `
+ <div class="card">
+ <h3 style="color:var(--s)">📊 القوائم المالية</h3>
+ <b>1- قائمة الدخل:</b><br>المبيعات: ${inc.toFixed(2)} π<br>تكلفة البضاعة: ${cogs.toFixed(2)} π<br>مجمل الربح: ${gross.toFixed(2)} π<br>المصاريف: ${exp.toFixed(2)} π<br><b>صافي الربح: ${net.toFixed(2)} π</b><hr>
+ <b>2- الميزانية:</b><br>الأصول: ${assets.toFixed(2)} π<br>الالتزامات: ${(partners.filter(p=>p.type==='supplier').reduce((s,p)=>s+(p.debt||0),0)).toFixed(2)} π<br>حقوق الملكية: ${(net).toFixed(2)} π<hr>
+ <b>3- ميزان المراجعة:</b><br>${coaList.map(a=>`${a.code} - ${a.name}: ${ledger.filter(l=>l.desc.includes(a.name)).reduce((s,x)=>s+x.amount,0).toFixed(2)}`).join('<br>')}
+ </div>`;
+ document.getElementById('v5-reports').innerHTML=html;
+ document.getElementById('v5-reports').style.display='block';
+}
+
+// أضف الأزرار للتقارير
+let repCard = document.querySelector('#reports .card');
+if(repCard){
+ let div = document.createElement('div');
+ div.innerHTML = `<hr><button class="btn btn-pi" onclick="dailyClosing()">🔒 إقفال يومي</button> <button class="btn btn-s" onclick="monthlyClosing()">🔒 إقفال شهري</button> <button class="btn btn-w" onclick="showFinancialStatements()">📈 القوائم المالية</button><div id="v5-reports"></div>`;
+ repCard.appendChild(div);
+}
 </script>
 </body>
 </html>
