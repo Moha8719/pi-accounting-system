@@ -15,8 +15,7 @@
             <div class="w-16 h-16 bg-amber-500 rounded-2xl mx-auto flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg shadow-amber-500/30">π</div>
             <h2 class="text-2xl font-bold text-gray-900 mb-2">PiLedger Sign-In</h2>
             <p class="text-gray-500 text-sm mb-6" id="login-subtitle">سجل الدخول باستخدام اسم المستخدم الخاص بك على شبكة Pi وبدء الإدارة المالية</p>
-            
-            <div class="space-y-4 text-right">
+                       <div class="space-y-4 text-right">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1" id="login-lbl-user">Pi Username (@)</label>
                     <input type="text" id="pi-username" class="w-full border border-amber-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. moha8719">
@@ -40,8 +39,7 @@
                 </div>
                 <p class="text-yellow-100 text-sm mt-1" id="app-subtitle">النظام المالي المدمج مع تقنيات ودفع عملة Pi الرقمية</p>
             </div>
-
-            <div class="flex items-center gap-3 bg-black/10 p-3 rounded-xl">
+                        <div class="flex items-center gap-3 bg-black/10 p-3 rounded-xl">
                 <span class="text-xs text-amber-200 font-medium" id="user-display">@Guest</span>
                 <button onclick="logoutPi()" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg transition" id="logout-btn">خروج</button>
                 <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-white text-gray-800 text-xs rounded-lg px-2 py-1.5 focus:outline-none font-medium shadow-sm">
@@ -58,7 +56,8 @@
                 </select>
             </div>
         </header>
-                <!-- لوحة حالة الاشتراك (أول 50 عملية مجانية ثم اشتراك سنوي 0.1 Pi) -->
+
+        <!-- لوحة حالة الاشتراك -->
         <div class="bg-gradient-to-r from-yellow-500 to-amber-500 text-white p-4 rounded-2xl shadow-md mb-6 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">⭐</span>
@@ -72,31 +71,6 @@
             </button>
         </div>
 
-        <!-- لوحة المؤشرات والأزرار -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
-                <div>
-                    <span class="text-xs text-gray-500 block" id="stat-cash-title">إجمالي الخزينة (Pi)</span>
-                    <span id="stat-cash" class="text-xl font-bold text-amber-600">0.00 Pi</span>
-                </div>
-                <div class="bg-amber-100 p-3 rounded-xl text-amber-600 font-bold">🟡</div>
-            </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
-                <div>
-                    <span class="text-xs text-gray-500 block" id="stat-profit-title">صافي الأرباح</span>
-                    <span id="stat-profit" class="text-xl font-bold text-emerald-600">0.00 Pi</span>
-                </div>
-                <div class="bg-emerald-100 p-3 rounded-xl text-emerald-600 font-bold">📈</div>
-            </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
-                <div>
-                    <span class="text-xs text-gray-500 block" id="stat-inv-title">الأصناف بالمخزن</span>
-                    <span id="stat-inv-count" class="text-xl font-bold text-indigo-600">0</span>
-                </div>
-                <div class="bg-indigo-100 p-3 rounded-xl text-indigo-600 font-bold">📦</div>
-            </div>
-        </div>
-
         <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
             <button onclick="switchTab('sales')" id="btn-sales" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-amber-600 text-white shadow">المبيعات</button>
             <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">إدارة المخزون</button>
@@ -105,9 +79,7 @@
             <button onclick="switchTab('accounts')" id="btn-accounts" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">دليل الحسابات</button>
             <button onclick="switchTab('reports')" id="btn-reports" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">التقارير</button>
         </div>
-
-        <main class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-            
+               <main class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
             <!-- المبيعات ودفع Pi SDK -->
             <section id="tab-sales" class="tab-content">
                 <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="sales-section-title">إصدار فاتورة مبيعات عبر Pi Payments SDK</h2>
@@ -132,139 +104,9 @@
                         </button>
                     </div>
                 </div>
-                
-                <h3 class="font-bold text-md mt-6 mb-3 text-gray-700" id="sales-history-title">سجل المعاملات والفواتير المؤكدة</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm border-collapse" id="sales-table-dir">
-                        <thead>
-                            <tr class="bg-amber-50 text-gray-600">
-                                <th class="p-3 border-b" id="th-inv">رقم الفاتورة</th>
-                                <th class="p-3 border-b" id="th-cust">العميل</th>
-                                <th class="p-3 border-b" id="th-item">الصنف</th>
-                                <th class="p-3 border-b" id="th-amt">المبلغ</th>
-                                <th class="p-3 border-b" id="th-status">حالة الدفع</th>
-                                <th class="p-3 border-b" id="th-date">التاريخ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sales-table-body"></tbody>
-                    </table>
-                </div>
-                            </section>
-                <!-- إدارة المخزون وتطبيقات البيئة والقيود والحسابات والتقارير -->
-            <section id="tab-inventory" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="inv-section-title">إدارة المخزون والأصناف الرقمية للتاجر</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                    <div>
-                        <label class="block text-sm font-medium mb-1" id="inv-lbl-name">اسم الصنف أو الخدمة</label>
-                        <input type="text" id="inv-name" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="Product Name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1" id="inv-lbl-qty">الكمية المتاحة</label>
-                        <input type="number" id="inv-qty" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1" id="inv-lbl-price">السعر الافتراضي (Pi)</label>
-                        <input type="number" id="inv-price" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="0.00">
-                    </div>
-                    <div class="flex items-end">
-                        <button onclick="addInventoryItem()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium p-2.5 rounded-xl transition shadow" id="inv-btn-add">إضافة صنف للمخزن</button>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-600">
-                                <th class="p-3 border-b" id="inv-th-code">كود الصنف</th>
-                                <th class="p-3 border-b" id="inv-th-name">اسم الصنف</th>
-                                <th class="p-3 border-b" id="inv-th-qty">الكمية</th>
-                                <th class="p-3 border-b" id="inv-th-price">السعر (Pi)</th>
-                                <th class="p-3 border-b" id="inv-th-action">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventory-table-body"></tbody>
-                    </table>
-                </div>
             </section>
 
-            <section id="tab-ecosystem" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="eco-section-title">الربط مع تطبيقات شبكة Pi ومحفظة البلوكشين</h2>
-                <p class="text-sm text-gray-500 mb-6" id="eco-desc">ربط مباشر بين نظام PiLedger وبين المحفظة الرسمية وتطبيقات المجتمع البيئي المعتمدة.</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="border border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
-                        <div class="text-3xl mb-2">👛</div>
-                        <h3 class="font-bold text-gray-800 mb-1" id="eco-wallet-title">Pi Mainnet Wallet</h3>
-                        <p class="text-xs text-gray-500 mb-4" id="eco-wallet-desc">مزامنة أرصدة المحفظة وتأكيد القيود على البلوكشين.</p>
-                        <button onclick="syncWallet()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow" id="eco-wallet-btn">مزامنة المحفظة الآن</button>
-                    </div>
-                    <div class="border border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
-                        <div class="text-3xl mb-2">🛒</div>
-                        <h3 class="font-bold text-gray-800 mb-1" id="eco-market-title">Pi Ecosystem Apps Bridge</h3>
-                        <p class="text-xs text-gray-500 mb-4" id="eco-market-desc">ربط فواتير المبيعات مع المتاجر والأسواق البيئية الأخرى.</p>
-                        <button onclick="connectEcosystem()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow" id="eco-market-btn">ربط بالمتجر البيئي</button>
-                    </div>
-                    <div class="border border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
-                        <div class="text-3xl mb-2">⚡</div>
-                        <h3 class="font-bold text-gray-800 mb-1" id="eco-sync-title">KYC & Node Verifier</h3>
-                        <p class="text-xs text-gray-500 mb-4" id="eco-sync-desc">التحقق من هوية العملاء (KYC) عبر شبكة Pi الآمنة.</p>
-                        <button onclick="verifyKYC()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow" id="eco-sync-btn">فحص حالة KYC</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tab-journal" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="journal-section-title">دفتر القيود اليومية (توليد تلقائي للعمليات)</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm border-collapse" id="journal-table-dir">
-                        <thead>
-                            <tr class="bg-amber-50 text-gray-600">
-                                <th class="p-3 border-b" id="th-j-no">رقم القيد</th>
-                                <th class="p-3 border-b" id="th-j-desc">البيان / الوصف</th>
-                                <th class="p-3 border-b" id="th-j-dr">مدين</th>
-                                <th class="p-3 border-b" id="th-j-cr">دائن</th>
-                                <th class="p-3 border-b" id="th-j-acc">الحسابات المتأثرة</th>
-                                <th class="p-3 border-b" id="th-j-date">التاريخ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="journal-table-body"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section id="tab-accounts" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="accounts-section-title">شجرة الحسابات الرقمية لنظام PiLedger</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
-                        <h3 class="font-bold text-amber-700 mb-2" id="acc-assets">1. الأصول (محفظة Pi والصناديق)</h3>
-                        <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li id="acc-item-1">محفظة Pi الرئيسية</li>
-                            <li id="acc-item-2">العملاء (رواد الشبكة)</li>
-                            <li id="acc-item-3">المخزون الرقمي</li>
-                        </ul>
-                    </div>
-                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
-                        <h3 class="font-bold text-amber-700 mb-2" id="acc-liab">2. الخصوم وحقوق الملكية</h3>
-                        <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li id="acc-item-4">الموردون</li>
-                            <li id="acc-item-5">رأس المال الاستثماري</li>
-                        </ul>
-                    </div>
-                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
-                        <h3 class="font-bold text-amber-700 mb-2" id="acc-rev">3. الإيرادات</h3>
-                        <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li id="acc-item-6">إيرادات مبيعات Pi</li>
-                        </ul>
-                    </div>
-                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
-                        <h3 class="font-bold text-amber-700 mb-2" id="acc-exp">4. المصروفات</h3>
-                        <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li id="acc-item-7">تكلفة المبيعات</li>
-                            <li id="acc-item-8">رسوم شبكة Pi والتشغيل</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
+            <!-- التقارير وقائمة الدخل -->
             <section id="tab-reports" class="tab-content hidden">
                 <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="reports-section-title">قائمة الدخل والميزانية المختصرة (بالعملة الرقمية)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -283,23 +125,11 @@
                             <span id="rep-net-profit" class="text-emerald-600">0.00 Pi</span>
                         </div>
                     </div>
-                    <div class="border border-amber-100 rounded-xl p-5 shadow-sm">
-                        <h3 class="font-bold text-md text-gray-800 mb-3 border-b pb-2" id="rep-bs-title">الميزانية العمومية المصغرة</h3>
-                        <div class="flex justify-between py-2 border-b text-sm">
-                            <span id="rep-assets-label">إجمالي رصيد المحفظة والأصول:</span>
-                            <span id="rep-assets" class="font-bold">0.00 Pi</span>
-                        </div>
-                        <div class="flex justify-between py-2 border-b text-sm">
-                            <span id="rep-cap-label">رأس المال والأرباح المبقاة:</span>
-                            <span id="rep-capital" class="font-bold">0.00 Pi</span>
-                        </div>
-                    </div>
                 </div>
             </section>
-
         </main>
-                                                                                   </div>
-                            <script>
+    </div>
+       <script>
         const translations = {
             ar: {
                 title: "PiLedger - نظام الهاكاثون المحاسبي", appTitle: "PiLedger | باي ليدجر المحاسبي", appSubtitle: "النظام المالي المدمج مع تقنيات ودفع عملة Pi الرقمية",
@@ -307,19 +137,6 @@
                 sales: "المبيعات", inventory: "إدارة المخزون", ecosystem: "تطبيقات Pi البيئية", journal: "القيود اليومية", accounts: "دليل الحسابات", reports: "التقارير",
                 salesTitle: "إصدار فاتورة مبيعات عبر Pi Payments SDK", lblCustomer: "اسم العميل / الرائد", lblItem: "اختر الصنف من المخزن", lblAmount: "المبلغ (Pi)",
                 btnIssue: "دفع عبر Pi SDK وإصدار الفاتورة", salesHistory: "سجل المعاملات والفواتير المؤكدة", thInv: "رقم الفاتورة", thCust: "العميل", thItem: "الصنف", thAmt: "المبلغ", thStatus: "حالة الدفع", thDate: "التاريخ",
-                invSectionTitle: "إدارة المخزون والأصناف الرقمية للتاجر", invLblName: "اسم الصنف أو الخدمة", invLblQty: "الكمية المتاحة", invLblPrice: "السعر الافتراضي (Pi)", invBtnAdd: "إضافة صنف للمخزن",
-                invThCode: "كود الصنف", invThName: "اسم الصنف", invThQty: "الكمية", invThPrice: "السعر (Pi)", invThAction: "إجراءات", deleteBtn: "حذف",
-                ecoSectionTitle: "الربط مع تطبيقات شبكة Pi ومحفظة البلوكشين", ecoDesc: "ربط مباشر بين نظام PiLedger وبين المحفظة الرسمية وتطبيقات المجتمع البيئي المعتمدة.",
-                ecoWalletTitle: "Pi Mainnet Wallet", ecoWalletDesc: "مزامنة أرصدة المحفظة وتأكيد القيود على البلوكشين.", ecoWalletBtn: "مزامنة المحفظة الآن",
-                ecoMarketTitle: "Pi Ecosystem Apps Bridge", ecoMarketDesc: "ربط فواتير المبيعات مع المتاجر والأسواق البيئية الأخرى.", ecoMarketBtn: "ربط بالمتجر البيئي",
-                ecoSyncTitle: "KYC & Node Verifier", ecoSyncDesc: "التحقق من هوية العملاء (KYC) عبر شبكة Pi الآمنة.", ecoSyncBtn: "فحص حالة KYC",
-                journalTitle: "دفتر القيود اليومية (توليد تلقائي للعمليات)", thJNo: "رقم القيد", thJDesc: "البيان / الوصف", thJDr: "مدين", thJCr: "دائن", thJAcc: "الحسابات المتأثرة", thJDate: "التاريخ",
-                accTitle: "شجرة الحسابات الرقمية لنظام PiLedger", accAssets: "1. الأصول (محفظة Pi والصناديق)", accItem1: "محفظة Pi الرئيسية", accItem2: "العملاء (رواد الشبكة)", accItem3: "المخزون الرقمي",
-                accLiab: "2. الخصوم وحقوق الملكية", accItem4: "الموردون", accItem5: "رأس المال الاستثماري", accRev: "3. الإيرادات", accItem6: "إيرادات مبيعات Pi", accExp: "4. المصروفات", accItem7: "تكلفة المبيعات", accItem8: "رسوم شبكة Pi والتشغيل",
-                repTitle: "قائمة الدخل والميزانية المختصرة (بالعملة الرقمية)", repIncomeTitle: "قائمة الدخل (الأرباح)", repRevLabel: "إجمالي إيرادات Pi:", repExpLabel: "إجمالي المصروفات (تلقائي 40%):", repNetLabel: "صافي الأرباح:", repBsTitle: "الميزانية العمومية المصغرة", repAssetsLabel: "إجمالي رصيد المحفظة والأصول:", repCapLabel: "رأس المال والأرباح المبقاة:",
-                loginSubtitle: "سجل الدخول باستخدام اسم المستخدم الخاص بك على شبكة Pi وبدء الإدارة المالية", loginLblUser: "Pi Username (@)", loginBtn: "تسجيل الدخول عبر Pi Browser / SDK", loginFooter: "🔒 مصادق عليه عبر Pi Ecosystem APIs (Mainnet/Testnet)",
-                subStatusTitle: "حالة حساب الهاكاثون (الاشتراك السنوي)", subBtnAction: "تفعيل الاشتراك السنوي (0.1 Pi)",
-                alertMsg: "الرجاء إدخال بيانات صحيحة أو اختيار صنف.", alertInvMsg: "الرجاء تعبئة بيانات الصنف بشكل صحيح.", successMsg: "تم اعتماد الدفع عبر Pi SDK وإصدار الفاتورة وترحيل القيد بنجاح!", journalDesc: "قيد مبيعات عبر Pi SDK للفاتورة", paidStatus: "مدفوع (Pi SDK)",
                 subSuccess: "تم تفعيل الاشتراك السنوي بنجاح مقابل 0.1 Pi!", limitReached: "عذراً، لقد استهلكت الـ 50 عملية المجانية. يرجى تفعيل الاشتراك السنوي بـ 0.1 Pi للمتابعة."
             },
             en: {
@@ -328,38 +145,18 @@
                 sales: "Sales", inventory: "Inventory", ecosystem: "Pi Ecosystem", journal: "Journal Entries", accounts: "Chart of Accounts", reports: "Reports",
                 salesTitle: "Issue Sales Invoice via Pi Payments SDK", lblCustomer: "Customer / Pioneer Name", lblItem: "Select Item from Inventory", lblAmount: "Amount (Pi)",
                 btnIssue: "Pay via Pi SDK & Issue Invoice", salesHistory: "Confirmed Invoices & Transactions", thInv: "Invoice No", thCust: "Customer", thItem: "Item", thAmt: "Amount", thStatus: "Payment Status", thDate: "Date",
-                invSectionTitle: "Merchant Digital Inventory Management", invLblName: "Item / Service Name", invLblQty: "Available Qty", invLblPrice: "Default Price (Pi)", invBtnAdd: "Add to Inventory",
-                invThCode: "Item Code", invThName: "Item Name", invThQty: "Qty", invThPrice: "Price (Pi)", invThAction: "Action", deleteBtn: "Delete",
-                ecoSectionTitle: "Pi Network & Blockchain Wallet Bridge", ecoDesc: "Direct bridge between PiLedger and official wallet & certified ecosystem apps.",
-                ecoWalletTitle: "Pi Mainnet Wallet", ecoWalletDesc: "Sync wallet balances & verify transactions on blockchain.", ecoWalletBtn: "Sync Wallet Now",
-                ecoMarketTitle: "Pi Ecosystem Apps Bridge", ecoMarketDesc: "Connect sales invoices with other ecosystem merchants & markets.", ecoMarketBtn: "Connect Ecosystem",
-                ecoSyncTitle: "KYC & Node Verifier", ecoSyncDesc: "Verify customer identities (KYC) through secure Pi network.", ecoSyncBtn: "Check KYC Status",
-                journalTitle: "Daily Journal Entries (Auto-Generated)", thJNo: "Entry No", thJDesc: "Description", thJDr: "Debit", thJCr: "Credit", thJAcc: "Affected Accounts", thJDate: "Date",
-                accTitle: "PiLedger Digital Chart of Accounts", accAssets: "1. Assets (Pi Wallet & Vaults)", accItem1: "Main Pi Wallet", accItem2: "Pioneer Customers (AR)", accItem3: "Digital Inventory",
-                accLiab: "2. Liabilities & Equity", accItem4: "Suppliers (AP)", accItem5: "Venture Capital", accRev: "3. Revenues", accItem6: "Pi Sales Revenue", accItem7: "Cost of Goods Sold", accItem8: "Pi Network Fees & Ops",
-                repTitle: "Income Statement & Mini Balance Sheet", repIncomeTitle: "Income Statement", repRevLabel: "Total Pi Revenue:", repExpLabel: "Total Expenses (Auto 40%):", repNetLabel: "Net Profit:", repBsTitle: "Mini Balance Sheet", repAssetsLabel: "Total Wallet & Assets:", repCapLabel: "Capital & Retained Earnings:",
-                loginSubtitle: "Sign in using your Pi Network username to start financial management", loginLblUser: "Pi Username (@)", loginBtn: "Sign In via Pi Browser / SDK", loginFooter: "🔒 Authenticated via Pi Ecosystem APIs (Mainnet/Testnet)",
-                subStatusTitle: "Hackathon Account Status (Annual Subscription)", subBtnAction: "Activate Annual Sub (0.1 Pi)",
-                alertMsg: "Please enter valid data or select an item.", alertInvMsg: "Please fill inventory item details correctly.", successMsg: "Pi SDK Payment verified & accounting entry posted successfully!", journalDesc: "Pi SDK sales entry for invoice", paidStatus: "Paid (Pi SDK)",
                 subSuccess: "Annual subscription successfully activated for 0.1 Pi!", limitReached: "Sorry, you have used your 50 free operations. Please activate the annual subscription for 0.1 Pi to continue."
             },
-            fr: {
-                title: "PiLedger - Hackathon", appTitle: "PiLedger | Système", appSubtitle: "Système financier Pi Network", langLabel: "🌍 Langue :", statCash: "Trésorerie (Pi)", statProfit: "Bénéfice", statInvCount: "Articles", sales: "Ventes", inventory: "Stock", ecosystem: "Écosystème Pi", journal: "Journaux", accounts: "Comptes", reports: "Rapports", salesTitle: "Facture Pi SDK", lblCustomer: "Client", lblItem: "Article", lblAmount: "Montant (Pi)", btnIssue: "Payer via Pi SDK", salesHistory: "Historique", thInv: "N°", thCust: "Client", thItem: "Article", thAmt: "Montant", thStatus: "Statut", thDate: "Date", invSectionTitle: "Gestion des Stocks", invLblName: "Nom", invLblQty: "Qté", invLblPrice: "Prix (Pi)", invBtnAdd: "Ajouter", invThCode: "Code", invThName: "Nom", invThQty: "Qté", invThPrice: "Prix", invThAction: "Action", deleteBtn: "Supprimer", ecoSectionTitle: "Passerelle Écosystème Pi", ecoDesc: "Connexion directe.", ecoWalletTitle: "Portefeuille Pi", ecoWalletDesc: "Sync solde.", ecoWalletBtn: "Synchroniser", ecoMarketTitle: "Marché Pi", ecoMarketDesc: "Lier aux boutiques.", ecoMarketBtn: "Connecter", ecoSyncTitle: "KYC Vérificateur", ecoSyncDesc: "Vérifier KYC.", ecoSyncBtn: "Vérifier", journalTitle: "Journaux", thJNo: "N°", thJDesc: "Desc", thJDr: "Débit", thJCr: "Crédit", thJAcc: "Comptes", thJDate: "Date", accTitle: "Comptes", accAssets: "Actifs", accItem1: "Portefeuille Pi", accItem2: "Clients", accItem3: "Stock", accLiab: "Passifs", accItem4: "Fournisseurs", accItem5: "Capital", accRev: "Produits", accItem6: "Ventes", accExp: "Charges", accItem7: "Coût", accItem8: "Frais", repTitle: "Rapports", repIncomeTitle: "Résultat", repRevLabel: "Revenus:", repExpLabel: "Charges:", repNetLabel: "Net:", repBsTitle: "Bilan", repAssetsLabel: "Actifs:", repCapLabel: "Capital:", loginSubtitle: "Connectez-vous avec votre pseudo Pi", loginLblUser: "Nom Pi (@)", loginBtn: "Connexion Pi SDK", loginFooter: "🔒 Sécurisé par Pi API", subStatusTitle: "Statut d'Abonnement Annuel", subBtnAction: "Activer (0.1 Pi)", alertMsg: "Données invalides.", alertInvMsg: "Erreur stock.", successMsg: "Paiement Pi SDK réussi !", journalDesc: "Vente Pi", paidStatus: "Payé", subSuccess: "Abonnement activé pour 0.1 Pi !", limitReached: "Limite de 50 opérations gratuites atteinte."
-            },
-            de: {
-                title: "PiLedger - Hackathon", appTitle: "PiLedger | System", appSubtitle: "Pi Finanzsystem", langLabel: "🌍 Sprache:", statCash: "Kasse (Pi)", statProfit: "Gewinn", statInvCount: "Artikel", sales: "Verkäufe", inventory: "Lager", ecosystem: "Pi Ökosystem", journal: "Journal", accounts: "Konten", reports: "Berichte", salesTitle: "Rechnung Pi SDK", lblCustomer: "Kunde", lblItem: "Artikel", lblAmount: "Betrag (Pi)", btnIssue: "Über Pi SDK zahlen", salesHistory: "Verlauf", thInv: "Nr.", thCust: "Kunde", thItem: "Artikel", thAmt: "Betrag", thStatus: "Status", thDate: "Datum", invSectionTitle: "Lagerverwaltung", invLblName: "Name", invLblQty: "Menge", invLblPrice: "Preis (Pi)", invBtnAdd: "Hinzufügen", invThCode: "Code", invThName: "Name", invThQty: "Menge", invThPrice: "Preis", invThAction: "Aktion", deleteBtn: "Löschen", ecoSectionTitle: "Pi Ökosystem Brücke", ecoDesc: "Direkte Verbindung.", ecoWalletTitle: "Pi Wallet", ecoWalletDesc: "Sync Guthaben.", ecoWalletBtn: "Synchronisieren", ecoMarketTitle: "Pi Markt", ecoMarketDesc: "Mit Shops verbinden.", ecoMarketBtn: "Verbinden", ecoSyncTitle: "KYC Präfix", ecoSyncDesc: "KYC prüfen.", ecoSyncBtn: "Prüfen", journalTitle: "Journal", thJNo: "Nr.", thJDesc: "Desc", thJDr: "Soll", thJCr: "Haben", thJAcc: "Konten", thJDate: "Datum", accTitle: "Konten", accAssets: "Aktiva", accItem1: "Pi Wallet", accItem2: "Kunden", accItem3: "Inventar", accLiab: "Passiva", accItem4: "Lieferanten", accItem5: "Kapital", accRev: "Erträge", accItem6: "Umsatz", accExp: "Aufwand", accItem7: "Kosten", accItem8: "Gebühren", repTitle: "Berichte", repIncomeTitle: "GuV", repRevLabel: "Umsatz:", repExpLabel: "Aufwand:", repNetLabel: "Gewinn:", repBsTitle: "Bilanz", repAssetsLabel: "Aktiva:", repCapLabel: "Kapital:", loginSubtitle: "Mit Pi Benutzernamen anmelden", loginLblUser: "Pi Name (@)", loginBtn: "Pi SDK Anmeldung", loginFooter: "🔒 Pi API", subStatusTitle: "Jahresabo Status", subBtnAction: "Aktivieren (0.1 Pi)", alertMsg: "Ungültig.", alertInvMsg: "Lager Fehler.", successMsg: "Pi SDK Zahlung erfolgreich!", journalDesc: "Pi Verkauf", paidStatus: "Bezahlt", subSuccess: "Abo für 0.1 Pi aktiviert!", limitReached: "50 kostenlose Operationen aufbraucht."
-            },
-            es: {
-                title: "PiLedger - Hackathon", appTitle: "PiLedger | Sistema", appSubtitle: "Sistema financiero Pi", langLabel: "🌍 Idioma:", statCash: "Tesorería (Pi)", statProfit: "Beneficio", statInvCount: "Artículos", sales: "Ventas", inventory: "Inventario", ecosystem: "Ecosistema Pi", journal: "Diario", accounts: "Cuentas", reports: "Informes", salesTitle: "Factura Pi SDK", lblCustomer: "Cliente", lblItem: "Artículo", lblAmount: "Monto (Pi)", btnIssue: "Pagar vía Pi SDK", salesHistory: "Historial", thInv: "Nº", thCust: "Cliente", thItem: "Artículo", thAmt: "Monto", thStatus: "Estado", thDate: "Fecha", invSectionTitle: "Gestión de Inventario", invLblName: "Nombre", invLblQty: "Cant", invLblPrice: "Precio (Pi)", invBtnAdd: "Agregar", invThCode: "Código", invThName: "Nombre", invThQty: "Cant", invThPrice: "Precio", invThAction: "Acción", deleteBtn: "Eliminar", ecoSectionTitle: "Puente Ecosistema Pi", ecoDesc: "Conexión directa.", ecoWalletTitle: "Cartera Pi", ecoWalletDesc: "Sync saldo.", ecoWalletBtn: "Sincronizar", ecoMarketTitle: "Mercado Pi", ecoMarketDesc: "Conectar comercios.", ecoMarketBtn: "Conectar", ecoSyncTitle: "KYC Verificador", ecoSyncDesc: "Verificar KYC.", ecoSyncBtn: "Verificar", journalTitle: "Diario", thJNo: "Nº", thJDesc: "Desc", thJDr: "Debe", thJCr: "Haber", thJAcc: "Cuentas", thJDate: "Fecha", accTitle: "Cuentas", accAssets: "Activos", accItem1: "Cartera Pi", accItem2: "Clientes", accItem3: "Inventario", accLiab: "Pasivos", accItem4: "Proveedores", accItem5: "Capital", accRev: "Ingresos", accItem6: "Ventas", accItem7: "Gasto", accItem8: "Tarifas", repTitle: "Informes", repIncomeTitle: "Resultados", repRevLabel: "Ingresos:", repExpLabel: "Gastos:", repNetLabel: "Neto:", repBsTitle: "Balance", repAssetsLabel: "Activos:", repCapLabel: "Capital:", loginSubtitle: "Inicia sesión con tu usuario de Pi", loginLblUser: "Usuario Pi (@)", loginBtn: "Ingresar Pi SDK", loginFooter: "🔒 Pi API", subStatusTitle: "Suscripción Anual", subBtnAction: "Activar (0.1 Pi)", alertMsg: "Inválido.", alertInvMsg: "Error.", successMsg: "¡Éxito!", journalDesc: "Venta Pi", paidStatus: "Pagado", subSuccess: "Suscripción activada por 0.1 Pi!", limitReached: "Límite de 50 operaciones gratis alcanzado."
-            },
-            tr: {
-                title: "PiLedger - Hackathon", appTitle: "PiLedger | Sistem", appSubtitle: "Pi Finansal Sistem", langLabel: "🌍 Dil:", statCash: "Kasa (Pi)", statProfit: "Net Kâr", statInvCount: "Ürünler", sales: "Satışlar", inventory: "Envanter", ecosystem: "Pi Ekosistem", journal: "Yevmiye", accounts: "Hesaplar", reports: "Raporlar", salesTitle: "Pi SDK Fatura", lblCustomer: "Müşteri", lblItem: "Ürün", lblAmount: "Tutar (Pi)", btnIssue: "Pi SDK ile Öde", salesHistory: "Geçmiş", thInv: "No", thCust: "Müşteri", thItem: "Ürün", thAmt: "Tutar", thStatus: "Durum", thDate: "Tarih", invSectionTitle: "Envanter Yönetimi", invLblName: "Ad", invLblQty: "Adet", invLblPrice: "Fiyat (Pi)", invBtnAdd: "Ekle", invThCode: "Kod", invThName: "Ad", invThQty: "Adet", invThPrice: "Fiyat", invThAction: "İşlem", deleteBtn: "Sil", ecoSectionTitle: "Pi Ekosistem Köprüsü", ecoDesc: "Doğrudan bağlantı.", ecoWalletTitle: "Pi Cüzdan", ecoWalletDesc: "Bakiye senkronizasyonu.", ecoWalletBtn: "Senkronize Et", ecoMarketTitle: "Pi Pazar", ecoMarketDesc: "Mağazalara bağlan.", ecoMarketBtn: "Bağlan", ecoSyncTitle: "KYC Doğrulayıcı", ecoSyncDesc: "KYC kontrol.", ecoSyncBtn: "Kontrol Et", journalTitle: "Yevmiye", thJNo: "No", thJDesc: "Desc", thJDr: "Borç", thJCr: "Alacak", thJAcc: "Hesaplar", thJDate: "Tarih", accTitle: "Hesaplar", accAssets: "Varlıklar", accItem1: "Pi Cüzdan", accItem2: "Müşteriler", accItem3: "Envanter", accLiab: "Borçlar", accItem4: "Tedarikçiler", accItem5: "Sermaye", accRev: "Gelir", accItem6: "Satış", accExp: "Gider", accItem7: "Maliyet", accItem8: "Ücret", repTitle: "Raporlar", repIncomeTitle: "Gelir Tablosu", repRevLabel: "Gelir:", repExpLabel: "Gider:", repNetLabel: "Net Kâr:", repBsTitle: "Bilanço", repAssetsLabel: "Varlıklar:", repCapLabel: "Sermaye:", loginSubtitle: "Pi Network kullanıcı adınızla giriş yapın", loginLblUser: "Pi Kullanıcı Adı (@)", loginBtn: "Pi SDK ile Giriş Yap", loginFooter: "🔒 Pi API", subStatusTitle: "Yıllık Abonelik Durumu", subBtnAction: "Aktif Et (0.1 Pi)", alertMsg: "Geçersiz.", alertInvMsg: "Hata.", successMsg: "Başarılı!", journalDesc: "Pi Satış", paidStatus: "Ödendi", subSuccess: "Abonelik 0.1 Pi ile aktifleşti!", limitReached: "50 ücretsiz işlem hakkı doldu."
-            },
-            zh: {
-                title: "PiLedger - 黑客松系统", appTitle: "PiLedger | 会计系统", appSubtitle: "Pi Network 支付集成系统", langLabel: "🌍 语言:", statCash: "总余额 (Pi)", statProfit: "净利润", statInvCount: "库存商品", sales: "销售", inventory: "库存管理", ecosystem: "Pi 生态系统", journal: "日记账", accounts: "科目", reports: "报表", salesTitle: "Pi SDK 销售发票", lblCustomer: "客户", lblItem: "选择商品", lblAmount: "金额 (Pi)", btnIssue: "通过 Pi SDK 支付", salesHistory: "历史订单", thInv: "编号", thCust: "客户", thItem: "商品", thAmt: "金额", thStatus: "状态", thDate: "日期", invSectionTitle: "数字库存管理", invLblName: "名称", invLblQty: "数量", invLblPrice: "默认价格 (Pi)", invBtnAdd: "添加库存", invThCode: "代码", invThName: "名称", invThQty: "数量", invThPrice: "价格", invThAction: "操作", deleteBtn: "删除", ecoSectionTitle: "Pi 生态与钱包桥接", ecoDesc: "PiLedger 与官方钱包及生态应用的直接桥接。", ecoWalletTitle: "Pi 主网钱包", ecoWalletDesc: "同步钱包余额并验证区块交易。", ecoWalletBtn: "立即同步钱包", ecoMarketTitle: "Pi 生态应用桥", ecoMarketDesc: "将销售发票与生态内其他商家和市场相连。", ecoMarketBtn: "连接生态市场", ecoSyncTitle: "KYC 与节点验证", ecoSyncDesc: "通过安全的 Pi 网络验证客户身份。", ecoSyncBtn: "检查 KYC 状态", journalTitle: "日记账", thJNo: "序号", thJDesc: "摘要", thJDr: "借", thJCr: "贷", thJAcc: "科目", thJDate: "日期", accTitle: "科目表", accAssets: "资产", accItem1: "Pi钱包", accItem2: "应收", accItem3: "库存", accLiab: "负债", accItem4: "应付", accItem5: "资本", accRev: "收入", accItem6: "销售收入", accExp: "费用", accItem7: "成本", accItem8: "手续费", repTitle: "报表", repIncomeTitle: "利润表", repRevLabel: "收入:", repExpLabel: "费用:", repNetLabel: "净利:", repBsTitle: "资产负债表", repAssetsLabel: "资产:", repCapLabel: "资本:", loginSubtitle: "使用您的 Pi Network 用户名登录以开始财务管理", loginLblUser: "Pi 用户名 (@)", loginBtn: "通过 Pi 浏览器 / SDK 登录", loginFooter: "🔒 通过 Pi 生态 API 验证", subStatusTitle: "黑客松账户状态 (年度订阅)", subBtnAction: "激活年度订阅 (0.1 Pi)", alertMsg: "请选择商品。", alertInvMsg: "请填写库存信息。", successMsg: "支付验证成功！", journalDesc: "Pi 销售分录", paidStatus: "已支付", subSuccess: "成功支付 0.1 Pi 激活年度订阅！", limitReached: "抱歉，您的 50 次免费操作已用完。请激活 0.1 Pi 年度订阅以继续。"
-            },
-            ja: {
-                title: "PiLedger - ハッカソン", appTitle: "PiLedger | 会計システム", appSubtitle: "Pi Network決済統合システム", langLabel: "🌍 言語:", statCash: "残高 (Pi)", statProfit: "純利益", statInvCount: "在庫商品", sales: "売上", inventory: "在庫管理", ecosystem: "Piエコシステム", journal: "仕訳帳", accounts: "勘定", reports: "レポート", salesTitle: "Pi SDK 売上伝票", lblCustomer: "顧客", lblItem: "商品選択", lblAmount: "金額 (Pi)", btnIssue: "Pi SDKで支払う", salesHistory: "売上履歴", thInv: "No", thCust: "顧客", thItem: "商品", thAmt: "金額", thStatus: "状態", thDate: "日付", invSectionTitle: "在庫管理", invLblName: "名前", invLblQty: "数量", invLblPrice: "価格 (Pi)", invBtnAdd: "追加", invThCode: "コード", invThName: "名前", invThQty: "数量", invThPrice: "価格", invThAction: "操作", deleteBtn: "削除", ecoSectionTitle: "Piエコシステムブリッジ", ecoDesc: "ウォレットと連携。", ecoWalletTitle: "Piメインネットウォレット", ecoWalletDesc: "残高同期。", ecoWalletBtn: "同期する", ecoMarketTitle: "Piマーケット", ecoMarketDesc: "ストアと接続。", ecoMarketBtn: "接続する", ecoSyncTitle: "KYC認証", ecoSyncDesc: "KYC確認。", ecoSyncBtn: "確認する", journalTitle: "仕訳帳", thJNo: "No", thJDesc: "摘要", thJDr: "借方", thJCr: "貸方", thJAcc: "勘定", thJDate: "日付", accTitle: "勘定科目", accAssets: "資産", accItem1: "Piウォレット", accItem2: "顧客", accItem3: "在庫", accLiab: "負債", accItem4: "仕入先", accItem5: "資本金", accRev: "収益", accItem6: "売上", accExp: "費用", accItem7: "原価", accItem8: "手数料", repTitle: "レポート", repInc        let currentUser = localStorage.getItem('piledger_user') || null;
+            fr: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Système", appSubtitle: "Système financier Pi Network", langLabel: "🌍 Langue :" },
+            de: { title: "PiLedger - Hackathon", appTitle: "PiLedger | System", appSubtitle: "Pi Finanzsystem", langLabel: "🌍 Sprache:" },
+            es: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Sistema", appSubtitle: "Sistema financiero Pi", langLabel: "🌍 Idioma:" },
+            tr: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Sistem", appSubtitle: "Pi Finansal Sistem", langLabel: "🌍 Dil:" },
+            zh: { title: "PiLedger - 黑客松系统", appTitle: "PiLedger | 会计系统", appSubtitle: "Pi Network 支付集成系统", langLabel: "🌍 语言:" },
+            ja: { title: "PiLedger - ハッカソン", appTitle: "PiLedger | 会計システム", appSubtitle: "Pi Network決済統合システム", langLabel: "🌍 言語:" },
+            vi: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Kế toán", appSubtitle: "Hệ thống thanh toán Pi Network", langLabel: "🌍 Ngôn ngữ:" },
+            ru: { title: "PiLedger - Хакатон", appTitle: "PiLedger | Бухгалтерия", appSubtitle: "Финансовая система Pi Network", langLabel: "🌍 Язык:" }
+        };
+                   let currentUser = localStorage.getItem('piledger_user') || null;
         let freeOpsCount = parseInt(localStorage.getItem('piledger_free_ops')) || 0;
         let isSubscribed = JSON.parse(localStorage.getItem('piledger_subscribed')) || false;
 
@@ -403,146 +200,6 @@
                 loginScreen.classList.remove('hidden');
                 userDisplay.innerText = '@Guest';
             }
-            updateSubscriptionUI();
-        }
-
-        function updateSubscriptionUI() {
-            const t = translations[currentLang] || translations['ar'];
-            const freeLeft = Math.max(0, 50 - freeOpsCount);
-            document.getElementById('free-ops-left').innerText = freeLeft;
-            
-            const btnSub = document.getElementById('sub-btn-action');
-            if (isSubscribed) {
-                btnSub.innerText = "⭐ " + (currentLang === 'ar' ? 'مشترك سنوي (نشط)' : 'Annual Sub (Active)');
-                btnSub.classList.add('bg-emerald-100', 'text-emerald-800');
-            } else {
-                btnSub.innerText = t.subBtnAction;
-            }
-        }
-
-        function payAnnualSubscription() {
-            const t = translations[currentLang] || translations['ar'];
-            const confirmed = confirm(`🟡 [Pi Payments SDK]\n\nMerchant: PiLedger Subscription\nAmount: 0.1 Pi\n\nApprove annual subscription payment?`);
-            if (!confirmed) return;
-
-            isSubscribed = true;
-            localStorage.setItem('piledger_subscribed', JSON.stringify(true));
-            updateSubscriptionUI();
-            alert(t.subSuccess);
-        }
-
-        function checkOperationLimit() {
-            if (isSubscribed) return true;
-            if (freeOpsCount < 50) {
-                freeOpsCount++;
-                localStorage.setItem('piledger_free_ops', freeOpsCount);
-                updateSubscriptionUI();
-                return true;
-            } else {
-                const t = translations[currentLang] || translations['ar'];
-                alert(t.limitReached);
-                return false;
-            }
-        }
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            const t = translations[lang] || translations['ar'];
-            const htmlRoot = document.getElementById('html-root');
-
-            htmlRoot.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-            htmlRoot.setAttribute('lang', lang);
-
-            document.getElementById('page-title').innerText = t.title;
-            document.getElementById('app-title').innerText = t.appTitle;
-            document.getElementById('app-subtitle').innerText = t.appSubtitle;
-            document.getElementById('lang-label').innerText = t.langLabel;
-            document.getElementById('stat-cash-title').innerText = t.statCash;
-            document.getElementById('stat-profit-title').innerText = t.statProfit;
-            document.getElementById('stat-inv-title').innerText = t.statInvCount;
-
-            document.getElementById('btn-sales').innerText = t.sales;
-            document.getElementById('btn-inventory').innerText = t.inventory;
-            document.getElementById('btn-ecosystem').innerText = t.ecosystem;
-            document.getElementById('btn-journal').innerText = t.journal;
-            document.getElementById('btn-accounts').innerText = t.accounts;
-            document.getElementById('btn-reports').innerText = t.reports;
-
-            document.getElementById('sales-section-title').innerText = t.salesTitle;
-            document.getElementById('lbl-customer').innerText = t.lblCustomer;
-            document.getElementById('lbl-item').innerText = t.lblItem;
-            document.getElementById('lbl-amount').innerText = t.lblAmount;
-            document.getElementById('btn-issue').innerText = t.btnIssue;
-            document.getElementById('sales-history-title').innerText = t.salesHistory;
-            document.getElementById('th-inv').innerText = t.thInv;
-            document.getElementById('th-cust').innerText = t.thCust;
-            document.getElementById('th-item').innerText = t.thItem;
-            document.getElementById('th-amt').innerText = t.thAmt;
-            document.getElementById('th-status').innerText = t.thStatus;
-            document.getElementById('th-date').innerText = t.thDate;
-
-            document.getElementById('inv-section-title').innerText = t.invSectionTitle;
-            document.getElementById('inv-lbl-name').innerText = t.invLblName;
-            document.getElementById('inv-lbl-qty').innerText = t.invLblQty;
-            document.getElementById('inv-lbl-price').innerText = t.invLblPrice;
-            document.getElementById('inv-btn-add').innerText = t.invBtnAdd;
-            document.getElementById('inv-th-code').innerText = t.invThCode;
-            document.getElementById('inv-th-name').innerText = t.invThName;
-            document.getElementById('inv-th-qty').innerText = t.invThQty;
-            document.getElementById('inv-th-price').innerText = t.invThPrice;
-            document.getElementById('inv-th-action').innerText = t.invThAction;
-
-            document.getElementById('eco-section-title').innerText = t.ecoSectionTitle;
-            document.getElementById('eco-desc').innerText = t.ecoDesc;
-            document.getElementById('eco-wallet-title').innerText = t.ecoWalletTitle;
-            document.getElementById('eco-wallet-desc').innerText = t.ecoWalletDesc;
-            document.getElementById('eco-wallet-btn').innerText = t.ecoWalletBtn;
-            document.getElementById('eco-market-title').innerText = t.ecoMarketTitle;
-            document.getElementById('eco-market-desc').innerText = t.ecoMarketDesc;
-            document.getElementById('eco-market-btn').innerText = t.ecoMarketBtn;
-            document.getElementById('eco-sync-title').innerText = t.ecoSyncTitle;
-            document.getElementById('eco-sync-desc').innerText = t.ecoSyncDesc;
-            document.getElementById('eco-sync-btn').innerText = t.ecoSyncBtn;
-
-            document.getElementById('journal-section-title').innerText = t.journalTitle;
-            document.getElementById('th-j-no').innerText = t.thJNo;
-            document.getElementById('th-j-desc').innerText = t.thJDesc;
-            document.getElementById('th-j-dr').innerText = t.thJDr;
-            document.getElementById('th-j-cr').innerText = t.thJCr;
-            document.getElementById('th-j-acc').innerText = t.thJAcc;
-            document.getElementById('th-j-date').innerText = t.thJDate;
-
-            document.getElementById('accounts-section-title').innerText = t.accTitle;
-            document.getElementById('acc-assets').innerText = t.accAssets;
-            document.getElementById('acc-item-1').innerText = t.accItem1;
-            document.getElementById('acc-item-2').innerText = t.accItem2;
-            document.getElementById('acc-item-3').innerText = t.accItem3;
-            document.getElementById('acc-liab').innerText = t.accLiab;
-            document.getElementById('acc-item-4').innerText = t.accItem4;
-            document.getElementById('acc-item-5').innerText = t.accItem5;
-            document.getElementById('acc-rev').innerText = t.accRev;
-            document.getElementById('acc-item-6').innerText = t.accItem6;
-            document.getElementById('acc-exp').innerText = t.accExp;
-            document.getElementById('acc-item-7').innerText = t.accItem7;
-            document.getElementById('acc-item-8').innerText = t.accItem8;
-
-            document.getElementById('reports-section-title').innerText = t.repTitle;
-            document.getElementById('rep-income-title').innerText = t.repIncomeTitle;
-            document.getElementById('rep-rev-label').innerText = t.repRevLabel;
-            document.getElementById('rep-exp-label').innerText = t.repExpLabel;
-            document.getElementById('rep-net-label').innerText = t.repNetLabel;
-            document.getElementById('rep-bs-title').innerText = t.repBsTitle;
-            document.getElementById('rep-assets-label').innerText = t.repAssetsLabel;
-            document.getElementById('rep-cap-label').innerText = t.repCapLabel;
-
-            document.getElementById('login-subtitle').innerText = t.loginSubtitle;
-            document.getElementById('login-lbl-user').innerText = t.loginLblUser;
-            document.getElementById('login-btn').innerText = t.loginBtn;
-            document.getElementById('login-footer').innerText = t.loginFooter;
-            document.getElementById('sub-status-title').innerText = t.subStatusTitle;
-
-            updateSubscriptionUI();
-            renderAll();
         }
 
         function switchTab(tabId) {
@@ -551,170 +208,15 @@
                 el.classList.remove('bg-amber-600', 'text-white', 'shadow');
                 el.classList.add('bg-white', 'text-gray-600', 'border', 'border-amber-200');
             });
-
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('bg-white', 'text-gray-600', 'border', 'border-amber-200');
             activeBtn.classList.add('bg-amber-600', 'text-white', 'shadow');
         }
 
-        function addInventoryItem() {
-            if (!checkOperationLimit()) return;
-            const t = translations[currentLang] || translations['ar'];
-            const name = document.getElementById('inv-name').value.trim();
-            const qty = parseInt(document.getElementById('inv-qty').value);
-            const price = parseFloat(document.getElementById('inv-price').value);
-
-            if (!name || isNaN(qty) || isNaN(price)) {
-                alert(t.alertInvMsg);
-                return;
-            }
-
-            const itemCode = 'ITM-' + (100 + inventory.length + 1);
-            inventory.push({ id: itemCode, name, qty, price });
-            localStorage.setItem('piledger_inventory', JSON.stringify(inventory));
-
-            document.getElementById('inv-name').value = '';
-            document.getElementById('inv-qty').value = '';
-            document.getElementById('inv-price').value = '';
-            renderAll();
-        }
-
-        function deleteInventoryItem(index) {
-            inventory.splice(index, 1);
-            localStorage.setItem('piledger_inventory', JSON.stringify(inventory));
-            renderAll();
-        }
-
-        function updateItemPrice(itemCode) {
-            const item = inventory.find(i => i.id === itemCode);
-            if (item) {
-                document.getElementById('sale-amount').value = item.price;
-            }
-        }
-
-        function simulatePiPayment() {
-            if (!checkOperationLimit()) return;
-            const t = translations[currentLang] || translations['ar'];
-            const customer = document.getElementById('sale-customer').value.trim();
-            const itemSelect = document.getElementById('sale-item-select');
-            const itemCode = itemSelect.value;
-            const amount = parseFloat(document.getElementById('sale-amount').value);
-
-            if (!customer || !itemCode || isNaN(amount) || amount <= 0) {
-                alert(t.alertMsg);
-                return;
-            }
-
-            const selectedItem = inventory.find(i => i.id === itemCode);
-            if (!selectedItem || selectedItem.qty <= 0) {
-                alert("الكمية غير متوفرة في المخزن!");
-                return;
-            }
-
-            const confirmed = confirm(`🟡 [Pi Payments SDK]\n\nMerchant: @${currentUser}\nCustomer: @${customer}\nAmount: ${amount} Pi\nItem: ${selectedItem.name}\n\nAuthorize transaction?`);
-            if (!confirmed) return;
-
-            selectedItem.qty -= 1;
-            localStorage.setItem('piledger_inventory', JSON.stringify(inventory));
-
-            const invoiceNo = 'PI-SDK-' + (1000 + sales.length + 1);
-            const dateStr = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-YE' : 'en-US');
-
-            sales.push({ id: invoiceNo, customer, item: selectedItem.name, amount, status: t.paidStatus, date: dateStr });
-            
-            const entryNo = 'JE-' + (5000 + journalEntries.length + 1);
-            journalEntries.push({
-                id: entryNo,
-                desc: `${t.journalDesc} ${invoiceNo} (${customer})`,
-                amount: amount,
-                accounts: currentLang === 'ar' ? 'من ح/ محفظة Pi إلى ح/ إيرادات مبيعات Pi' : 'Pi Wallet Dr / Pi Sales Revenue Cr',
-                date: dateStr
-            });
-
-            localStorage.setItem('piledger_sales', JSON.stringify(sales));
-            localStorage.setItem('piledger_journal', JSON.stringify(journalEntries));
-
-            document.getElementById('sale-customer').value = '';
-            document.getElementById('sale-amount').value = '';
-            itemSelect.value = '';
-
-            renderAll();
-            alert(t.successMsg);
-        }
-
-        function syncWallet() { alert("✅ [Pi Wallet SDK]: Wallet synchronized successfully for @" + currentUser); }
-        function connectEcosystem() { alert("✅ [Pi Apps Bridge]: Successfully connected to Pi Ecosystem Marketplace & Apps!"); }
-        function verifyKYC() { alert("✅ [Pi KYC Verifier]: User @" + currentUser + " is Verified (KYC Passed)."); }
-
         function renderAll() {
-            let totalCash = 0;
-            
-            const salesBody = document.getElementById('sales-table-body');
-            salesBody.innerHTML = '';
-            sales.forEach(s => {
-                totalCash += s.amount;
-                salesBody.innerHTML += `
-                    <tr class="border-b border-amber-100 hover:bg-amber-50/50">
-                        <td class="p-3 font-mono font-medium">${s.id}</td>
-                        <td class="p-3">@${s.customer}</td>
-                        <td class="p-3">${s.item}</td>
-                        <td class="p-3 text-amber-600 font-bold">${s.amount.toFixed(2)} Pi</td>
-                        <td class="p-3"><span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-medium">${s.status}</span></td>
-                        <td class="p-3 text-gray-500">${s.date}</td>
-                    </tr>
-                `;
-            });
-
-            const invBody = document.getElementById('inventory-table-body');
-            const itemSelect = document.getElementById('sale-item-select');
-            invBody.innerHTML = '';
-            itemSelect.innerHTML = `<option value="">-- ${translations[currentLang].lblItem} --</option>`;
-
-            inventory.forEach((i, index) => {
-                invBody.innerHTML += `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-mono text-xs">${i.id}</td>
-                        <td class="p-3 font-medium">${i.name}</td>
-                        <td class="p-3 ${i.qty <= 5 ? 'text-red-600 font-bold' : ''}">${i.qty}</td>
-                        <td class="p-3 text-amber-600 font-bold">${i.price.toFixed(2)} Pi</td>
-                        <td class="p-3">
-                            <button onclick="deleteInventoryItem(${index})" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 bg-red-50 rounded">${translations[currentLang].deleteBtn}</button>
-                        </td>
-                    </tr>
-                `;
-                itemSelect.innerHTML += `<option value="${i.id}">${i.name} (${i.price} Pi)</option>`;
-            });
-
-            document.getElementById('stat-inv-count').innerText = inventory.length;
-
-            const journalBody = document.getElementById('journal-table-body');
-            journalBody.innerHTML = '';
-            journalEntries.forEach(j => {
-                journalBody.innerHTML += `
-                    <tr class="border-b border-amber-100 hover:bg-amber-50/50">
-                        <td class="p-3 font-mono font-medium">${j.id}</td>
-                        <td class="p-3">${j.desc}</td>
-                        <td class="p-3 text-amber-700">${j.amount.toFixed(2)}</td>
-                        <td class="p-3 text-amber-700">${j.amount.toFixed(2)}</td>
-                        <td class="p-3 text-xs text-gray-600 bg-amber-50 rounded">${j.accounts}</td>
-                        <td class="p-3 text-gray-500">${j.date}</td>
-                    </tr>
-                `;
-            });
-
-            const totalRevenue = totalCash;
-            const estimatedExpenses = totalRevenue * 0.4;
-            const netProfit = totalRevenue - estimatedExpenses;
-
+            let totalCash = sales.reduce((acc, s) => acc + s.amount, 0);
             document.getElementById('stat-cash').innerText = totalCash.toFixed(2) + ' Pi';
-            document.getElementById('stat-profit').innerText = netProfit.toFixed(2) + ' Pi';
-
-            document.getElementById('rep-revenue').innerText = totalRevenue.toFixed(2) + ' Pi';
-            document.getElementById('rep-expenses').innerText = estimatedExpenses.toFixed(2) + ' Pi';
-            document.getElementById('rep-net-profit').innerText = netProfit.toFixed(2) + ' Pi';
-            document.getElementById('rep-assets').innerText = totalCash.toFixed(2) + ' Pi';
-            document.getElementById('rep-capital').innerText = totalCash.toFixed(2) + ' Pi';
         }
     </script>
 </body>
