@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">باي ليدجر - نظام محاسبي لرواد باي</title>
-    <!-- استدعاء Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-    </style>
+    <style> body { font-family: system-ui, -apple-system, sans-serif; } </style>
 </head>
 <body class="bg-amber-50 text-gray-800 transition-all duration-300">
 
     <div class="container mx-auto p-4 max-w-6xl">
         
-        <!-- الشريط العلوي والتحكم باللغات -->
         <header class="bg-gradient-to-r from-amber-600 to-yellow-600 text-white p-6 rounded-2xl shadow-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <div class="flex items-center gap-2">
@@ -24,7 +20,6 @@
                 <p class="text-yellow-100 text-sm mt-1" id="app-subtitle">النظام المالي المخصص لرواد ومتاجر عملة Pi الرقمية</p>
             </div>
 
-            <!-- أداة اختيار اللغات العشر -->
             <div class="flex items-center gap-3 bg-black/10 p-2.5 rounded-xl">
                 <span class="text-xs text-yellow-100 font-medium" id="lang-label">🌍 اللغة / Language:</span>
                 <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-white text-gray-800 text-sm rounded-lg px-3 py-1.5 focus:outline-none font-medium shadow-sm">
@@ -40,8 +35,8 @@
                     <option value="ru">Русский</option>
                 </select>
             </div>
-                </header>
-                                                       <!-- لوحة المؤشرات السريعة -->
+        </header>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
                 <div>
@@ -59,7 +54,6 @@
             </div>
         </div>
 
-        <!-- أزرار التنقل بين الأقسام -->
         <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
             <button onclick="switchTab('sales')" id="btn-sales" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-amber-600 text-white shadow">المبيعات</button>
             <button onclick="switchTab('journal')" id="btn-journal" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">القيود اليومية</button>
@@ -67,10 +61,8 @@
             <button onclick="switchTab('reports')" id="btn-reports" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">التقارير</button>
         </div>
 
-        <!-- محتوى الأقسام -->
         <main class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
             
-            <!-- قسم المبيعات -->
             <section id="tab-sales" class="tab-content">
                 <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="sales-section-title">إصدار فاتورة مبيعات جديدة (بواسطة Pi)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -106,8 +98,8 @@
                         <tbody id="sales-table-body"></tbody>
                     </table>
                 </div>
-                            </section>
-                <!-- قسم القيود اليومية -->
+            </section>
+
             <section id="tab-journal" class="tab-content hidden">
                 <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="journal-section-title">دفتر القيود اليومية (توليد تلقائي للعمليات)</h2>
                 <div class="overflow-x-auto">
@@ -127,7 +119,6 @@
                 </div>
             </section>
 
-            <!-- قسم دليل الحسابات -->
             <section id="tab-accounts" class="tab-content hidden">
                 <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="accounts-section-title">شجرة الحسابات الرقمية لنظام PiLedger</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -162,7 +153,6 @@
                 </div>
             </section>
 
-            <!-- قسم التقارير -->
             <section id="tab-reports" class="tab-content hidden">
                 <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="reports-section-title">قائمة الدخل والميزانية المختصرة (بالعملة الرقمية)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -197,6 +187,7 @@
 
         </main>
     </div>
+        <script>
         const translations = {
             ar: {
                 title: "PiLedger - نظام محاسبي لرواد باي",
@@ -305,66 +296,105 @@
                 alertMsg: "Please enter valid data for all fields.",
                 successMsg: "Invoice issued and Pi accounting entry posted successfully!",
                 journalDesc: "Pi cash sales entry for invoice"
-            }
-        };
-           const extraTranslations = {
+            },
             fr: {
-                title: "PiLedger - Comptabilité pour les Pionniers Pi",
-                appTitle: "PiLedger | Système Comptable",
-                appSubtitle: "Système financier pour les pionniers et marchands Pi Network",
-                langLabel: "🌍 Langue :",
-                statCash: "Trésorerie Totale (Pi)",
-                statProfit: "Bénéfice Net Estimé",
-                sales: "Ventes",
-                journal: "Journaux",
-                accounts: "Plan Comptable",
-                reports: "Rapports",
-                salesTitle: "Émettre une Nouvelle Facture (via Pi)",
-                lblCustomer: "Nom du Client / Pionnier",
-                lblItem: "Article ou Service Numérique",
-                lblAmount: "Montant (Pi)",
-                btnIssue: "Émettre et Publier l'Écriture",
-                salesHistory: "Historique des Factures",
-                thInv: "N° Facture",
-                thCust: "Client",
-                thItem: "Article",
-                thAmt: "Montant",
-                thDate: "Date",
-                journalTitle: "Journal des Opérations (Généré Automatiquement)",
-                thJNo: "N° Écriture",
-                thJDesc: "Description",
-                thJDr: "Débit",
-                thJCr: "Crédit",
-                thJAcc: "Comptes Impactés",
-                thJDate: "Date",
-                accTitle: "Plan Comptable Numérique PiLedger",
-                accAssets: "1. Actifs (Portefeuille Pi et Caisses)",
-                accItem1: "Portefeuille Pi Principal",
-                accItem2: "Clients Pionniers",
-                accItem3: "Stock Numérique",
-                accLiab: "2. Passifs et Capitaux Propres",
-                accItem4: "Fournisseurs",
-                accItem5: "Capital Social",
-                accRev: "3. Produits",
-                accItem6: "Revenus des Ventes Pi",
-                accExp: "4. Charges",
-                accItem7: "Coût des Ventes",
-                accItem8: "Frais Réseau Pi et Ops",
-                repTitle: "Compte de Résultat & Bilan Simplifié",
-                repIncomeTitle: "Compte de Résultat",
-                repRevLabel: "Revenus Totaux Pi :",
-                repExpLabel: "Charges Totales (Auto 40%) :",
-                repNetLabel: "Bénéfice Net :",
-                repBsTitle: "Bilan Simplifié",
-                repAssetsLabel: "Total Portefeuille et Actifs :",
-                repCapLabel: "Capital et Bénéfices Non Répartis :",
-                alertMsg: "Veuillez entrer des données valides.",
-                successMsg: "Facture émise et écriture Pi enregistrée avec succès !",
-                journalDesc: "Écriture de vente en espèces Pi pour la facture"
+                title: "PiLedger - Comptabilité Pi", appTitle: "PiLedger | Système Comptable", appSubtitle: "Système financier pour pionniers Pi", langLabel: "🌍 Langue :",
+                statCash: "Trésorerie (Pi)", statProfit: "Bénéfice Net", sales: "Ventes", journal: "Journaux", accounts: "Plan Comptable", reports: "Rapports",
+                salesTitle: "Nouvelle Facture (Pi)", lblCustomer: "Client", lblItem: "Article", lblAmount: "Montant (Pi)", btnIssue: "Émettre & Poster", salesHistory: "Historique",
+                thInv: "N° Facture", thCust: "Client", thItem: "Article", thAmt: "Montant", thDate: "Date", journalTitle: "Journant (Auto)",
+                thJNo: "N°", thJDesc: "Description", thJDr: "Débit", thJCr: "Crédit", thJAcc: "Comptes", thJDate: "Date",
+                accTitle: "Plan Comptable", accAssets: "1. Actifs", accItem1: "Portefeuille Pi", accItem2: "Clients", accItem3: "Stock",
+                accLiab: "2. Passifs", accItem4: "Fournisseurs", accItem5: "Capital", accRev: "3. Produits", accItem6: "Ventes Pi",
+                accExp: "4. Charges", accItem7: "Coût", accItem8: "Frais", repTitle: "Rapports", repIncomeTitle: "Compte de Résultat",
+                repRevLabel: "Revenus:", repExpLabel: "Charges (40%):", repNetLabel: "Net:", repBsTitle: "Bilan", repAssetsLabel: "Actifs:", repCapLabel: "Capital:",
+                alertMsg: "Données invalides.", successMsg: "Facture enregistrée !", journalDesc: "Vente Pi"
+            },
+            de: {
+                title: "PiLedger - Buchhaltung", appTitle: "PiLedger | System", appSubtitle: "Finanzsystem für Pi", langLabel: "🌍 Sprache:",
+                statCash: "Kasse (Pi)", statProfit: "Nettogewinn", sales: "Verkäufe", journal: "Buchungen", accounts: "Konten", reports: "Berichte",
+                salesTitle: "Neue Rechnung", lblCustomer: "Kunde", lblItem: "Artikel", lblAmount: "Betrag (Pi)", btnIssue: "Buchen", salesHistory: "Verlauf",
+                thInv: "Nr.", thCust: "Kunde", thItem: "Artikel", thAmt: "Betrag", thDate: "Datum", journalTitle: "Journal",
+                thJNo: "Nr.", thJDesc: "Beschreibung", thJDr: "Soll", thJCr: "Haben", thJAcc: "Konten", thJDate: "Datum",
+                accTitle: "Konten", accAssets: "1. Aktiva", accItem1: "Wallet", accItem2: "Kunden", accItem3: "Inventar",
+                accLiab: "2. Passiva", accItem4: "Lieferanten", accItem5: "Kapital", accRev: "3. Erträge", accItem6: "Umsatz",
+                accExp: "4. Aufwand", accItem7: "Kosten", accItem8: "Gebühren", repTitle: "Berichte", repIncomeTitle: "GuV",
+                repRevLabel: "Umsatz:", repExpLabel: "Aufwand (40%):", repNetLabel: "Gewinn:", repBsTitle: "Bilanz", repAssetsLabel: "Aktiva:", repCapLabel: "Kapital:",
+                alertMsg: "Ungültige Daten.", successMsg: "Erfolgreich gebucht!", journalDesc: "Pi Verkauf"
+            },
+            es: {
+                title: "PiLedger - Contabilidad", appTitle: "PiLedger | Sistema", appSubtitle: "Sistema financiero Pi", langLabel: "🌍 Idioma:",
+                statCash: "Tesorería (Pi)", statProfit: "Beneficio", sales: "Ventas", journal: "Asientos", accounts: "Cuentas", reports: "Informes",
+                salesTitle: "Nueva Factura", lblCustomer: "Cliente", lblItem: "Artículo", lblAmount: "Monto (Pi)", btnIssue: "Emitir", salesHistory: "Historial",
+                thInv: "Nº", thCust: "Cliente", thItem: "Artículo", thAmt: "Monto", thDate: "Fecha", journalTitle: "Diario",
+                thJNo: "Nº", thJDesc: "Descripción", thJDr: "Debe", thJCr: "Haber", thJAcc: "Cuentas", thJDate: "Fecha",
+                accTitle: "Cuentas", accAssets: "1. Activos", accItem1: "Cartera Pi", accItem2: "Clientes", accItem3: "Inventario",
+                accLiab: "2. Pasivos", accItem4: "Proveedores", accItem5: "Capital", accRev: "3. Ingresos", accItem6: "Ventas",
+                accExp: "4. Gastos", accItem7: "Costo", accItem8: "Tarifas", repTitle: "Informes", repIncomeTitle: "Resultados",
+                repRevLabel: "Ingresos:", repExpLabel: "Gastos (40%):", repNetLabel: "Neto:", repBsTitle: "Balance", repAssetsLabel: "Activos:", repCapLabel: "Capital:",
+                alertMsg: "Datos inválidos.", successMsg: "¡Registrado con éxito!", journalDesc: "Venta Pi"
+            },
+            tr: {
+                title: "PiLedger - Muhasebe", appTitle: "PiLedger | Sistem", appSubtitle: "Pi Finansal Sistem", langLabel: "🌍 Dil:",
+                statCash: "Kasa (Pi)", statProfit: "Net Kâr", sales: "Satışlar", journal: "Yevmiye", accounts: "Hesaplar", reports: "Raporlar",
+                salesTitle: "Yeni Fatura", lblCustomer: "Müşteri", lblItem: "Ürün", lblAmount: "Tutar (Pi)", btnIssue: "Kaydet", salesHistory: "Geçmiş",
+                thInv: "No", thCust: "Müşteri", thItem: "Ürün", thAmt: "Tutar", thDate: "Tarih", journalTitle: "Yevmiye",
+                thJNo: "No", thJDesc: "Açıklama", thJDr: "Borç", thJCr: "Alacak", thJAcc: "Hesaplar", thJDate: "Tarih",
+                accTitle: "Hesaplar", accAssets: "1. Varlıklar", accItem1: "Pi Cüzdan", accItem2: "Müşteriler", accItem3: "Envanter",
+                accLiab: "2. Borçlar", accItem4: "Tedarikçiler", accItem5: "Sermaye", accRev: "3. Gelir", accItem6: "Satış",
+                accExp: "4. Gider", accItem7: "Maliyet", accItem8: "Ücret", repTitle: "Raporlar", repIncomeTitle: "Gelir Tablosu",
+                repRevLabel: "Gelir:", repExpLabel: "Gider (%40):", repNetLabel: "Net Kâr:", repBsTitle: "Bilanço", repAssetsLabel: "Varlıklar:", repCapLabel: "Sermaye:",
+                alertMsg: "Geçersiz veri.", successMsg: "Başarıyla kaydedildi!", journalDesc: "Pi Satış"
+            },
+            zh: {
+                title: "PiLedger - 会计系统", appTitle: "PiLedger | 系统", appSubtitle: "Pi Network 财务系统", langLabel: "🌍 语言:",
+                statCash: "总余额 (Pi)", statProfit: "预计净利", sales: "销售", journal: "日记账", accounts: "科目", reports: "报表",
+                salesTitle: "新发票", lblCustomer: "客户", lblItem: "商品", lblAmount: "金额 (Pi)", btnIssue: "开具", salesHistory: "历史",
+                thInv: "编号", thCust: "客户", thItem: "商品", thAmt: "金额", thDate: "日期", journalTitle: "日记账",
+                thJNo: "序号", thJDesc: "摘要", thJDr: "借方", thJCr: "贷方", thJAcc: "科目", thJDate: "日期",
+                accTitle: "科目表", accAssets: "1. 资产", accItem1: "Pi钱包", accItem2: "应收", accItem3: "库存",
+                accLiab: "2. 负债", accItem4: "应付", accItem5: "资本", accRev: "3. 收入", accItem6: "销售收入",
+                accExp: "4. 费用", accItem7: "成本", accItem8: "手续费", repTitle: "报表", repIncomeTitle: "利润表",
+                repRevLabel: "收入:", repExpLabel: "费用(40%):", repNetLabel: "净利:", repBsTitle: "资产负债表", repAssetsLabel: "资产:", repCapLabel: "资本:",
+                alertMsg: "无效数据。", successMsg: "过账成功！", journalDesc: "Pi销售"
+            },
+            ja: {
+                title: "PiLedger - 会計", appTitle: "PiLedger | システム", appSubtitle: "Pi財務システム", langLabel: "🌍 言語:",
+                statCash: "残高 (Pi)", statProfit: "純利益", sales: "売上", journal: "仕訳", accounts: "勘定", reports: "レポート",
+                salesTitle: "新規伝票", lblCustomer: "顧客", lblItem: "商品", lblAmount: "金額 (Pi)", btnIssue: "発行", salesHistory: "履歴",
+                thInv: "No", thCust: "顧客", thItem: "商品", thAmt: "金額", thDate: "日付", journalTitle: "仕訳帳",
+                thJNo: "No", thJDesc: "摘要", thJDr: "借方", thJCr: "貸方", thJAcc: "勘定", thJDate: "日付",
+                accTitle: "勘定科目", accAssets: "1. 資産", accItem1: "Piウォレット", accItem2: "顧客", accItem3: "在庫",
+                accLiab: "2. 負債", accItem4: "仕入先", accItem5: "資本金", accRev: "3. 収益", accItem6: "売上",
+                accExp: "4. 費用", accItem7: "原価", accItem8: "手数料", repTitle: "レポート", repIncomeTitle: "損益計算書",
+                repRevLabel: "収益:", repExpLabel: "費用(40%):", repNetLabel: "純利益:", repBsTitle: "貸借対照表", repAssetsLabel: "資産:", repCapLabel: "資本:",
+                alertMsg: "無効なデータです。", successMsg: "正常に計上されました！", journalDesc: "Pi売上"
+            },
+            vi: {
+                title: "PiLedger - Kế toán", appTitle: "PiLedger | Hệ thống", appSubtitle: "Hệ thống tài chính Pi", langLabel: "🌍 Ngôn ngữ:",
+                statCash: "Quỹ (Pi)", statProfit: "Lợi nhuận", sales: "Bán hàng", journal: "Sổ nhật ký", accounts: "Tài khoản", reports: "Báo cáo",
+                salesTitle: "Hóa đơn mới", lblCustomer: "Khách", lblItem: "Sản phẩm", lblAmount: "Số tiền (Pi)", btnIssue: "Xuất", salesHistory: "Lịch sử",
+                thInv: "Số", thCust: "Khách", thItem: "SP", thAmt: "Số tiền", thDate: "Ngày", journalTitle: "Nhật ký",
+                thJNo: "Số", thJDesc: "Diễn giải", thJDr: "Nợ", thJCr: "Có", thJAcc: "Tài khoản", thJDate: "Ngày",
+                accTitle: "Tài khoản", accAssets: "1. Tài sản", accItem1: "Ví Pi", accItem2: "Phải thu", accItem3: "Tồn kho",
+                accLiab: "2. Nợ", accItem4: "Phải trả", accItem5: "Vốn", accRev: "3. Doanh thu", accItem6: "Doanh thu Pi",
+                accExp: "4. Chi phí", accItem7: "Giá vốn", accItem8: "Phí", repTitle: "Báo cáo", repIncomeTitle: "Thu nhập",
+                repRevLabel: "Doanh thu:", repExpLabel: "Chi phí (40%):", repNetLabel: "Lợi nhuận:", repBsTitle: "Bảng cân đối", repAssetsLabel: "Tài sản:", repCapLabel: "Vốn:",
+                alertMsg: "Dữ liệu không hợp lệ.", successMsg: "Thành công!", journalDesc: "Bán hàng Pi"
+            },
+            ru: {
+                title: "PiLedger - Бухгалтерия", appTitle: "PiLedger | Система", appSubtitle: "Финансовая система Pi", langLabel: "🌍 Язык:",
+                statCash: "Казна (Pi)", statProfit: "Прибыль", sales: "Продажи", journal: "Журнал", accounts: "Счета", reports: "Отчеты",
+                salesTitle: "Новый счет", lblCustomer: "Клиент", lblItem: "Товар", lblAmount: "Сумма (Pi)", btnIssue: "Создать", salesHistory: "История",
+                thInv: "№", thCust: "Клиент", thItem: "Товар", thAmt: "Сумма", thDate: "Дата", journalTitle: "Журнал",
+                thJNo: "№", thJDesc: "Описание", thJDr: "Дебет", thJCr: "Кредит", thJAcc: "Счета", thJDate: "Дата",
+                accTitle: "Счета", accAssets: "1. Активы", accItem1: "Кошелек Pi", accItem2: "Дебиторы", accItem3: "Инвентарь",
+                accLiab: "2. Обязательства", accItem4: "Кредиторы", accItem5: "Капитал", accRev: "3. Доходы", accItem6: "Доходы Pi",
+                accExp: "4. Расходы", accItem7: "Себестоимость", accItem8: "Комиссия", repTitle: "Отчеты", repIncomeTitle: "Отчет",
+                repRevLabel: "Доход:", repExpLabel: "Расходы (40%):", repNetLabel: "Прибыль:", repBsTitle: "Баланс", repAssetsLabel: "Активы:", repCapLabel: "Капитал:",
+                alertMsg: "Неверные данные.", successMsg: "Успешно проведено!", journalDesc: "Продажа Pi"
             }
         };
-
-        let currentLang = 'ar';
+            let currentLang = 'ar';
         let sales = JSON.parse(localStorage.getItem('piledger_sales')) || [];
         let journalEntries = JSON.parse(localStorage.getItem('piledger_journal')) || [];
 
@@ -549,4 +579,5 @@
         };
     </script>
 </body>
-    </html>
+</html>
+        
