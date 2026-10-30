@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">PiLedger | باي ليدجر - نظام الهاكاثون</title>
+    <title id="page-title">PiLedger | النظام المحاسبي للهاكاثون</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style> body { font-family: system-ui, -apple-system, sans-serif; } </style>
 </head>
 <body class="bg-amber-50 text-gray-800 transition-all duration-300">
 
-    <!-- شاشة تسجيل الدخول بيوزر Pi Network -->
+    <!-- شاشة تسجيل الدخول عبر Pi Network -->
     <div id="login-screen" class="fixed inset-0 bg-amber-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-amber-200 text-center">
             <div class="w-16 h-16 bg-amber-500 rounded-2xl mx-auto flex items-center justify-center text-white text-3xl font-bold mb-4 shadow-lg shadow-amber-500/30">π</div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">PiLedger Sign-In</h2>
-            <p class="text-gray-500 text-sm mb-6" id="login-subtitle">سجل الدخول باستخدام اسم المستخدم الخاص بك على شبكة Pi وبدء الإدارة المالية</p>
-                        <div class="space-y-4 text-right">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2" id="login-title">تسجيل الدخول عبر Pi Network</h2>
+            <p class="text-gray-500 text-sm mb-6" id="login-subtitle">أدخل اسم المستخدم الخاص بك على شبكة Pi للبدء</p>
+            
+            <div class="space-y-4 text-right">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1" id="login-lbl-user">Pi Username (@)</label>
                     <input type="text" id="pi-username" class="w-full border border-amber-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. moha8719">
                 </div>
                 <button onclick="piLogin()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold p-3 rounded-xl transition shadow-lg shadow-amber-600/20" id="login-btn">
-                    تسجيل الدخول عبر Pi Browser / SDK
+                    دخول عبر Pi Browser / SDK
                 </button>
             </div>
-            <p class="text-xs text-gray-400 mt-6" id="login-footer">🔒 مصادق عليه عبر Pi Ecosystem APIs (Mainnet/Testnet)</p>
         </div>
     </div>
 
@@ -35,35 +35,28 @@
             <div>
                 <div class="flex items-center gap-2">
                     <span class="bg-white/20 text-yellow-100 text-xs px-2.5 py-1 rounded-full font-mono">Pi Hackathon Edition 🚀</span>
-                    <h1 class="text-2xl font-bold" id="app-title">PiLedger | باي ليدجر المحاسبي</h1>
+                    <h1 class="text-2xl font-bold" id="app-title">PiLedger | النظام المحاسبي المتكامل</h1>
                 </div>
-                <p class="text-yellow-100 text-sm mt-1" id="app-subtitle">النظام المالي المدمج مع تقنيات ودفع عملة Pi الرقمية</p>
+                <p class="text-yellow-100 text-sm mt-1" id="app-subtitle">نظام مالي مدمج مع تقنيات ودفع عملة Pi الرقمية</p>
             </div>
 
             <div class="flex items-center gap-3 bg-black/10 p-3 rounded-xl">
                 <span class="text-xs text-amber-200 font-medium" id="user-display">@Guest</span>
-                <button onclick="logoutPi()" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg transition" id="logout-btn">خروج</button>
+                <button onclick="piLogout()" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg transition" id="logout-btn">خروج / Logout</button>
                 <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-white text-gray-800 text-xs rounded-lg px-2 py-1.5 focus:outline-none font-medium shadow-sm">
-                    <option value="ar">العربية</option>
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="de">Deutsch</option>
-                    <option value="es">Español</option>
-                    <option value="tr">Türkçe</option>
-                    <option value="zh">中文</option>
-                    <option value="ja">日本語</option>
-                    <option value="vi">Tiếng Việt</option>
-                    <option value="ru">Русский</option>
+                    <option value="ar">العربية (Arabic)</option>
+                    <option value="en">English (إنجليزي)</option>
                 </select>
             </div>
         </header>
-                <!-- لوحة حالة الاشتراك -->
+
+        <!-- لوحة حالة الهاكاثون والاشتراك -->
         <div class="bg-gradient-to-r from-yellow-500 to-amber-500 text-white p-4 rounded-2xl shadow-md mb-6 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-3">
                 <span class="text-2xl">⭐</span>
                 <div>
                     <h3 class="font-bold text-sm" id="sub-status-title">حالة حساب الهاكاثون (الاشتراك السنوي)</h3>
-                    <p class="text-xs text-yellow-100">العمليات المجانية المتبقية: <span id="free-ops-left" class="font-bold underline">50</span> / 50 عملية</p>
+                    <p class="text-xs text-yellow-100" id="sub-status-desc">العمليات المجانية المتبقية: <span id="free-ops-left" class="font-bold underline">50</span> / 50 عملية</p>
                 </div>
             </div>
             <button onclick="payAnnualSubscription()" id="sub-btn-action" class="bg-white text-amber-900 hover:bg-yellow-50 px-4 py-2 rounded-xl font-bold text-xs shadow transition">
@@ -71,98 +64,254 @@
             </button>
         </div>
 
-        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-            <button onclick="switchTab('sales')" id="btn-sales" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-amber-600 text-white shadow">المبيعات</button>
-            <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">إدارة المخزون</button>
-            <button onclick="switchTab('reports')" id="btn-reports" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">التقارير</button>
+        <!-- المؤشرات السريعة -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-gray-500 block" id="stat-cash-title">إجمالي الخزينة (السيولة)</span>
+                    <span id="stat-cash" class="text-xl font-bold text-amber-600">0.00 Pi</span>
+                </div>
+                <div class="bg-amber-100 p-3 rounded-xl text-amber-600 font-bold">💰</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-gray-500 block" id="stat-profit-title">صافي الأرباح</span>
+                    <span id="stat-profit" class="text-xl font-bold text-emerald-600">0.00 Pi</span>
+                </div>
+                <div class="bg-emerald-100 p-3 rounded-xl text-emerald-600 font-bold">📈</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-gray-500 block" id="stat-inv-title">الأصناف بالمخزن</span>
+                    <span id="stat-inv-count" class="text-xl font-bold text-indigo-600">0</span>
+                </div>
+                <div class="bg-indigo-100 p-3 rounded-xl text-indigo-600 font-bold">📦</div>
+            </div>
         </div>
 
+        <!-- أزرار التبويبات -->
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <button onclick="switchTab('sales')" id="btn-sales" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-amber-600 text-white shadow">المبيعات / Sales</button>
+            <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">المخزون / Inventory</button>
+            <button onclick="switchTab('journal')" id="btn-journal" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">القيود اليومية / Journal</button>
+            <button onclick="switchTab('ecosystem')" id="btn-ecosystem" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">تطبيقات Pi / Ecosystem</button>
+            <button onclick="switchTab('reports')" id="btn-reports" class="tab-btn px-4 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">التقارير / Reports</button>
+    </div>
+                            <!-- محتوى التبويبات -->
         <main class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-            <!-- المبيعات -->
+            
+            <!-- تبويب المبيعات -->
             <section id="tab-sales" class="tab-content">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">إصدار فاتورة مبيعات عبر Pi Payments SDK</h2>
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="sales-section-title">إصدار فاتورة مبيعات عبر Pi Payments SDK</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                    <input type="text" id="sale-customer" class="border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="اسم العميل (@)">
-                    <select id="sale-item-select" onchange="updateItemPrice(this.value)" class="border border-amber-200 rounded-xl p-2.5 text-sm bg-white">
-                        <option value="">-- اختر صنف --</option>
-                    </select>
-                    <input type="number" id="sale-amount" class="border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="المبلغ (Pi)">
-                    <button onclick="simulatePiPayment()" class="bg-amber-600 hover:bg-amber-700 text-white font-medium p-2.5 rounded-xl transition shadow">دفع عبر Pi SDK</button>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" id="lbl-customer">اسم العميل / Customer Name</label>
+                        <input type="text" id="sale-customer" class="w-full border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="Pioneer Username">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" id="lbl-item">اختر الصنف / Select Item</label>
+                        <select id="sale-item-select" onchange="updateItemPrice(this.value)" class="w-full border border-amber-200 rounded-xl p-2.5 text-sm bg-white">
+                            <option value="">-- اختر صنف / Select --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" id="lbl-amount">المبلغ (Pi) / Amount</label>
+                        <input type="number" id="sale-amount" class="w-full border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="0.00">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="simulatePiPayment()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium p-2.5 rounded-xl transition shadow flex items-center justify-center gap-2">
+                            <span>🟡</span> <span id="btn-issue">دفع عبر Pi SDK</span>
+                        </button>
+                    </div>
                 </div>
-                <table class="w-full text-right text-sm border-collapse mt-4">
-                    <thead><tr class="bg-amber-50 text-gray-600"><th class="p-3">الفاتورة</th><th class="p-3">العميل</th><th class="p-3">المبلغ</th><th class="p-3">الحالة</th></tr></thead>
-                    <tbody id="sales-table-body"></tbody>
-                </table>
-            </section>
-                        <!-- المخزون -->
-            <section id="tab-inventory" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">إدارة المخزون</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                    <input type="text" id="inv-name" class="border rounded-xl p-2.5 text-sm" placeholder="اسم الصنف">
-                    <input type="number" id="inv-qty" class="border rounded-xl p-2.5 text-sm" placeholder="الكمية">
-                    <input type="number" id="inv-price" class="border rounded-xl p-2.5 text-sm" placeholder="السعر (Pi)">
-                    <button onclick="addInventoryItem()" class="bg-emerald-600 text-white p-2.5 rounded-xl font-medium">إضافة صنف</button>
+                
+                <h3 class="font-bold text-md mt-6 mb-3 text-gray-700" id="sales-history-title">سجل المعاملات والفواتير المؤكدة</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-amber-50 text-gray-600">
+                                <th class="p-3 border-b" id="th-inv">رقم الفاتورة</th>
+                                <th class="p-3 border-b" id="th-cust">العميل</th>
+                                <th class="p-3 border-b" id="th-item">الصنف</th>
+                                <th class="p-3 border-b" id="th-amt">المبلغ</th>
+                                <th class="p-3 border-b" id="th-status">الحالة</th>
+                                <th class="p-3 border-b" id="th-date">التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table-body"></tbody>
+                    </table>
                 </div>
-                <table class="w-full text-right text-sm">
-                    <thead><tr class="bg-gray-100"><th class="p-3">الكود</th><th class="p-3">الاسم</th><th class="p-3">الكمية</th><th class="p-3">السعر</th></tr></thead>
-                    <tbody id="inventory-table-body"></tbody>
-                </table>
             </section>
 
-            <!-- التقارير -->
-            <section id="tab-reports" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">قائمة الدخل والأرباح</h2>
-                <div class="p-5 bg-amber-50 rounded-xl border border-amber-100 max-w-md">
-                    <div class="flex justify-between py-2 border-b"><span>إجمالي الإيرادات:</span><span id="rep-revenue" class="font-bold text-amber-600">0.00 Pi</span></div>
-                    <div class="flex justify-between py-3 text-base font-bold"><span>صافي الأرباح:</span><span id="rep-net-profit" class="text-emerald-600">0.00 Pi</span></div>
+            <!-- تبويب المخزون -->
+            <section id="tab-inventory" class="tab-content hidden">
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="inv-section-title">إدارة المخزون والأصناف الرقمية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+                    <div>
+                        <label class="block text-sm font-medium mb-1" id="inv-lbl-name">اسم الصنف / Item Name</label>
+                        <input type="text" id="inv-name" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="Product">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" id="inv-lbl-qty">الكمية / Quantity</label>
+                        <input type="number" id="inv-qty" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" id="inv-lbl-price">السعر (Pi) / Price</label>
+                        <input type="number" id="inv-price" class="w-full border rounded-xl p-2.5 text-sm bg-white" placeholder="0.00">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="addInventoryItem()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium p-2.5 rounded-xl transition shadow" id="inv-btn-add">إضافة صنف / Add</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600">
+                                <th class="p-3 border-b" id="inv-th-code">كود الصنف</th>
+                                <th class="p-3 border-b" id="inv-th-name">اسم الصنف</th>
+                                <th class="p-3 border-b" id="inv-th-qty">الكمية</th>
+                                <th class="p-3 border-b" id="inv-th-price">السعر</th>
+                                <th class="p-3 border-b" id="inv-th-action">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body"></tbody>
+                    </table>
                 </div>
             </section>
+
+            <!-- تبويب القيود اليومية التلقائية -->
+            <section id="tab-journal" class="tab-content hidden">
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="journal-section-title">دفتر القيود اليومية (توليد تلقائي)</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-amber-50 text-gray-600">
+                                <th class="p-3 border-b" id="th-j-no">رقم القيد</th>
+                                <th class="p-3 border-b" id="th-j-desc">البيان / الوصف</th>
+                                <th class="p-3 border-b" id="th-j-dr">مدين (Debit)</th>
+                                <th class="p-3 border-b" id="th-j-cr">دائن (Credit)</th>
+                                <th class="p-3 border-b" id="th-j-acc">الحسابات المتأثرة</th>
+                                <th class="p-3 border-b" id="th-j-date">التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="journal-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- تبويب تطبيقات Pi البيئية -->
+            <section id="tab-ecosystem" class="tab-content hidden">
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="eco-section-title">الربط مع تطبيقات شبكة Pi ومحفظة البلوكشين</h2>
+                <p class="text-sm text-gray-500 mb-6" id="eco-desc">ربط مباشر بين نظام PiLedger وبين المحفظة الرسمية وتطبيقات المجتمع البيئي المعتمدة.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="border border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
+                        <div class="text-3xl mb-2">👛</div>
+                        <h3 class="font-bold text-gray-800 mb-1">Pi Mainnet Wallet</h3>
+                        <p class="text-xs text-gray-500 mb-4" id="eco-w-desc">مزامنة أرصدة المحفظة وتأكيد القيود على البلوكشين.</p>
+                        <button onclick="syncWallet()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow" id="eco-w-btn">مزامنة المحفظة</button>
+                    </div>
+                    <div class="border border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
+                        <div class="text-3xl mb-2">🛒</div>
+                        <h3 class="font-bold text-gray-800 mb-1">Pi Ecosystem Apps Bridge</h3>
+                        <p class="text-xs text-gray-500 mb-4" id="eco-m-desc">ربط فواتير المبيعات مع المتاجر والأسواق البيئية الأخرى.</p>
+                        <button onclick="connectEcosystem()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow" id="eco-m-btn">ربط بالمتجر البيئي</button>
+                    </div>
+                    <div class="border border-amber-200 rounded-2xl p-5 bg-gradient-to-br from-amber-50 to-yellow-50 text-center">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <h3 class="font-bold text-gray-800 mb-1">KYC & Node Verifier</h3>
+                        <p class="text-xs text-gray-500 mb-4" id="eco-k-desc">التحقق من هوية العملاء (KYC) عبر شبكة Pi الآمنة.</p>
+                        <button onclick="verifyKYC()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow" id="eco-k-btn">فحص حالة KYC</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- تبويب التقارير -->
+            <section id="tab-reports" class="tab-content hidden">
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="reports-section-title">قائمة الدخل والتقارير المالية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-amber-100 rounded-xl p-5 shadow-sm bg-amber-50/30">
+                        <h3 class="font-bold text-md text-gray-800 mb-3 border-b pb-2" id="rep-income-title">قائمة الدخل / Income Statement</h3>
+                        <div class="flex justify-between py-2 border-b text-sm">
+                            <span id="rep-rev-label">إجمالي الإيرادات:</span>
+                            <span id="rep-revenue" class="font-bold text-amber-600">0.00 Pi</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b text-sm">
+                            <span id="rep-exp-label">المصروفات التشغيلية (تلقائي 40%):</span>
+                            <span id="rep-expenses" class="font-bold text-red-600">0.00 Pi</span>
+                        </div>
+                        <div class="flex justify-between py-3 text-base font-bold bg-white px-3 rounded-lg mt-3 border border-amber-200">
+                            <span id="rep-net-label">صافي الأرباح:</span>
+                            <span id="rep-net-profit" class="text-emerald-600">0.00 Pi</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
-
+       <!-- كود الجافاسكريبت والتشغيل -->
     <script>
         const translations = {
             ar: {
-                title: "PiLedger - نظام الهاكاثون المحاسبي", appTitle: "PiLedger | باي ليدجر المحاسبي", appSubtitle: "النظام المالي المدمج مع تقنيات ودفع عملة Pi الرقمية",
-                sales: "المبيعات", inventory: "إدارة المخزون", reports: "التقارير",
-                successMsg: "تم اعتماد الدفع عبر Pi SDK وإصدار الفاتورة بنجاح!",
-                limitReached: "عذراً، لقد استهلكت الـ 50 عملية المجانية."
+                title: "PiLedger | النظام المحاسبي للهاكاثون", appTitle: "PiLedger | النظام المحاسبي المتكامل", appSubtitle: "نظام مالي مدمج مع تقنيات ودفع عملة Pi الرقمية",
+                statCash: "إجمالي الخزينة (السيولة)", statProfit: "صافي الأرباح", statInvCount: "الأصناف بالمخزن",
+                sales: "المبيعات / Sales", inventory: "المخزون / Inventory", journal: "القيود / Journal", ecosystem: "تطبيقات Pi / Ecosystem", reports: "التقارير / Reports",
+                salesTitle: "إصدار فاتورة مبيعات عبر Pi Payments SDK", lblCustomer: "اسم العميل / Customer Name", lblItem: "اختر الصنف / Select Item", lblAmount: "المبلغ (Pi)", btnIssue: "دفع عبر Pi SDK",
+                salesHistory: "سجل المعاملات والفواتير المؤكدة", thInv: "رقم الفاتورة", thCust: "العميل", thItem: "الصنف", thAmt: "المبلغ", thStatus: "الحالة", thDate: "التاريخ",
+                invSectionTitle: "إدارة المخزون والأصناف الرقمية", invLblName: "اسم الصنف", invLblQty: "الكمية", invLblPrice: "السعر (Pi)", invBtnAdd: "إضافة صنف",
+                invThCode: "كود الصنف", invThName: "اسم الصنف", invThQty: "الكمية", invThPrice: "السعر", invThAction: "إجراء", deleteBtn: "حذف",
+                journalSectionTitle: "دفتر القيود اليومية (توليد تلقائي)", thJNo: "رقم القيد", thJDesc: "البيان / الوصف", thJDr: "مدين", thJCr: "دائن", thJAcc: "الحسابات", thJDate: "التاريخ",
+                ecoSectionTitle: "الربط مع تطبيقات شبكة Pi ومحفظة البلوكشين", ecoDesc: "ربط مباشر بين نظام PiLedger وبين المحفظة الرسمية وتطبيقات المجتمع البيئي المعتمدة.",
+                reportsSectionTitle: "قائمة الدخل والتقارير المالية", repIncomeTitle: "قائمة الدخل / Income Statement", repRevLabel: "إجمالي الإيرادات:", repExpLabel: "المصروفات التشغيلية (40%):", repNetLabel: "صافي الأرباح:",
+                loginTitle: "تسجيل الدخول عبر Pi Network", loginSubtitle: "أدخل اسم المستخدم الخاص بك على شبكة Pi للبدء", loginUsr: "Pi Username (@)", loginBtn: "دخول عبر Pi Browser / SDK",
+                subStatusTitle: "حالة حساب الهاكاثون (الاشتراك السنوي)", subBtnAction: "تفعيل الاشتراك السنوي (0.1 Pi)",
+                alertMsg: "الرجاء إدخال بيانات صحيحة أو اختيار صنف.", alertInvMsg: "الرجاء تعبئة بيانات الصنف بشكل صحيح.", successMsg: "تم اعتماد الدفع عبر Pi SDK وترحيل القيد بنجاح!",
+                subSuccess: "تم تفعيل الاشتراك السنوي بنجاح مقابل 0.1 Pi!", limitReached: "عذراً، لقد استهلكت الـ 50 عملية المجانية. يرجى تفعيل الاشتراك السنوي بـ 0.1 Pi للمتابعة."
             },
             en: {
-                title: "PiLedger - Hackathon Accounting System", appTitle: "PiLedger | Accounting System", appSubtitle: "Financial system integrated with Pi Network payments",
-                sales: "Sales", inventory: "Inventory", reports: "Reports",
-                successMsg: "Pi SDK Payment verified & invoice issued successfully!",
-                limitReached: "Sorry, you have used your 50 free operations."
-            },
-               fr: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Système", appSubtitle: "Système financier Pi Network", sales: "Ventes", inventory: "Stock", reports: "Rapports" },
-            de: { title: "PiLedger - Hackathon", appTitle: "PiLedger | System", appSubtitle: "Pi Finanzsystem", sales: "Verkäufe", inventory: "Lager", reports: "Berichte" },
-            es: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Sistema", appSubtitle: "Sistema financiero Pi", sales: "Ventas", inventory: "Inventario", reports: "Informes" },
-            tr: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Sistem", appSubtitle: "Pi Finansal Sistem", sales: "Satışlar", inventory: "Envanter", reports: "Raporlar" },
-            zh: { title: "PiLedger - 黑客松系统", appTitle: "PiLedger | 会计系统", appSubtitle: "Pi Network 支付集成系统", sales: "销售", inventory: "库存管理", reports: "报表" },
-            ja: { title: "PiLedger - ハッカソン", appTitle: "PiLedger | 会計システム", appSubtitle: "Pi Network決済統合システム", sales: "売上", inventory: "在庫管理", reports: "レポート" },
-            vi: { title: "PiLedger - Hackathon", appTitle: "PiLedger | Kế toán", appSubtitle: "Hệ thống thanh toán Pi Network", sales: "Bán hàng", inventory: "Kho", reports: "Báo cáo" },
-            ru: { title: "PiLedger - Хакатон", appTitle: "PiLedger | Бухгалтерия", appSubtitle: "Финансовая система Pi Network", sales: "Продажи", inventory: "Склад", reports: "Отчеты" }
+                title: "PiLedger | Hackathon Accounting System", appTitle: "PiLedger | Integrated Accounting", appSubtitle: "Financial system integrated with Pi Network payments",
+                statCash: "Total Treasury (Cash)", statProfit: "Net Profit", statInvCount: "Inventory Items",
+                sales: "Sales / المبيعات", inventory: "Inventory / المخزون", journal: "Journal / القيود", ecosystem: "Ecosystem / تطبيقات Pi", reports: "Reports / التقارير",
+                salesTitle: "Issue Sales Invoice via Pi Payments SDK", lblCustomer: "Customer Name", lblItem: "Select Item", lblAmount: "Amount (Pi)", btnIssue: "Pay via Pi SDK",
+                salesHistory: "Confirmed Invoices & Transactions", thInv: "Invoice No", thCust: "Customer", thItem: "Item", thAmt: "Amount", thStatus: "Status", thDate: "Date",
+                invSectionTitle: "Inventory & Digital Items Management", invLblName: "Item Name", invLblQty: "Quantity", invLblPrice: "Price (Pi)", invBtnAdd: "Add Item",
+                invThCode: "Item Code", invThName: "Item Name", invThQty: "Qty", invThPrice: "Price", invThAction: "Action", deleteBtn: "Delete",
+                journalSectionTitle: "Daily Journal Entries (Auto-Generated)", thJNo: "Entry No", thJDesc: "Description", thJDr: "Debit", thJCr: "Credit", thJAcc: "Accounts", thJDate: "Date",
+                ecoSectionTitle: "Pi Network & Blockchain Wallet Bridge", ecoDesc: "Direct bridge between PiLedger and official wallet & certified ecosystem apps.",
+                reportsSectionTitle: "Income Statement & Financial Reports", repIncomeTitle: "Income Statement", repRevLabel: "Total Revenue:", repExpLabel: "Operating Expenses (40%):", repNetLabel: "Net Profit:",
+                loginTitle: "Sign In via Pi Network", loginSubtitle: "Enter your Pi Network username to start", loginUsr: "Pi Username (@)", loginBtn: "Sign In via Pi Browser / SDK",
+                subStatusTitle: "Hackathon Account Status (Annual Subscription)", subBtnAction: "Activate Annual Sub (0.1 Pi)",
+                alertMsg: "Please enter valid data or select an item.", alertInvMsg: "Please fill item details correctly.", successMsg: "Pi SDK Payment verified & journal entry posted successfully!",
+                subSuccess: "Annual subscription successfully activated for 0.1 Pi!", limitReached: "Sorry, you have used your 50 free operations. Please activate the annual subscription for 0.1 Pi to continue."
+            }
         };
-                let currentUser = localStorage.getItem('piledger_user') || null;
+
+        let currentUser = localStorage.getItem('piledger_user') || null;
         let freeOpsCount = parseInt(localStorage.getItem('piledger_free_ops')) || 0;
         let isSubscribed = JSON.parse(localStorage.getItem('piledger_subscribed')) || false;
         let currentLang = 'ar';
         let sales = JSON.parse(localStorage.getItem('piledger_sales')) || [];
+        let journalEntries = JSON.parse(localStorage.getItem('piledger_journal')) || [];
         let inventory = JSON.parse(localStorage.getItem('piledger_inventory')) || [
-            { id: 'ITM-001', name: 'خدمة رقمية / Digital Service', qty: 50, price: 5 }
+            { id: 'ITM-001', name: 'خدمة رقمية / Digital Service', qty: 50, price: 5 },
+            { id: 'ITM-002', name: 'اشتراك مميز / Premium Sub', qty: 20, price: 15 }
         ];
 
-        window.onload = () => { checkLoginState(); renderAll(); };
+        window.onload = () => {
+            changeLanguage('ar');
+            checkLoginState();
+        };
 
         function piLogin() {
             const username = document.getElementById('pi-username').value.trim();
-            if (!username) { alert("أدخل اسم المستخدم"); return; }
+            if (!username) { alert("الرجاء إدخال اسم المستخدم الصحيح لـ Pi Network"); return; }
             currentUser = username;
             localStorage.setItem('piledger_user', currentUser);
             checkLoginState();
         }
 
-        function logoutPi() {
+        function piLogout() {
             currentUser = null;
             localStorage.removeItem('piledger_user');
             checkLoginState();
@@ -178,6 +327,115 @@
                 loginScreen.classList.remove('hidden');
                 userDisplay.innerText = '@Guest';
             }
+            updateSubscriptionUI();
+        }
+
+        function updateSubscriptionUI() {
+            const freeLeft = Math.max(0, 50 - freeOpsCount);
+            document.getElementById('free-ops-left').innerText = freeLeft;
+            const btnSub = document.getElementById('sub-btn-action');
+            if (isSubscribed) {
+                btnSub.innerText = currentLang === 'ar' ? '⭐ مشترك سنوي (نشط)' : '⭐ Annual Sub (Active)';
+                btnSub.classList.add('bg-emerald-100', 'text-emerald-800');
+            } else {
+                btnSub.innerText = translations[currentLang].subBtnAction;
+            }
+        }
+
+        function payAnnualSubscription() {
+            const t = translations[currentLang];
+            const confirmed = confirm(`🟡 [Pi Payments SDK]\n\nMerchant: PiLedger Subscription\nAmount: 0.1 Pi\n\nApprove annual subscription payment?`);
+            if (!confirmed) return;
+
+            isSubscribed = true;
+            localStorage.setItem('piledger_subscribed', JSON.stringify(true));
+            updateSubscriptionUI();
+            alert(t.subSuccess);
+        }
+
+        function checkOperationLimit() {
+            if (isSubscribed) return true;
+            if (freeOpsCount < 50) {
+                freeOpsCount++;
+                localStorage.setItem('piledger_free_ops', freeOpsCount);
+                updateSubscriptionUI();
+                return true;
+            } else {
+                alert(translations[currentLang].limitReached);
+                return false;
+            }
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            const htmlRoot = document.getElementById('html-root');
+
+            htmlRoot.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            htmlRoot.setAttribute('lang', lang);
+
+            document.getElementById('page-title').innerText = t.title;
+            document.getElementById('app-title').innerText = t.appTitle;
+            document.getElementById('app-subtitle').innerText = t.appSubtitle;
+            document.getElementById('stat-cash-title').innerText = t.statCash;
+            document.getElementById('stat-profit-title').innerText = t.statProfit;
+            document.getElementById('stat-inv-title').innerText = t.statInvCount;
+
+            document.getElementById('btn-sales').innerText = t.sales;
+            document.getElementById('btn-inventory').innerText = t.inventory;
+            document.getElementById('btn-journal').innerText = t.journal;
+            document.getElementById('btn-ecosystem').innerText = t.ecosystem;
+            document.getElementById('btn-reports').innerText = t.reports;
+
+            document.getElementById('sales-section-title').innerText = t.salesTitle;
+            document.getElementById('lbl-customer').innerText = t.lblCustomer;
+            document.getElementById('lbl-item').innerText = t.lblItem;
+            document.getElementById('lbl-amount').innerText = t.lblAmount;
+            document.getElementById('btn-issue').innerText = t.btnIssue;
+            document.getElementById('sales-history-title').innerText = t.salesHistory;
+            document.getElementById('th-inv').innerText = t.thInv;
+            document.getElementById('th-cust').innerText = t.thCust;
+            document.getElementById('th-item').innerText = t.thItem;
+            document.getElementById('th-amt').innerText = t.thAmt;
+            document.getElementById('th-status').innerText = t.thStatus;
+            document.getElementById('th-date').innerText = t.thDate;
+
+            document.getElementById('inv-section-title').innerText = t.invSectionTitle;
+            document.getElementById('inv-lbl-name').innerText = t.invLblName;
+            document.getElementById('inv-lbl-qty').innerText = t.invLblQty;
+            document.getElementById('inv-lbl-price').innerText = t.invLblPrice;
+            document.getElementById('inv-btn-add').innerText = t.invBtnAdd;
+            document.getElementById('inv-th-code').innerText = t.invThCode;
+            document.getElementById('inv-th-name').innerText = t.invThName;
+            document.getElementById('inv-th-qty').innerText = t.invThQty;
+            document.getElementById('inv-th-price').innerText = t.invThPrice;
+            document.getElementById('inv-th-action').innerText = t.invThAction;
+
+            document.getElementById('journal-section-title').innerText = t.journalSectionTitle;
+            document.getElementById('th-j-no').innerText = t.thJNo;
+            document.getElementById('th-j-desc').innerText = t.thJDesc;
+            document.getElementById('th-j-dr').innerText = t.thJDr;
+            document.getElementById('th-j-cr').innerText = t.thJCr;
+            document.getElementById('th-j-acc').innerText = t.thJAcc;
+            document.getElementById('th-j-date').innerText = t.thJDate;
+
+            document.getElementById('eco-section-title').innerText = t.ecoSectionTitle;
+            document.getElementById('eco-desc').innerText = t.ecoDesc;
+
+            document.getElementById('reports-section-title').innerText = t.reportsSectionTitle;
+            document.getElementById('rep-income-title').innerText = t.repIncomeTitle;
+            document.getElementById('rep-rev-label').innerText = t.repRevLabel;
+            document.getElementById('rep-exp-label').innerText = t.repExpLabel;
+            document.getElementById('rep-net-label').innerText = t.repNetLabel;
+
+            document.getElementById('login-title').innerText = t.loginTitle;
+            document.getElementById('login-subtitle').innerText = t.loginSubtitle;
+            document.getElementById('login-lbl-user').innerText = t.loginUsr;
+            document.getElementById('login-btn').innerText = t.loginBtn;
+            document.getElementById('sub-status-title').innerText = t.subStatusTitle;
+
+            updateSubscriptionUI();
+            renderAll();
         }
 
         function switchTab(tabId) {
@@ -186,6 +444,7 @@
                 el.classList.remove('bg-amber-600', 'text-white', 'shadow');
                 el.classList.add('bg-white', 'text-gray-600', 'border', 'border-amber-200');
             });
+
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('bg-white', 'text-gray-600', 'border', 'border-amber-200');
@@ -193,71 +452,163 @@
         }
 
         function addInventoryItem() {
+            if (!checkOperationLimit()) return;
+            const t = translations[currentLang];
             const name = document.getElementById('inv-name').value.trim();
             const qty = parseInt(document.getElementById('inv-qty').value);
             const price = parseFloat(document.getElementById('inv-price').value);
-            if (!name || isNaN(qty) || isNaN(price)) { alert("أدخل بيانات صحيحة للصنف"); return; }
-            inventory.push({ id: 'ITM-' + (100 + inventory.length + 1), name, qty, price });
+
+            if (!name || isNaN(qty) || isNaN(price)) {
+                alert(t.alertInvMsg);
+                return;
+            }
+
+            const itemCode = 'ITM-' + (100 + inventory.length + 1);
+            inventory.push({ id: itemCode, name, qty, price });
             localStorage.setItem('piledger_inventory', JSON.stringify(inventory));
+
             document.getElementById('inv-name').value = '';
             document.getElementById('inv-qty').value = '';
             document.getElementById('inv-price').value = '';
             renderAll();
         }
 
+        function deleteInventoryItem(index) {
+            inventory.splice(index, 1);
+            localStorage.setItem('piledger_inventory', JSON.stringify(inventory));
+            renderAll();
+        }
+
         function updateItemPrice(itemCode) {
             const item = inventory.find(i => i.id === itemCode);
-            if (item) document.getElementById('sale-amount').value = item.price;
+            if (item) {
+                document.getElementById('sale-amount').value = item.price;
+            }
         }
 
         function simulatePiPayment() {
+            if (!checkOperationLimit()) return;
+            const t = translations[currentLang];
             const customer = document.getElementById('sale-customer').value.trim();
-            const itemCode = document.getElementById('sale-item-select').value;
+            const itemSelect = document.getElementById('sale-item-select');
+            const itemCode = itemSelect.value;
             const amount = parseFloat(document.getElementById('sale-amount').value);
-            if (!customer || !itemCode || isNaN(amount)) { alert("اختر صنف وأدخل اسم العميل"); return; }
+
+            if (!customer || !itemCode || isNaN(amount) || amount <= 0) {
+                alert(t.alertMsg);
+                return;
+            }
+
+            const selectedItem = inventory.find(i => i.id === itemCode);
+            if (!selectedItem || selectedItem.qty <= 0) {
+                alert(currentLang === 'ar' ? 'الكمية غير متوفرة في المخزن!' : 'Quantity not available in inventory!');
+                return;
+            }
+
+            const confirmed = confirm(`🟡 [Pi Payments SDK]\n\nMerchant: @${currentUser}\nCustomer: @${customer}\nAmount: ${amount} Pi\nItem: ${selectedItem.name}\n\nAuthorize transaction?`);
+            if (!confirmed) return;
+
+            selectedItem.qty -= 1;
+            localStorage.setItem('piledger_inventory', JSON.stringify(inventory));
+
+            const invoiceNo = 'PI-SDK-' + (1000 + sales.length + 1);
+            const dateStr = new Date().toLocaleDateString();
+
+            sales.push({ id: invoiceNo, customer, item: selectedItem.name, amount, status: currentLang === 'ar' ? 'مدفوع (Pi SDK)' : 'Paid (Pi SDK)', date: dateStr });
             
-            sales.push({ id: 'PI-' + (1000 + sales.length), customer, amount, status: 'مدفوع (Pi SDK)' });
+            const entryNo = 'JE-' + (5000 + journalEntries.length + 1);
+            journalEntries.push({
+                id: entryNo,
+                desc: currentLang === 'ar' ? `قيد مبيعات للفاتورة ${invoiceNo} (${customer})` : `Sales entry for invoice ${invoiceNo} (${customer})`,
+                amount: amount,
+                accounts: currentLang === 'ar' ? 'من ح/ محفظة Pi إلى ح/ إيرادات المبيعات' : 'Pi Wallet Dr / Sales Revenue Cr',
+                date: dateStr
+            });
+
             localStorage.setItem('piledger_sales', JSON.stringify(sales));
+            localStorage.setItem('piledger_journal', JSON.stringify(journalEntries));
+
+            document.getElementById('sale-customer').value = '';
+            document.getElementById('sale-amount').value = '';
+            itemSelect.value = '';
+
             renderAll();
-            alert("تم الدفع بنجاح وإصدار الفاتورة!");
+            alert(t.successMsg);
         }
 
-        function payAnnualSubscription() {
-            isSubscribed = true;
-            localStorage.setItem('piledger_subscribed', JSON.stringify(true));
-            alert("تم تفعيل الاشتراك بنجاح!");
-        }
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            const t = translations[lang] || translations['ar'];
-            document.getElementById('page-title').innerText = t.title;
-            document.getElementById('app-title').innerText = t.appTitle;
-            document.getElementById('app-subtitle').innerText = t.appSubtitle;
-        }
+        function syncWallet() { alert(currentLang === 'ar' ? "✅ [Pi Wallet SDK]: تمت مزامنة المحفظة بنجاح للمستخدم @" + currentUser : "✅ [Pi Wallet SDK]: Wallet synchronized successfully for @" + currentUser); }
+        function connectEcosystem() { alert(currentLang === 'ar' ? "✅ [Pi Apps Bridge]: تم الاتصال بنجاح مع أسواق وتطبيقات Pi البيئية!" : "✅ [Pi Apps Bridge]: Successfully connected to Pi Ecosystem Marketplace & Apps!"); }
+        function verifyKYC() { alert(currentLang === 'ar' ? "✅ [Pi KYC Verifier]: المستخدم @" + currentUser + " موثق بنجاح (KYC Passed)." : "✅ [Pi KYC Verifier]: User @" + currentUser + " is Verified (KYC Passed)."); }
 
         function renderAll() {
             let totalCash = 0;
+            
             const salesBody = document.getElementById('sales-table-body');
             salesBody.innerHTML = '';
             sales.forEach(s => {
                 totalCash += s.amount;
-                salesBody.innerHTML += `<tr class="border-b"><td class="p-3">${s.id}</td><td class="p-3">@${s.customer}</td><td class="p-3 text-amber-600 font-bold">${s.amount} Pi</td><td class="p-3">${s.status}</td></tr>`;
+                salesBody.innerHTML += `
+                    <tr class="border-b border-amber-100 hover:bg-amber-50/50">
+                        <td class="p-3 font-mono font-medium">${s.id}</td>
+                        <td class="p-3">@${s.customer}</td>
+                        <td class="p-3">${s.item}</td>
+                        <td class="p-3 text-amber-600 font-bold">${s.amount.toFixed(2)} Pi</td>
+                        <td class="p-3"><span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-medium">${s.status}</span></td>
+                        <td class="p-3 text-gray-500">${s.date}</td>
+                    </tr>
+                `;
             });
 
             const invBody = document.getElementById('inventory-table-body');
             const itemSelect = document.getElementById('sale-item-select');
             invBody.innerHTML = '';
-            itemSelect.innerHTML = `<option value="">-- اختر صنف --</option>`;
-            inventory.forEach(i => {
-                invBody.innerHTML += `<tr class="border-b"><td class="p-3">${i.id}</td><td class="p-3">${i.name}</td><td class="p-3">${i.qty}</td><td class="p-3">${i.price} Pi</td></tr>`;
-                itemSelect.innerHTML += `<option value="${i.id}">${i.name} (${i.price} Pi)</option>`;
+            itemSelect.innerHTML = `<option value="">-- ${currentLang === 'ar' ? 'اختر صنف' : 'Select Item'} --</option>`;
+
+            inventory.forEach((i, index) => {
+                invBody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-mono text-xs">${i.id}</td>
+                        <td class="p-3 font-medium">${i.name}</td>
+                        <td class="p-3 ${i.qty <= 5 ? 'text-red-600 font-bold' : ''}">${i.qty}</td>
+                        <td class="p-3 text-amber-600 font-bold">${i.price.toFixed(2)} Pi</td>
+                        <td class="p-3">
+                            <button onclick="deleteInventoryItem(${index})" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 bg-red-50 rounded">${translations[currentLang].deleteBtn}</button>
+                        </td>
+                    </tr>
+                `;
+                itemSelect.innerHTML += `<o option value="${i.id}">${i.name} (${i.price} Pi)</option>`;
             });
 
-            document.getElementById('rep-revenue').innerText = totalCash.toFixed(2) + ' Pi';
-            document.getElementById('rep-net-profit').innerText = (totalCash * 0.6).toFixed(2) + ' Pi';
+            const journalBody = document.getElementById('journal-table-body');
+            journalBody.innerHTML = '';
+            journalEntries.forEach(j => {
+                journalBody.innerHTML += `
+                    <tr class="border-b border-amber-100 hover:bg-amber-50/50">
+                        <td class="p-3 font-mono font-medium">${j.id}</td>
+                        <td class="p-3">${j.desc}</td>
+                        <td class="p-3 text-amber-700">${j.amount.toFixed(2)}</td>
+                        <td class="p-3 text-amber-700">${j.amount.toFixed(2)}</td>
+                        <td class="p-3 text-xs text-gray-600 bg-amber-50 rounded">${j.accounts}</td>
+                        <td class="p-3 text-gray-500">${j.date}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('stat-inv-count').innerText = inventory.length;
+
+            const totalRevenue = totalCash;
+            const estimatedExpenses = totalRevenue * 0.4;
+            const netProfit = totalRevenue - estimatedExpenses;
+
+            document.getElementById('stat-cash').innerText = totalCash.toFixed(2) + ' Pi';
+            document.getElementById('stat-profit').innerText = netProfit.toFixed(2) + ' Pi';
+
+            document.getElementById('rep-revenue').innerText = totalRevenue.toFixed(2) + ' Pi';
+            document.getElementById('rep-expenses').innerText = estimatedExpenses.toFixed(2) + ' Pi';
+            document.getElementById('rep-net-profit').innerText = netProfit.toFixed(2) + ' Pi';
         }
     </script>
 </body>
 </html>
-    
+
+            
