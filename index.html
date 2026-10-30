@@ -1,91 +1,125 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إبصار المالي - المصغر</title>
-    <!-- استدعاء Tailwind CSS للتصميم السريع والجميل -->
+    <title id="page-title">باي ليدجر - نظام محاسبي لرواد باي</title>
+    <!-- استدعاء Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-amber-50 text-gray-800 transition-all duration-300">
 
     <div class="container mx-auto p-4 max-w-6xl">
-        <!-- العنوان الرئيسي -->
-        <header class="bg-indigo-600 text-white p-6 rounded-2xl shadow-lg mb-6 flex justify-between items-center">
+        
+        <!-- الشريط العلوي والتحكم باللغات -->
+        <header class="bg-gradient-to-r from-amber-600 to-yellow-600 text-white p-6 rounded-2xl shadow-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold">نظام إبصار المالي (Micro-ERP)</h1>
-                <p class="text-indigo-100 text-sm mt-1">نظام محاسبي مبسط يعتمد القيود التلقائية</p>
+                <div class="flex items-center gap-2">
+                    <span class="bg-white/20 text-yellow-100 text-xs px-2.5 py-1 rounded-full font-mono">Pi Network Ecosystem</span>
+                    <h1 class="text-2xl font-bold" id="app-title">PiLedger | باي ليدجر المحاسبي</h1>
+                </div>
+                <p class="text-yellow-100 text-sm mt-1" id="app-subtitle">النظام المالي المخصص لرواد ومتاجر عملة Pi الرقمية</p>
             </div>
-            <div id="quick-stats" class="text-left bg-indigo-700 p-3 rounded-xl text-sm">
-                <div>الخزينة النقدية: <span id="stat-cash" class="font-bold">0</span> ر.ي</div>
-                <div>صافي الأرباح: <span id="stat-profit" class="font-bold">0</span> ر.ي</div>
+
+            <!-- أداة اختيار اللغات العشر -->
+            <div class="flex items-center gap-3 bg-black/10 p-2.5 rounded-xl">
+                <span class="text-xs text-yellow-100 font-medium" id="lang-label">🌍 اللغة / Language:</span>
+                <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-white text-gray-800 text-sm rounded-lg px-3 py-1.5 focus:outline-none font-medium shadow-sm">
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                    <option value="vi">Tiếng Việt</option>
+                    <option value="ru">Русский</option>
+                </select>
             </div>
-        </header>
+                </header>
+                                                       <!-- لوحة المؤشرات السريعة -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-gray-500 block" id="stat-cash-title">إجمالي الخزينة (عملة Pi)</span>
+                    <span id="stat-cash" class="text-xl font-bold text-amber-600">0.00 Pi</span>
+                </div>
+                <div class="bg-amber-100 p-3 rounded-xl text-amber-600 font-bold">🟡</div>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-gray-500 block" id="stat-profit-title">صافي الأرباح التقديرية</span>
+                    <span id="stat-profit" class="text-xl font-bold text-emerald-600">0.00 Pi</span>
+                </div>
+                <div class="bg-emerald-100 p-3 rounded-xl text-emerald-600 font-bold">📈</div>
+            </div>
+        </div>
 
         <!-- أزرار التنقل بين الأقسام -->
         <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-            <button onclick="switchTab('sales')" id="btn-sales" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-indigo-600 text-white shadow">المبيعات والفواتير</button>
-            <button onclick="switchTab('journal')" id="btn-journal" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border">القيود اليومية</button>
-            <button onclick="switchTab('accounts')" id="btn-accounts" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border">دليل الحسابات</button>
-            <button onclick="switchTab('reports')" id="btn-reports" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border">التقارير المالية</button>
+            <button onclick="switchTab('sales')" id="btn-sales" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-amber-600 text-white shadow">المبيعات</button>
+            <button onclick="switchTab('journal')" id="btn-journal" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">القيود اليومية</button>
+            <button onclick="switchTab('accounts')" id="btn-accounts" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">دليل الحسابات</button>
+            <button onclick="switchTab('reports')" id="btn-reports" class="tab-btn px-5 py-2.5 rounded-xl font-medium bg-white text-gray-600 border border-amber-200">التقارير</button>
         </div>
 
         <!-- محتوى الأقسام -->
-        <main class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <main class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
             
             <!-- قسم المبيعات -->
             <section id="tab-sales" class="tab-content">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">تسجيل فاتورة مبيعات جديدة</h2>
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="sales-section-title">إصدار فاتورة مبيعات جديدة (بواسطة Pi)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">اسم العميل</label>
-                        <input type="text" id="sale-customer" class="w-full border rounded-xl p-2.5 text-sm" placeholder="مثال: أحمد محمد">
+                        <label class="block text-sm font-medium mb-1" id="lbl-customer">اسم العميل / الرائد</label>
+                        <input type="text" id="sale-customer" class="w-full border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="Pi Pioneer Name">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">اسم الصنف / الخدمة</label>
-                        <input type="text" id="sale-item" class="w-full border rounded-xl p-2.5 text-sm" placeholder="مثال: جهاز لابتوب">
+                        <label class="block text-sm font-medium mb-1" id="lbl-item">اسم الصنف أو الخدمة الرقمية</label>
+                        <input type="text" id="sale-item" class="w-full border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="Digital Item / Service">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">المبلغ (ر.ي)</label>
-                        <input type="number" id="sale-amount" class="w-full border rounded-xl p-2.5 text-sm" placeholder="0.00">
+                        <label class="block text-sm font-medium mb-1" id="lbl-amount">المبلغ (Pi)</label>
+                        <input type="number" id="sale-amount" class="w-full border border-amber-200 rounded-xl p-2.5 text-sm" placeholder="0.00">
                     </div>
                     <div class="flex items-end">
-                        <button onclick="addSale()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium p-2.5 rounded-xl transition">إصدار الفاتورة وترحيل القيد</button>
+                        <button onclick="addSale()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium p-2.5 rounded-xl transition shadow" id="btn-issue">إصدار الفاتورة وترحيل القيد</button>
                     </div>
                 </div>
                 
-                <h3 class="font-bold text-md mt-6 mb-3 text-gray-700">سجل الفواتير السابقة</h3>
+                <h3 class="font-bold text-md mt-6 mb-3 text-gray-700" id="sales-history-title">سجل الفواتير والمعاملات</h3>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm border-collapse">
+                    <table class="w-full text-right text-sm border-collapse" id="sales-table-dir">
                         <thead>
-                            <tr class="bg-gray-100 text-gray-600">
-                                <th class="p-3 border-b">رقم الفاتورة</th>
-                                <th class="p-3 border-b">العميل</th>
-                                <th class="p-3 border-b">الصنف</th>
-                                <th class="p-3 border-b">المبلغ</th>
-                                <th class="p-3 border-b">التاريخ</th>
+                            <tr class="bg-amber-50 text-gray-600">
+                                <th class="p-3 border-b" id="th-inv">رقم الفاتورة</th>
+                                <th class="p-3 border-b" id="th-cust">العميل</th>
+                                <th class="p-3 border-b" id="th-item">الصنف</th>
+                                <th class="p-3 border-b" id="th-amt">المبلغ</th>
+                                <th class="p-3 border-b" id="th-date">التاريخ</th>
                             </tr>
                         </thead>
                         <tbody id="sales-table-body"></tbody>
                     </table>
                 </div>
-            </section>
-                        <!-- قسم القيود اليومية -->
+                            </section>
+                <!-- قسم القيود اليومية -->
             <section id="tab-journal" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">دفتر القيود اليومية (توليد تلقائي)</h2>
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="journal-section-title">دفتر القيود اليومية (توليد تلقائي للعمليات)</h2>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm border-collapse">
+                    <table class="w-full text-right text-sm border-collapse" id="journal-table-dir">
                         <thead>
-                            <tr class="bg-gray-100 text-gray-600">
-                                <th class="p-3 border-b">رقم القيد</th>
-                                <th class="p-3 border-b">البيان / الوصف</th>
-                                <th class="p-3 border-b">مدين</th>
-                                <th class="p-3 border-b">دائن</th>
-                                <th class="p-3 border-b">الحسابات المتأثرة</th>
-                                <th class="p-3 border-b">التاريخ</th>
+                            <tr class="bg-amber-50 text-gray-600">
+                                <th class="p-3 border-b" id="th-j-no">رقم القيد</th>
+                                <th class="p-3 border-b" id="th-j-desc">البيان / الوصف</th>
+                                <th class="p-3 border-b" id="th-j-dr">مدين</th>
+                                <th class="p-3 border-b" id="th-j-cr">دائن</th>
+                                <th class="p-3 border-b" id="th-j-acc">الحسابات المتأثرة</th>
+                                <th class="p-3 border-b" id="th-j-date">التاريخ</th>
                             </tr>
                         </thead>
                         <tbody id="journal-table-body"></tbody>
@@ -95,34 +129,34 @@
 
             <!-- قسم دليل الحسابات -->
             <section id="tab-accounts" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">شجرة الحسابات الأساسية</h2>
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="accounts-section-title">شجرة الحسابات الرقمية لنظام PiLedger</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="border rounded-xl p-4 bg-gray-50">
-                        <h3 class="font-bold text-indigo-600 mb-2">1. الأصول</h3>
+                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
+                        <h3 class="font-bold text-amber-700 mb-2" id="acc-assets">1. الأصول (محفظة Pi والصناديق)</h3>
                         <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li>الصندوق الرئيسي (النقدية)</li>
-                            <li>العملاء (الذمم المدينة)</li>
-                            <li>المخزون</li>
+                            <li id="acc-item-1">محفظة Pi الرئيسية</li>
+                            <li id="acc-item-2">العملاء (رواد الشبكة)</li>
+                            <li id="acc-item-3">المخزون الرقمي</li>
                         </ul>
                     </div>
-                    <div class="border rounded-xl p-4 bg-gray-50">
-                        <h3 class="font-bold text-indigo-600 mb-2">2. الخصوم وحقوق الملكية</h3>
+                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
+                        <h3 class="font-bold text-amber-700 mb-2" id="acc-liab">2. الخصوم وحقوق الملكية</h3>
                         <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li>الموردون (الدائنون)</li>
-                            <li>رأس المال</li>
+                            <li id="acc-item-4">الموردون</li>
+                            <li id="acc-item-5">رأس المال الاستثماري</li>
                         </ul>
                     </div>
-                    <div class="border rounded-xl p-4 bg-gray-50">
-                        <h3 class="font-bold text-indigo-600 mb-2">3. الإيرادات</h3>
+                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
+                        <h3 class="font-bold text-amber-700 mb-2" id="acc-rev">3. الإيرادات</h3>
                         <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li>إيرادات المبيعات</li>
+                            <li id="acc-item-6">إيرادات مبيعات Pi</li>
                         </ul>
                     </div>
-                    <div class="border rounded-xl p-4 bg-gray-50">
-                        <h3 class="font-bold text-indigo-600 mb-2">4. المصروفات</h3>
+                    <div class="border border-amber-100 rounded-xl p-4 bg-amber-50/50">
+                        <h3 class="font-bold text-amber-700 mb-2" id="acc-exp">4. المصروفات</h3>
                         <ul class="list-disc list-inside text-sm space-y-1 text-gray-600">
-                            <li>تكلفة البضاعة المباعة</li>
-                            <li>المصروفات التشغيلية</li>
+                            <li id="acc-item-7">تكلفة المبيعات</li>
+                            <li id="acc-item-8">رسوم شبكة Pi والتشغيل</li>
                         </ul>
                     </div>
                 </div>
@@ -130,32 +164,32 @@
 
             <!-- قسم التقارير -->
             <section id="tab-reports" class="tab-content hidden">
-                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">قائمة الدخل والمركز المالي المختصرة</h2>
+                <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2" id="reports-section-title">قائمة الدخل والميزانية المختصرة (بالعملة الرقمية)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="border rounded-xl p-5 shadow-sm">
-                        <h3 class="font-bold text-md text-gray-800 mb-3 border-b pb-2">قائمة الدخل (الأرباح والخسائر)</h3>
+                    <div class="border border-amber-100 rounded-xl p-5 shadow-sm">
+                        <h3 class="font-bold text-md text-gray-800 mb-3 border-b pb-2" id="rep-income-title">قائمة الدخل (الأرباح)</h3>
                         <div class="flex justify-between py-2 border-b text-sm">
-                            <span>إجمالي الإيرادات (المبيعات):</span>
-                            <span id="rep-revenue" class="font-bold text-emerald-600">0 ر.ي</span>
+                            <span id="rep-rev-label">إجمالي إيرادات Pi:</span>
+                            <span id="rep-revenue" class="font-bold text-amber-600">0.00 Pi</span>
                         </div>
                         <div class="flex justify-between py-2 border-b text-sm">
-                            <span>إجمالي المصروفات (افتراضي 40% تكلفة):</span>
-                            <span id="rep-expenses" class="font-bold text-red-600">0 ر.ي</span>
+                            <span id="rep-exp-label">إجمالي المصروفات (تلقائي 40%):</span>
+                            <span id="rep-expenses" class="font-bold text-red-600">0.00 Pi</span>
                         </div>
-                        <div class="flex justify-between py-3 text-base font-bold bg-gray-50 px-2 rounded-lg mt-2">
-                            <span>صافي الربح:</span>
-                            <span id="rep-net-profit" class="text-indigo-600">0 ر.ي</span>
+                        <div class="flex justify-between py-3 text-base font-bold bg-amber-50 px-2 rounded-lg mt-2">
+                            <span id="rep-net-label">صافي الأرباح:</span>
+                            <span id="rep-net-profit" class="text-emerald-600">0.00 Pi</span>
                         </div>
                     </div>
-                    <div class="border rounded-xl p-5 shadow-sm">
-                        <h3 class="font-bold text-md text-gray-800 mb-3 border-b pb-2">الميزانية العمومية المصغرة</h3>
+                    <div class="border border-amber-100 rounded-xl p-5 shadow-sm">
+                        <h3 class="font-bold text-md text-gray-800 mb-3 border-b pb-2" id="rep-bs-title">الميزانية العمومية المصغرة</h3>
                         <div class="flex justify-between py-2 border-b text-sm">
-                            <span>إجمالي النقدية (الأصول المتداولة):</span>
-                            <span id="rep-assets" class="font-bold">0 ر.ي</span>
+                            <span id="rep-assets-label">إجمالي رصيد المحفظة والأصول:</span>
+                            <span id="rep-assets" class="font-bold">0.00 Pi</span>
                         </div>
                         <div class="flex justify-between py-2 border-b text-sm">
-                            <span>رأس المال والأرباح المبقاة:</span>
-                            <span id="rep-capital" class="font-bold">0 ر.ي</span>
+                            <span id="rep-cap-label">رأس المال والأرباح المبقاة:</span>
+                            <span id="rep-capital" class="font-bold">0.00 Pi</span>
                         </div>
                     </div>
                 </div>
@@ -163,57 +197,305 @@
 
         </main>
     </div>
+        const translations = {
+            ar: {
+                title: "PiLedger - نظام محاسبي لرواد باي",
+                appTitle: "PiLedger | باي ليدجر المحاسبي",
+                appSubtitle: "النظام المالي المخصص لرواد ومتاجر عملة Pi الرقمية",
+                langLabel: "🌍 اللغة:",
+                statCash: "إجمالي الخزينة (عملة Pi)",
+                statProfit: "صافي الأرباح التقديرية",
+                sales: "المبيعات",
+                journal: "القيود اليومية",
+                accounts: "دليل الحسابات",
+                reports: "التقارير",
+                salesTitle: "إصدار فاتورة مبيعات جديدة (بواسطة Pi)",
+                lblCustomer: "اسم العميل / الرائد",
+                lblItem: "اسم الصنف أو الخدمة الرقمية",
+                lblAmount: "المبلغ (Pi)",
+                btnIssue: "إصدار الفاتورة وترحيل القيد",
+                salesHistory: "سجل الفواتير والمعاملات",
+                thInv: "رقم الفاتورة",
+                thCust: "العميل",
+                thItem: "الصنف",
+                thAmt: "المبلغ",
+                thDate: "التاريخ",
+                journalTitle: "دفتر القيود اليومية (توليد تلقائي للعمليات)",
+                thJNo: "رقم القيد",
+                thJDesc: "البيان / الوصف",
+                thJDr: "مدين",
+                thJCr: "دائن",
+                thJAcc: "الحسابات المتأثرة",
+                thJDate: "التاريخ",
+                accTitle: "شجرة الحسابات الرقمية لنظام PiLedger",
+                accAssets: "1. الأصول (محفظة Pi والصناديق)",
+                accItem1: "محفظة Pi الرئيسية",
+                accItem2: "العملاء (رواد الشبكة)",
+                accItem3: "المخزون الرقمي",
+                accLiab: "2. الخصوم وحقوق الملكية",
+                accItem4: "الموردون",
+                accItem5: "رأس المال الاستثماري",
+                accRev: "3. الإيرادات",
+                accItem6: "إيرادات مبيعات Pi",
+                accExp: "4. المصروفات",
+                accItem7: "تكلفة المبيعات",
+                accItem8: "رسوم شبكة Pi والتشغيل",
+                repTitle: "قائمة الدخل والميزانية المختصرة (بالعملة الرقمية)",
+                repIncomeTitle: "قائمة الدخل (الأرباح)",
+                repRevLabel: "إجمالي إيرادات Pi:",
+                repExpLabel: "إجمالي المصروفات (تلقائي 40%):",
+                repNetLabel: "صافي الأرباح:",
+                repBsTitle: "الميزانية العمومية المصغرة",
+                repAssetsLabel: "إجمالي رصيد المحفظة والأصول:",
+                repCapLabel: "رأس المال والأرباح المبقاة:",
+                alertMsg: "الرجاء إدخال بيانات صحيحة لجميع الحقول.",
+                successMsg: "تم إصدار الفاتورة وتوليد القيد المحاسبي المرتبط بعملة Pi بنجاح!",
+                journalDesc: "قيد مبيعات نقدية عبر Pi للفاتورة"
+            },
+            en: {
+                title: "PiLedger - Accounting for Pi Pioneers",
+                appTitle: "PiLedger | Accounting System",
+                appSubtitle: "Financial system designed for Pi Network pioneers & merchants",
+                langLabel: "🌍 Language:",
+                statCash: "Total Treasury (Pi Coin)",
+                statProfit: "Estimated Net Profit",
+                sales: "Sales",
+                journal: "Journal Entries",
+                accounts: "Chart of Accounts",
+                reports: "Reports",
+                salesTitle: "Issue New Sales Invoice (via Pi)",
+                lblCustomer: "Customer / Pioneer Name",
+                lblItem: "Digital Item / Service Name",
+                lblAmount: "Amount (Pi)",
+                btnIssue: "Issue Invoice & Post Entry",
+                salesHistory: "Invoice & Transaction History",
+                thInv: "Invoice No",
+                thCust: "Customer",
+                thItem: "Item",
+                thAmt: "Amount",
+                thDate: "Date",
+                journalTitle: "Daily Journal Entries (Auto-Generated)",
+                thJNo: "Entry No",
+                thJDesc: "Description",
+                thJDr: "Debit",
+                thJCr: "Credit",
+                thJAcc: "Affected Accounts",
+                thJDate: "Date",
+                accTitle: "PiLedger Digital Chart of Accounts",
+                accAssets: "1. Assets (Pi Wallet & Vaults)",
+                accItem1: "Main Pi Wallet",
+                accItem2: "Pioneer Customers (AR)",
+                accItem3: "Digital Inventory",
+                accLiab: "2. Liabilities & Equity",
+                accItem4: "Suppliers (AP)",
+                accItem5: "Venture Capital",
+                accRev: "3. Revenues",
+                accItem6: "Pi Sales Revenue",
+                accExp: "4. Expenses",
+                accItem7: "Cost of Goods Sold",
+                accItem8: "Pi Network Fees & Ops",
+                repTitle: "Income Statement & Mini Balance Sheet",
+                repIncomeTitle: "Income Statement",
+                repRevLabel: "Total Pi Revenue:",
+                repExpLabel: "Total Expenses (Auto 40%):",
+                repNetLabel: "Net Profit:",
+                repBsTitle: "Mini Balance Sheet",
+                repAssetsLabel: "Total Wallet & Assets:",
+                repCapLabel: "Capital & Retained Earnings:",
+                alertMsg: "Please enter valid data for all fields.",
+                successMsg: "Invoice issued and Pi accounting entry posted successfully!",
+                journalDesc: "Pi cash sales entry for invoice"
+            }
+        };
+           const extraTranslations = {
+            fr: {
+                title: "PiLedger - Comptabilité pour les Pionniers Pi",
+                appTitle: "PiLedger | Système Comptable",
+                appSubtitle: "Système financier pour les pionniers et marchands Pi Network",
+                langLabel: "🌍 Langue :",
+                statCash: "Trésorerie Totale (Pi)",
+                statProfit: "Bénéfice Net Estimé",
+                sales: "Ventes",
+                journal: "Journaux",
+                accounts: "Plan Comptable",
+                reports: "Rapports",
+                salesTitle: "Émettre une Nouvelle Facture (via Pi)",
+                lblCustomer: "Nom du Client / Pionnier",
+                lblItem: "Article ou Service Numérique",
+                lblAmount: "Montant (Pi)",
+                btnIssue: "Émettre et Publier l'Écriture",
+                salesHistory: "Historique des Factures",
+                thInv: "N° Facture",
+                thCust: "Client",
+                thItem: "Article",
+                thAmt: "Montant",
+                thDate: "Date",
+                journalTitle: "Journal des Opérations (Généré Automatiquement)",
+                thJNo: "N° Écriture",
+                thJDesc: "Description",
+                thJDr: "Débit",
+                thJCr: "Crédit",
+                thJAcc: "Comptes Impactés",
+                thJDate: "Date",
+                accTitle: "Plan Comptable Numérique PiLedger",
+                accAssets: "1. Actifs (Portefeuille Pi et Caisses)",
+                accItem1: "Portefeuille Pi Principal",
+                accItem2: "Clients Pionniers",
+                accItem3: "Stock Numérique",
+                accLiab: "2. Passifs et Capitaux Propres",
+                accItem4: "Fournisseurs",
+                accItem5: "Capital Social",
+                accRev: "3. Produits",
+                accItem6: "Revenus des Ventes Pi",
+                accExp: "4. Charges",
+                accItem7: "Coût des Ventes",
+                accItem8: "Frais Réseau Pi et Ops",
+                repTitle: "Compte de Résultat & Bilan Simplifié",
+                repIncomeTitle: "Compte de Résultat",
+                repRevLabel: "Revenus Totaux Pi :",
+                repExpLabel: "Charges Totales (Auto 40%) :",
+                repNetLabel: "Bénéfice Net :",
+                repBsTitle: "Bilan Simplifié",
+                repAssetsLabel: "Total Portefeuille et Actifs :",
+                repCapLabel: "Capital et Bénéfices Non Répartis :",
+                alertMsg: "Veuillez entrer des données valides.",
+                successMsg: "Facture émise et écriture Pi enregistrée avec succès !",
+                journalDesc: "Écriture de vente en espèces Pi pour la facture"
+            }
+        };
 
-    <!-- كود المنطق البرمجي (JavaScript) -->
-    <script>
-        let sales = JSON.parse(localStorage.getItem('ebsar_sales')) || [];
-        let journalEntries = JSON.parse(localStorage.getItem('ebsar_journal')) || [];
+        let currentLang = 'ar';
+        let sales = JSON.parse(localStorage.getItem('piledger_sales')) || [];
+        let journalEntries = JSON.parse(localStorage.getItem('piledger_journal')) || [];
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang] || translations['ar'];
+            const htmlRoot = document.getElementById('html-root');
+
+            if (lang === 'ar') {
+                htmlRoot.setAttribute('dir', 'rtl');
+                htmlRoot.setAttribute('lang', 'ar');
+            } else {
+                htmlRoot.setAttribute('dir', 'ltr');
+                htmlRoot.setAttribute('lang', lang);
+            }
+
+            document.getElementById('page-title').innerText = t.title;
+            document.getElementById('app-title').innerText = t.appTitle;
+            document.getElementById('app-subtitle').innerText = t.appSubtitle;
+            document.getElementById('lang-label').innerText = t.langLabel;
+            document.getElementById('stat-cash-title').innerText = t.statCash;
+            document.getElementById('stat-profit-title').innerText = t.statProfit;
+
+            document.getElementById('btn-sales').innerText = t.sales;
+            document.getElementById('btn-journal').innerText = t.journal;
+            document.getElementById('btn-accounts').innerText = t.accounts;
+            document.getElementById('btn-reports').innerText = t.reports;
+
+            document.getElementById('sales-section-title').innerText = t.salesTitle;
+            document.getElementById('lbl-customer').innerText = t.lblCustomer;
+            document.getElementById('lbl-item').innerText = t.lblItem;
+            document.getElementById('lbl-amount').innerText = t.lblAmount;
+            document.getElementById('btn-issue').innerText = t.btnIssue;
+            document.getElementById('sales-history-title').innerText = t.salesHistory;
+            document.getElementById('th-inv').innerText = t.thInv;
+            document.getElementById('th-cust').innerText = t.thCust;
+            document.getElementById('th-item').innerText = t.thItem;
+            document.getElementById('th-amt').innerText = t.thAmt;
+            document.getElementById('th-date').innerText = t.thDate;
+
+            document.getElementById('journal-section-title').innerText = t.journalTitle;
+            document.getElementById('th-j-no').innerText = t.thJNo;
+            document.getElementById('th-j-desc').innerText = t.thJDesc;
+            document.getElementById('th-j-dr').innerText = t.thJDr;
+            document.getElementById('th-j-cr').innerText = t.thJCr;
+            document.getElementById('th-j-acc').innerText = t.thJAcc;
+            document.getElementById('th-j-date').innerText = t.thJDate;
+
+            document.getElementById('accounts-section-title').innerText = t.accTitle;
+            document.getElementById('acc-assets').innerText = t.accAssets;
+            document.getElementById('acc-item-1').innerText = t.accItem1;
+            document.getElementById('acc-item-2').innerText = t.accItem2;
+            document.getElementById('acc-item-3').innerText = t.accItem3;
+            document.getElementById('acc-liab').innerText = t.accLiab;
+            document.getElementById('acc-item-4').innerText = t.accItem4;
+            document.getElementById('acc-item-5').innerText = t.accItem5;
+            document.getElementById('acc-rev').innerText = t.accRev;
+            document.getElementById('acc-item-6').innerText = t.accItem6;
+            document.getElementById('acc-exp').innerText = t.accExp;
+            document.getElementById('acc-item-7').innerText = t.accItem7;
+            document.getElementById('acc-item-8').innerText = t.accItem8;
+
+            document.getElementById('reports-section-title').innerText = t.repTitle;
+            document.getElementById('rep-income-title').innerText = t.repIncomeTitle;
+            document.getElementById('rep-rev-label').innerText = t.repRevLabel;
+            document.getElementById('rep-exp-label').innerText = t.repExpLabel;
+            document.getElementById('rep-net-label').innerText = t.repNetLabel;
+            document.getElementById('rep-bs-title').innerText = t.repBsTitle;
+            document.getElementById('rep-assets-label').innerText = t.repAssetsLabel;
+            document.getElementById('rep-cap-label').innerText = t.repCapLabel;
+
+            const salesTableDir = document.getElementById('sales-table-dir');
+            const journalTableDir = document.getElementById('journal-table-dir');
+            if (lang === 'ar') {
+                salesTableDir.setAttribute('dir', 'rtl');
+                journalTableDir.setAttribute('dir', 'rtl');
+            } else {
+                salesTableDir.setAttribute('dir', 'ltr');
+                journalTableDir.setAttribute('dir', 'ltr');
+            }
+
+            renderAll();
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-indigo-600', 'text-white', 'shadow');
-                el.classList.add('bg-white', 'text-gray-600', 'border');
+                el.classList.remove('bg-amber-600', 'text-white', 'shadow');
+                el.classList.add('bg-white', 'text-gray-600', 'border', 'border-amber-200');
             });
+
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('bg-white', 'text-gray-600', 'border');
-            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow');
+            activeBtn.classList.remove('bg-white', 'text-gray-600', 'border', 'border-amber-200');
+            activeBtn.classList.add('bg-amber-600', 'text-white', 'shadow');
         }
 
         function addSale() {
+            const t = translations[currentLang] || translations['ar'];
             const customer = document.getElementById('sale-customer').value.trim();
             const item = document.getElementById('sale-item').value.trim();
             const amount = parseFloat(document.getElementById('sale-amount').value);
 
             if (!customer || !item || isNaN(amount) || amount <= 0) {
-                alert('الرجاء إدخال بيانات صحيحة لجميع الحقول.');
+                alert(t.alertMsg);
                 return;
             }
 
-            const invoiceNo = 'INV-' + (1000 + sales.length + 1);
-            const dateStr = new Date().toLocaleDateString('ar-YE');
+            const invoiceNo = 'PI-INV-' + (1000 + sales.length + 1);
+            const dateStr = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-YE' : 'en-US');
 
             sales.push({ id: invoiceNo, customer, item, amount, date: dateStr });
             
             const entryNo = 'JE-' + (5000 + journalEntries.length + 1);
             journalEntries.push({
                 id: entryNo,
-                desc: `قيد مبيعات نقدية للفاتورة ${invoiceNo} للعميل ${customer}`,
+                desc: `${t.journalDesc} ${invoiceNo} (${customer})`,
                 amount: amount,
-                accounts: 'من ح/ الصندوق إلى ح/ إيرادات المبيعات',
+                accounts: currentLang === 'ar' ? 'من ح/ محفظة Pi إلى ح/ إيرادات مبيعات Pi' : 'Pi Wallet Dr / Pi Sales Revenue Cr',
                 date: dateStr
             });
 
-            localStorage.setItem('ebsar_sales', JSON.stringify(sales));
-            localStorage.setItem('ebsar_journal', JSON.stringify(journalEntries));
+            localStorage.setItem('piledger_sales', JSON.stringify(sales));
+            localStorage.setItem('piledger_journal', JSON.stringify(journalEntries));
 
             document.getElementById('sale-customer').value = '';
             document.getElementById('sale-item').value = '';
             document.getElementById('sale-amount').value = '';
 
             renderAll();
-            alert('تم إصدار الفاتورة وتوليد القيد المحاسبي بنجاح!');
+            alert(t.successMsg);
         }
 
         function renderAll() {
@@ -223,11 +505,11 @@
             sales.forEach(s => {
                 totalCash += s.amount;
                 salesBody.innerHTML += `
-                    <tr class="border-b hover:bg-gray-50">
+                    <tr class="border-b border-amber-100 hover:bg-amber-50/50">
                         <td class="p-3 font-mono font-medium">${s.id}</td>
                         <td class="p-3">${s.customer}</td>
                         <td class="p-3">${s.item}</td>
-                        <td class="p-3 text-emerald-600 font-bold">${s.amount.toLocaleString()} ر.ي</td>
+                        <td class="p-3 text-amber-600 font-bold">${s.amount.toFixed(2)} Pi</td>
                         <td class="p-3 text-gray-500">${s.date}</td>
                     </tr>
                 `;
@@ -237,12 +519,12 @@
             journalBody.innerHTML = '';
             journalEntries.forEach(j => {
                 journalBody.innerHTML += `
-                    <tr class="border-b hover:bg-gray-50">
+                    <tr class="border-b border-amber-100 hover:bg-amber-50/50">
                         <td class="p-3 font-mono font-medium">${j.id}</td>
                         <td class="p-3">${j.desc}</td>
-                        <td class="p-3 text-blue-600">${j.amount.toLocaleString()}</td>
-                        <td class="p-3 text-blue-600">${j.amount.toLocaleString()}</td>
-                        <td class="p-3 text-xs text-gray-600 bg-gray-50 rounded">${j.accounts}</td>
+                        <td class="p-3 text-amber-700">${j.amount.toFixed(2)}</td>
+                        <td class="p-3 text-amber-700">${j.amount.toFixed(2)}</td>
+                        <td class="p-3 text-xs text-gray-600 bg-amber-50 rounded">${j.accounts}</td>
                         <td class="p-3 text-gray-500">${j.date}</td>
                     </tr>
                 `;
@@ -252,18 +534,19 @@
             const estimatedExpenses = totalRevenue * 0.4;
             const netProfit = totalRevenue - estimatedExpenses;
 
-            document.getElementById('stat-cash').innerText = totalCash.toLocaleString();
-            document.getElementById('stat-profit').innerText = netProfit.toLocaleString();
+            document.getElementById('stat-cash').innerText = totalCash.toFixed(2) + ' Pi';
+            document.getElementById('stat-profit').innerText = netProfit.toFixed(2) + ' Pi';
 
-            document.getElementById('rep-revenue').innerText = totalRevenue.toLocaleString() + ' ر.ي';
-            document.getElementById('rep-expenses').innerText = estimatedExpenses.toLocaleString() + ' ر.ي';
-            document.getElementById('rep-net-profit').innerText = netProfit.toLocaleString() + ' ر.ي';
-            document.getElementById('rep-assets').innerText = totalCash.toLocaleString() + ' ر.ي';
-            document.getElementById('rep-capital').innerText = totalCash.toLocaleString() + ' ر.ي';
+            document.getElementById('rep-revenue').innerText = totalRevenue.toFixed(2) + ' Pi';
+            document.getElementById('rep-expenses').innerText = estimatedExpenses.toFixed(2) + ' Pi';
+            document.getElementById('rep-net-profit').innerText = netProfit.toFixed(2) + ' Pi';
+            document.getElementById('rep-assets').innerText = totalCash.toFixed(2) + ' Pi';
+            document.getElementById('rep-capital').innerText = totalCash.toFixed(2) + ' Pi';
         }
 
-        window.onload = renderAll;
+        window.onload = () => {
+            changeLanguage('ar');
+        };
     </script>
 </body>
-  </html>
-                      
+    </html>
